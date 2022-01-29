@@ -1,0 +1,22 @@
+.navbar-account {
+    position: absolute;
+    right: 50%;
+}
+
+.navbar-query-form {
+    position: absolute;
+    right: 1%;
+}
+
+.navbar-query-form div {
+    color: red;
+}
+
+.navbar-query-form button {
+    margin-left: 0.5rem;
+}
+
+.navbar-soring-form {
+    position: absolute;
+    right: 25%;
+}

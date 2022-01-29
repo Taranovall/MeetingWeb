@@ -9,6 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
@@ -25,14 +26,23 @@ public class MainPageController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String query = (String) req.getSession().getAttribute("query"); // returns null if search query wasn't made
-        List<Meeting> meetingList = meetingService.getAllMeetings();
-        // if search query was made then removes all meetings from list that don't contain search query ignoring case
-        if (query != null) {
-            meetingList.removeIf(meeting -> !meeting.getName().toLowerCase().contains(query.toLowerCase()));
-            req.getSession().removeAttribute("query");
+        HttpSession session = req.getSession();
+        String attrName = "meetings";
+        List<Meeting> meetingList = null;
+        // it can be true only if user has made search query
+        boolean isUserMadeSearchQuery = session.getAttribute("query") != null;
+        if (isUserMadeSearchQuery) {
+             meetingList = (List<Meeting>) session.getAttribute(attrName);
         }
-        req.setAttribute("meetings", meetingList);
+
+        if (meetingList == null) {
+            meetingList = meetingService.getAllMeetings();
+            req.setAttribute(attrName, meetingList);
+            //removes those attributes in case if user has made some search queries before reloading the page
+            session.removeAttribute("meetings");
+            session.removeAttribute("queryIsNotValid");
+        }
+        session.removeAttribute("query");
         req.getRequestDispatcher(PATH_TO_MAIN_PAGE_JSP).forward(req, resp);
     }
 }

@@ -5,6 +5,7 @@ import com.meeting.service.UserService;
 import com.meeting.service.ValidationService;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 public class ValidationServiceImpl implements ValidationService {
 
@@ -22,7 +23,7 @@ public class ValidationServiceImpl implements ValidationService {
 
         boolean validation = loginValidator(login, req);
         if (validation) {
-            req.setAttribute("loginError",true);
+            req.setAttribute("loginError", true);
             return null;
         }
         validation = passwordValidator(password, passwordConfirm, req);
@@ -47,6 +48,20 @@ public class ValidationServiceImpl implements ValidationService {
             req.setAttribute("passwordError", true);
         }
         return userDB;
+    }
+
+    @Override
+    public boolean isQueryValid(String query, HttpSession session) {
+        String attributeName = "queryIsNotValid";
+        int queryLength = query.trim().length();
+        if (queryLength == 0) {
+            session.setAttribute(attributeName, "Query cannot be empty");
+            return false;
+        } else if (queryLength >= 32) {
+            session.setAttribute(attributeName, "Query cannot be longer than 32 characters");
+            return false;
+        }
+        return true;
     }
 
     private boolean loginValidator(String login, HttpServletRequest request) {

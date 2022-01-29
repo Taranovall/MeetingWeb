@@ -8,6 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
+<link rel="stylesheet" type="text/css" href="/static/navbar.css">
 <nav class="navbar navbar-expand navbar-light bg-light" style="border-bottom: 1px solid #dee2e6;">
     <a class="navbar-brand" href="/">Meetings</a>
     <button class="navbar-toggler" id="navbar" type="button" data-toggle="collapse" data-target="#navbar-content"
@@ -45,11 +46,31 @@
         </ul>
         <!-- /PROFILE -->
         <!-- SEARCH FORM -->
-        <form class="form-inline my-2 my-lg-0 navbar-form" method="post" action="search-meeting">
-            <input name="query" class="form-control mr-sm-2" type="search" placeholder="Input query" aria-label="Search">
+        <form class="form-inline my-2 my-lg-0 navbar-query-form" method="post" action="search-meeting">
+            <input name="query" class="form-control mr-sm-2" type="search" placeholder="Input query"
+                   aria-label="Search">
+            <c:if test="${queryIsNotValid != null}">
+                <div title="${queryIsNotValid}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                         class="bi bi-exclamation-octagon-fill" viewBox="0 0 16 16">
+                        <path d="M11.46.146A.5.5 0 0 0 11.107 0H4.893a.5.5 0 0 0-.353.146L.146 4.54A.5.5 0 0 0 0 4.893v6.214a.5.5 0 0 0 .146.353l4.394 4.394a.5.5 0 0 0 .353.146h6.214a.5.5 0 0 0 .353-.146l4.394-4.394a.5.5 0 0 0 .146-.353V4.893a.5.5 0 0 0-.146-.353L11.46.146zM8 4c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995A.905.905 0 0 1 8 4zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                    </svg>
+                </div>
+            </c:if>
             <button class="btn btn btn-outline-dark my-2 my-sm-0" type="submit">Search</button>
         </form>
         <!-- /SEARCH FORM -->
+        <!-- SORT FORM -->
+        <form class="form-inline my-2 my-lg-0 navbar-soring-form" method="post" action="sort-meeting">
+            <select class="custom-select" name="sortMethod" onchange='if(this.value != 0) { this.form.submit(); }'>
+                <option value="" selected disabled hidden>Choose sorting method</option>
+                <option value="name" }>By name</option>
+                <option value="date" }>By date</option>
+                <option value="participants" }>By number of participants</option>
+                <option value="topics" }>By number of topics</option>
+            </select>
+        </form>
+        <!-- /SORT FORM -->
     </div>
 </nav>
 </html>
