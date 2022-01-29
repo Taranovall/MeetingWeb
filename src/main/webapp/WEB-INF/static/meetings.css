@@ -69,7 +69,17 @@ a:hover {
     color: unset;
 }
 
-BODY {
+BODY #meetingList {
     padding-right: 15px;
     padding-left: 15px;
+}
+
+.navbar-account {
+    position: absolute;
+    right: 50%;
+}
+
+.navbar-form {
+    position: absolute;
+    right: 1%;
 }

@@ -14,6 +14,7 @@
     <link rel="stylesheet" type="text/css" href="/static/meetings.css">
 </head>
 <body>
+<jsp:include page="component/navbar.jsp"></jsp:include>
 <div id="meetingList">
     <div class="row">
         <c:forEach items="${meetings}" var="m">

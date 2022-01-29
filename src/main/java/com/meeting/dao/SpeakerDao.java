@@ -10,7 +10,7 @@ import java.sql.SQLException;
 public interface SpeakerDao extends Dao<Speaker>{
 
     /**
-     * Sends offer to this current user to be at the meetings as a speaker.
+     * Sends offer to this current user to be at the meeting as a speaker.
      * User must have role "Speaker".
      *
      * @param speaker this current user

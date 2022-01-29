@@ -25,9 +25,13 @@ public class MainPageController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Meeting meeting = new Meeting(1L,"InvestPro Online 2022 Dubai Preview","26.01.2022","17:00 - 21:00", "Offline");
-        Meeting meeting1 = new Meeting(2L,"InvestPro Offline 2022 Dubai Preview","26.01.2022","17:00 - 21:00", "Dubai");
+        String query = (String) req.getSession().getAttribute("query"); // returns null if search query wasn't made
         List<Meeting> meetingList = meetingService.getAllMeetings();
+        // if search query was made then removes all meetings from list that don't contain search query ignoring case
+        if (query != null) {
+            meetingList.removeIf(meeting -> !meeting.getName().toLowerCase().contains(query.toLowerCase()));
+            req.getSession().removeAttribute("query");
+        }
         req.setAttribute("meetings", meetingList);
         req.getRequestDispatcher(PATH_TO_MAIN_PAGE_JSP).forward(req, resp);
     }

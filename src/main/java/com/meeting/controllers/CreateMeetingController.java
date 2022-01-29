@@ -31,22 +31,21 @@ import static com.meeting.util.Constant.PATH_TO_CREATE_MEETING_SECOND_PAGE_JSP;
 )
 public class CreateMeetingController extends HttpServlet {
 
-    private final Map<String, String> parameters;
     private final MeetingService meetingService;
     private final SpeakerService speakerService;
 
     public CreateMeetingController() {
-        this.parameters = new LinkedHashMap<>();
         this.meetingService = new MeetingServiceImpl();
         this.speakerService = new SpeakerServiceImpl();
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
         if (req.getParameterMap().size() == 0) {
             req.getRequestDispatcher(PATH_TO_CREATE_MEETING_FIRST_PAGE_JSP).forward(req, resp);
         } else {
-            parameters.putAll(arrayValueToString(req.getParameterMap()));
+            req.getSession().setAttribute("parameters", arrayValueToString(req.getParameterMap()));
             List<Speaker> speakerList = speakerService.getAllSpeakers();
             req.setAttribute("speakers", speakerList);
             req.setAttribute("countOfTopics", req.getParameter("countOfTopics"));
@@ -60,6 +59,9 @@ public class CreateMeetingController extends HttpServlet {
         String[] speakers = req.getParameterValues("speakerName");
 
         Meeting meeting = new Meeting();
+
+
+        Map<String, String> parameters = (Map<String, String>) req.getSession().getAttribute("parameters");
 
         meeting.setName(parameters.get("name"));
         meeting.setDate(parameters.get("date"));
