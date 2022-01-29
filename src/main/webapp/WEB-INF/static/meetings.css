@@ -1,0 +1,75 @@
+.meeting {
+    text-decoration: none !important;
+    cursor: pointer;
+    color: unset;
+    border-bottom: 0;
+    border-radius: 0.25rem;
+    margin-bottom: 15px;
+    margin-top: 15px;
+}
+.meeting .image .card-img-top {
+    position: relative;
+}
+
+.meeting .image .card-img-top img {
+    text-indent: -100vw;
+    border: 1px solid rgba(0,0,0,.125);
+    height: 275px;
+    object-fit: cover;
+    width: 100%;
+}
+
+.meeting .image .amount {
+    position: absolute;
+    right: 0%;
+    border: 1px solid;
+    border-right: 1px solid rgba(0,0,0,.125);;
+    padding: 0 2% 0 1%;
+    border-bottom-left-radius: 10%;
+    border-top-left-radius: 10%;
+}
+
+.meeting .image .amount-user {
+    top: 5%;
+}
+
+.meeting .image .amount-topic {
+    top: 20%;
+}
+
+.meeting .image .amount:hover {
+    background: antiquewhite;
+}
+
+.meeting .list-group {
+    border-bottom: 0;
+    border-radius: 0;
+    text-align: center;
+}
+
+.meeting .info .list-group-item{
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 1px solid rgba(0,0,0,.125);
+}
+
+.meeting .image {
+    padding: 1%;
+    border-bottom: 1px solid rgba(0,0,0,.125);
+}
+
+.meeting .name {
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+a:hover {
+    color: unset;
+}
+
+BODY {
+    padding-right: 15px;
+    padding-left: 15px;
+}

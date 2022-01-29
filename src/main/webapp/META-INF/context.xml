@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+    <Resource
+            name="jdbc/postgres"
+            auth="Container"
+            type="javax.sql.DataSource"
+            driverClassName="org.postgresql.Driver"
+            url="jdbc:postgresql://localhost:5432/meeting"
+            username="postgres"
+            password="123123"
+            maxTotal="10" maxIdle="4"
+            maxWaitMillis="-1"/>
+
+</Context>
