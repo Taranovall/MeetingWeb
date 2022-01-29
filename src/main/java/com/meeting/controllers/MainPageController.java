@@ -38,9 +38,12 @@ public class MainPageController extends HttpServlet {
         if (meetingList == null) {
             meetingList = meetingService.getAllMeetings();
             req.setAttribute(attrName, meetingList);
+
             //removes those attributes in case if user has made some search queries before reloading the page
-            session.removeAttribute("meetings");
-            session.removeAttribute("queryIsNotValid");
+            if (!isUserMadeSearchQuery) {
+                session.removeAttribute("meetings");
+                session.removeAttribute("queryIsNotValid");
+            }
         }
         session.removeAttribute("query");
         req.getRequestDispatcher(PATH_TO_MAIN_PAGE_JSP).forward(req, resp);
