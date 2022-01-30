@@ -7,6 +7,8 @@ import com.meeting.service.ValidationService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import static com.meeting.util.Constant.QUERY_IS_NOT_VALID_ATTRIBUTE_NAME;
+
 public class ValidationServiceImpl implements ValidationService {
 
     final UserService userService;
@@ -52,13 +54,12 @@ public class ValidationServiceImpl implements ValidationService {
 
     @Override
     public boolean isQueryValid(String query, HttpSession session) {
-        String attributeName = "queryIsNotValid";
         int queryLength = query.trim().length();
         if (queryLength == 0) {
-            session.setAttribute(attributeName, "Query cannot be empty");
+            session.setAttribute(QUERY_IS_NOT_VALID_ATTRIBUTE_NAME, "Query cannot be empty");
             return false;
         } else if (queryLength >= 32) {
-            session.setAttribute(attributeName, "Query cannot be longer than 32 characters");
+            session.setAttribute(QUERY_IS_NOT_VALID_ATTRIBUTE_NAME, "Query cannot be longer than 32 characters");
             return false;
         }
         return true;
@@ -84,7 +85,6 @@ public class ValidationServiceImpl implements ValidationService {
         }
         regex = "^(?=.*[a-zA-Zа-яА-я]).*$";
         if (!password.matches(regex)) {
-            //TODO create Internationalization, replace all strings to constants
             request.setAttribute("message", "Пароль должен содержать хотя бы одну букву");
             return true;
         }

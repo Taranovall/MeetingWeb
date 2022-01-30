@@ -19,7 +19,6 @@ import java.util.Set;
 
 import static com.meeting.service.connection.ConnectionPool.*;
 
-//TODO Check MVC pattern
 public class UserServiceImpl implements UserService {
 
     private final UserDao userDao;

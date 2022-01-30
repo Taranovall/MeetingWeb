@@ -13,7 +13,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
-import static com.meeting.util.Constant.PATH_TO_MAIN_PAGE_JSP;
+import static com.meeting.util.Constant.*;
 
 @WebServlet(name = "meetings", urlPatterns = "")
 public class MainPageController extends HttpServlet {
@@ -27,25 +27,41 @@ public class MainPageController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
-        String attrName = "meetings";
         List<Meeting> meetingList = null;
-        // it can be true only if user has made search query
-        boolean isUserMadeSearchQuery = session.getAttribute("query") != null;
-        if (isUserMadeSearchQuery) {
-             meetingList = (List<Meeting>) session.getAttribute(attrName);
+        // it can be true only if user has made search query or choose any sort method
+        boolean isUserHasUsedForm = session.getAttribute(IS_FORM_HAS_BEEN_USED_ATTRIBUTE_NAME) != null;
+        if (isUserHasUsedForm) {
+            meetingList = (List<Meeting>) session.getAttribute(MEETING_ATTRIBUTE_NAME);
+            htmlReverseOrder(session);
         }
 
         if (meetingList == null) {
             meetingList = meetingService.getAllMeetings();
-            req.setAttribute(attrName, meetingList);
-
-            //removes those attributes in case if user has made some search queries before reloading the page
-            if (!isUserMadeSearchQuery) {
-                session.removeAttribute("meetings");
-                session.removeAttribute("queryIsNotValid");
+            //removes redundant attributes if user's reloading the page
+            if (!isUserHasUsedForm) {
+                session.removeAttribute(SORT_METHOD_ATTRIBUTE_NAME);
+                session.removeAttribute(QUERY_IS_NOT_VALID_ATTRIBUTE_NAME);
             }
         }
-        session.removeAttribute("query");
+        session.removeAttribute(IS_FORM_HAS_BEEN_USED_ATTRIBUTE_NAME);
+        session.setAttribute(MEETING_ATTRIBUTE_NAME, meetingList);
         req.getRequestDispatcher(PATH_TO_MAIN_PAGE_JSP).forward(req, resp);
+    }
+
+    private void htmlReverseOrder(HttpSession session) {
+        Object previousSortingMethod = session.getAttribute(SORT_METHOD_ATTRIBUTE_NAME);
+        Object currentSortingMethod = session.getAttribute(IS_FORM_HAS_BEEN_USED_ATTRIBUTE_NAME);
+        /*
+        if previous and current sort method are equals
+        it means that user has chosen similar method of sorting one more time
+        and order has to be reversed
+         */
+        if (previousSortingMethod instanceof String && previousSortingMethod.equals(currentSortingMethod)) {
+            // removes text in brackets
+            session.removeAttribute(SORT_METHOD_ATTRIBUTE_NAME);
+        } else {
+            session.setAttribute(SORT_METHOD_ATTRIBUTE_NAME, currentSortingMethod);
+        }
+
     }
 }

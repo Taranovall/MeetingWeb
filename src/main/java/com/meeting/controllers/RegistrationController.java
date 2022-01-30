@@ -32,7 +32,6 @@ public class RegistrationController extends HttpServlet {
         req.getRequestDispatcher(PATH_TO_REGISTRATION_JSP).forward(req, resp);
     }
 
-    //TODO: read about DTO
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         User user = validationService.registrationValidator(req);

@@ -16,6 +16,9 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
+import static com.meeting.util.Constant.IS_FORM_HAS_BEEN_USED_ATTRIBUTE_NAME;
+import static com.meeting.util.Constant.MEETING_ATTRIBUTE_NAME;
+
 @WebServlet(name = "searchMeeting", urlPatterns = "/search-meeting")
 public class SearchMeetingController extends HttpServlet {
 
@@ -32,18 +35,18 @@ public class SearchMeetingController extends HttpServlet {
         // puts query in a session
         String query = req.getParameter("query");
         HttpSession session = req.getSession();
-        session.setAttribute("query", query);
 
         List<Meeting> meetingList = meetingService.getAllMeetings();
         if (query != null) {
             boolean isValid = validationService.isQueryValid(query, req.getSession());
             if (isValid) {
                 SearchQueryUtil.executeQuery(meetingList, query);
-                session.setAttribute("meetings", meetingList);
+                session.setAttribute(MEETING_ATTRIBUTE_NAME, meetingList);
                 session.removeAttribute("queryIsNotValid");
             }
         }
 
+        session.setAttribute(IS_FORM_HAS_BEEN_USED_ATTRIBUTE_NAME, true);
         resp.sendRedirect("/");
     }
 }

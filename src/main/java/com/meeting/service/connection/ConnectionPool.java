@@ -8,15 +8,7 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-//TODO check singleton pattern for connection
 public class ConnectionPool {
-
-    private static final String URL = "jdbc:postgresql://localhost:5432/postgres";
-
-    private static final String USERNAME = "postgres";
-
-    private static final String PASSWORD = "123123";
-
 
     public ConnectionPool() {
     }

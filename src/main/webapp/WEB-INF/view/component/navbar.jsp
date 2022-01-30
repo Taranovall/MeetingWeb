@@ -64,10 +64,38 @@
         <form class="form-inline my-2 my-lg-0 navbar-soring-form" method="post" action="sort-meeting">
             <select class="custom-select" name="sortMethod" onchange='if(this.value != 0) { this.form.submit(); }'>
                 <option value="" selected disabled hidden>Choose sorting method</option>
-                <option value="name" }>By name</option>
-                <option value="date" }>By date</option>
-                <option value="participants" }>By number of participants</option>
-                <option value="topics" }>By number of topics</option>
+                <c:choose>
+                    <c:when test="${sortMethod == 'name'}">
+                        <option value="name">By name (reverse order)</option>
+                    </c:when>
+                    <c:otherwise>
+                        <option value="name">By name</option>
+                    </c:otherwise>
+                </c:choose>
+                <c:choose>
+                    <c:when test="${sortMethod == 'date'}">
+                        <option value="date">By date (reverse order)</option>
+                    </c:when>
+                    <c:otherwise>
+                        <option value="date">By date</option>
+                    </c:otherwise>
+                </c:choose>
+                <c:choose>
+                    <c:when test="${sortMethod == 'participants'}">
+                        <option value="participants">By number of participants (reverse order)</option>
+                    </c:when>
+                    <c:otherwise>
+                        <option value="participants">By number of participants</option>
+                    </c:otherwise>
+                </c:choose>
+                <c:choose>
+                    <c:when test="${sortMethod == 'topics'}">
+                        <option value="topics">By number of topics (reverse order)</option>
+                    </c:when>
+                    <c:otherwise>
+                        <option value="topics">By number of topics</option>
+                    </c:otherwise>
+                </c:choose>
             </select>
         </form>
         <!-- /SORT FORM -->
