@@ -12,11 +12,17 @@ import static com.meeting.util.SQLQuery.*;
 public class UserDaoImpl implements UserDao {
 
     @Override
-    public Optional<User> getById(long id, Connection c) throws SQLException {
+    public Optional<User> getById(Long id, Connection c) throws SQLException {
+        Optional<User> optionalUser = Optional.empty();
         PreparedStatement p = c.prepareStatement(GET_USER_BY_ID_SQL);
-        User user = extractUser(p.getResultSet());
-        user.setRoles(getAllUserRoles(user.getId(), c));
-        return Optional.of(user);
+        p.setLong(1, id);
+        ResultSet rs = p.executeQuery();
+        if (rs.next()) {
+            User user = extractUser(rs);
+            user.setRoles(getAllUserRoles(user.getId(), c));
+            optionalUser = Optional.of(user);
+        }
+        return optionalUser;
     }
 
     @Override

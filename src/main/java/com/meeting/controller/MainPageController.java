@@ -1,4 +1,4 @@
-package com.meeting.controllers;
+package com.meeting.controller;
 
 import com.meeting.entitiy.Meeting;
 import com.meeting.service.MeetingService;

@@ -2,26 +2,27 @@ package com.meeting.entitiy;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public class Speaker extends User {
 
-    Map<Meeting, Set<Topic>> meetingsMap;
+    Map<Meeting, Map<Topic, State>> speakerTopics = new HashMap<>();
 
     public Speaker(String login) {
         super(login);
-        this.meetingsMap = new HashMap<>();
+    }
+
+    public Speaker() {
     }
 
     public Speaker(Long id, String login) {
         super(id, login);
     }
 
-    public Map<Meeting, Set<Topic>> getMeetingsMap() {
-        return meetingsMap;
+    public Map<Meeting, Map<Topic, State>> getSpeakerTopics() {
+        return speakerTopics;
     }
 
-    public void setMeetingsMap(Map<Meeting, Set<Topic>> meetingsMap) {
-        this.meetingsMap = meetingsMap;
+    public void setSpeakerTopics(Map<Meeting, Map<Topic, State>> speakerTopics) {
+        this.speakerTopics = speakerTopics;
     }
 }

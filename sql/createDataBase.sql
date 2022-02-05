@@ -6,6 +6,7 @@ DROP TABLE IF EXISTS speaker_topics CASCADE;
 DROP TABLE IF EXISTS topics CASCADE;
 DROP TABLE IF EXISTS free_topics CASCADE;
 DROP TABLE IF EXISTS meeting_topics CASCADE;
+DROP TABLE IF EXISTS meeting_participants CASCADE;
 
 
 
@@ -24,11 +25,11 @@ create table roles
 
 create table meetings
 (
-    id    serial       not null primary key,
-    name  varchar(256) not null,
-    date  varchar(256) not null,
-    time  varchar(256) not null,
-    place varchar(256) not null,
+    id         serial       not null primary key,
+    name       varchar(256) not null,
+    date       varchar(256) not null,
+    time       varchar(256) not null,
+    place      varchar(256) not null,
     photo_path varchar(256) not null
 );
 
@@ -50,12 +51,21 @@ create table speaker_topics
 (
     speaker_id int references users (id) on delete cascade,
     topic_id   int references topics (id) on delete cascade,
-    invitation bool
+    invitation bool,
+    invited_by int references users (id) on delete cascade,
+    UNIQUE (speaker_id, topic_id)
 );
 
-create table meeting_topics (
+create table meeting_topics
+(
     meeting_id int references meetings (id) on delete cascade,
-    topic_id int references topics (id) on delete cascade
+    topic_id   int references topics (id) on delete cascade
+);
+
+create table meeting_participants
+(
+    meeting_id int references meetings (id) on delete cascade,
+    user_id    int references users (id) on delete cascade
 );
 
 

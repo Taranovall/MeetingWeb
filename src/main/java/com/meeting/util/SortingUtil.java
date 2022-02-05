@@ -45,7 +45,7 @@ public class SortingUtil {
             if (o1 == o2) {
                 return o1.getName().compareTo(o2.getName());
             } else {
-                return o2.getTopics().size() - o1.getTopics().size();
+                return o2.getFreeTopics().size() - o1.getFreeTopics().size();
             }
         });
         return listBeforeSorting.equals(meetingList) ? reverseList(meetingList) : meetingList;

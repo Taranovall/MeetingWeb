@@ -1,4 +1,4 @@
-package com.meeting.controllers.filter;
+package com.meeting.controller.filter;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;

@@ -17,7 +17,11 @@ public interface TopicDao extends Dao<Topic> {
     /**
      * Creates topic without speaker
      */
-    void freeTopic(Meeting meeting,Topic topic, Connection c) throws SQLException;
+    void freeTopic(Meeting meeting, Topic topic, Connection c) throws SQLException;
 
+
+    /**
+     * @return all topics that have been added to this meeting
+     */
     Set<Topic> getTopicsByMeetingId(Long meetingId, Connection c) throws SQLException;
 }

@@ -1,4 +1,4 @@
-package com.meeting.controllers.filter;
+package com.meeting.controller.filter;
 
 import com.meeting.service.UserService;
 import com.meeting.service.impl.UserServiceImpl;

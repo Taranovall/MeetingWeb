@@ -1,7 +1,8 @@
-package com.meeting.controllers;
+package com.meeting.controller.meeting;
 
 import com.meeting.entitiy.Meeting;
 import com.meeting.entitiy.Speaker;
+import com.meeting.entitiy.User;
 import com.meeting.service.MeetingService;
 import com.meeting.service.SpeakerService;
 import com.meeting.service.impl.MeetingServiceImpl;
@@ -74,7 +75,9 @@ public class CreateMeetingController extends HttpServlet {
         File image = new File(uploadedImage.getSubmittedFileName());
         uploadedImage.write(image.getAbsolutePath());
 
-        meetingService.createMeeting(meeting, topics, speakers, image);
+        User userFromSession = (User) req.getSession().getAttribute("user");
+
+        meetingService.createMeeting(userFromSession, meeting, topics, speakers, image);
 
 
     }

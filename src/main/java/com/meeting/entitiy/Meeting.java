@@ -1,9 +1,7 @@
 package com.meeting.entitiy;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class Meeting implements Serializable {
 
@@ -12,10 +10,10 @@ public class Meeting implements Serializable {
     private String date;
     private String time;
     private String place;
-    private Set<Speaker> speakers;
     private List<User> participants;
-    private Set<Topic> topics;
+    private Set<Topic> freeTopics;
     private String photoPath;
+    private Map<Speaker, Set<Topic>> speakerTopics;
 
     public Meeting(Long id, String name, String date, String time, String place, String photoPath) {
         this.id = id;
@@ -24,15 +22,8 @@ public class Meeting implements Serializable {
         this.time = time;
         this.place = place;
         this.photoPath = photoPath;
-        this.topics = new HashSet<>();
-    }
-
-    public Meeting(Long id, String name, String date, String time, String place) {
-        this.id = id;
-        this.name = name;
-        this.date = date;
-        this.time = time;
-        this.place = place;
+        this.freeTopics = new HashSet<>();
+        this.speakerTopics = new HashMap<>();
     }
 
     public Meeting() {
@@ -78,12 +69,12 @@ public class Meeting implements Serializable {
         this.place = place;
     }
 
-    public Set<Speaker> getSpeakers() {
-        return speakers;
+    public Map<Speaker, Set<Topic>> getSpeakerTopics() {
+        return speakerTopics;
     }
 
-    public void setSpeakers(Set<Speaker> speakers) {
-        this.speakers = speakers;
+    public void setSpeakerTopics(Map<Speaker, Set<Topic>> speakerTopics) {
+        this.speakerTopics = speakerTopics;
     }
 
     public List<User> getParticipants() {
@@ -94,12 +85,12 @@ public class Meeting implements Serializable {
         this.participants = participants;
     }
 
-    public Set<Topic> getTopics() {
-        return topics;
+    public Set<Topic> getFreeTopics() {
+        return freeTopics;
     }
 
-    public void setTopics(Set<Topic> topics) {
-        this.topics = topics;
+    public void setFreeTopics(Set<Topic> freeTopics) {
+        this.freeTopics = freeTopics;
     }
 
     public String getPhotoPath() {
@@ -108,5 +99,38 @@ public class Meeting implements Serializable {
 
     public void setPhotoPath(String photoPath) {
         this.photoPath = photoPath;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Meeting meeting = (Meeting) o;
+
+        if (id != null ? !id.equals(meeting.id) : meeting.id != null) return false;
+        if (name != null ? !name.equals(meeting.name) : meeting.name != null) return false;
+        if (date != null ? !date.equals(meeting.date) : meeting.date != null) return false;
+        if (time != null ? !time.equals(meeting.time) : meeting.time != null) return false;
+        if (place != null ? !place.equals(meeting.place) : meeting.place != null) return false;
+        if (participants != null ? !participants.equals(meeting.participants) : meeting.participants != null)
+            return false;
+        if (freeTopics != null ? !freeTopics.equals(meeting.freeTopics) : meeting.freeTopics != null) return false;
+        if (photoPath != null ? !photoPath.equals(meeting.photoPath) : meeting.photoPath != null) return false;
+        return speakerTopics != null ? speakerTopics.equals(meeting.speakerTopics) : meeting.speakerTopics == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (date != null ? date.hashCode() : 0);
+        result = 31 * result + (time != null ? time.hashCode() : 0);
+        result = 31 * result + (place != null ? place.hashCode() : 0);
+        result = 31 * result + (participants != null ? participants.hashCode() : 0);
+        result = 31 * result + (freeTopics != null ? freeTopics.hashCode() : 0);
+        result = 31 * result + (photoPath != null ? photoPath.hashCode() : 0);
+        result = 31 * result + (speakerTopics != null ? speakerTopics.hashCode() : 0);
+        return result;
     }
 }

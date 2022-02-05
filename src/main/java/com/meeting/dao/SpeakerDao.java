@@ -1,23 +1,25 @@
 package com.meeting.dao;
 
-import com.meeting.entitiy.Meeting;
 import com.meeting.entitiy.Speaker;
-import com.meeting.entitiy.Topic;
+import com.meeting.exception.DataBaseException;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Optional;
 
 public interface SpeakerDao extends Dao<Speaker>{
 
     /**
      * Sends offer to this current user to be at the meeting as a speaker.
      * User must have role "Speaker".
-     *
-     * @param speaker this current user
-     * @param meeting in which user is being offered to be a speaker
-     * @param topic that has been offered to the user
      */
-     boolean sendInvite(Speaker speaker, Meeting meeting, Topic topic, Connection c) throws SQLException;
+     boolean sendInvite(Long speakerId, Long topicId, Long userSessionId, Connection c) throws SQLException;
 
+     boolean rollbackInvite(Long speakerId, Long topicId, Connection c) throws SQLException;
+
+    Optional<Speaker> getSpeakerByTopicId(Long topicId, Connection c) throws SQLException, DataBaseException;
+
+    List<String> getSentApplicationBySpeakerId(Long speakerId, Connection c) throws SQLException;
 
 }

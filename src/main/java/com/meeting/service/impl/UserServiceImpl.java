@@ -23,12 +23,10 @@ public class UserServiceImpl implements UserService {
 
     private final UserDao userDao;
 
-    //TODO: check Dependency Injection pattern
     public UserServiceImpl() {
         this.userDao = new UserDaoImpl();
     }
 
-    //TODO: add logs
     @Override
     public void signUpUser(User user) throws DataBaseException {
         Connection c = null;
@@ -63,15 +61,30 @@ public class UserServiceImpl implements UserService {
         User user = null;
         try (Connection c = getInstance().getConnection()) {
             c.setAutoCommit(true);
-            Optional<User> userOpt = userDao.getUserByLogin(login, c);
-            if (userOpt.isPresent()) {
-                user = userOpt.get();
+            Optional<User> userOptional = userDao.getUserByLogin(login, c);
+            if (userOptional.isPresent()) {
+                user = userOptional.get();
             } else {
                 Locale locale = new Locale("en");
                 String message = ResourceBundle.getBundle("message", locale).getString("user.notfound");
                 throw new UserNotFoundException(MessageFormat.format(message, login));
             }
         } catch (SQLException | UserNotFoundException e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
+
+    @Override
+    public User getUserById(Long id) {
+        User user = null;
+        try (Connection c = ConnectionPool.getInstance().getConnection()) {
+            c.setAutoCommit(true);
+            Optional<User> userOptional = userDao.getById(id, c);
+            if (userOptional.isPresent()) {
+                user = userOptional.get();
+            }
+        } catch (SQLException | DataBaseException e) {
             e.printStackTrace();
         }
         return user;

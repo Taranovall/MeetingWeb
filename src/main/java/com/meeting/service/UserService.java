@@ -13,4 +13,6 @@ public interface UserService {
     Set<Role> getAllUserRolesById(long id) throws DataBaseException;
 
     User getUserByLogin(String login);
+
+    User getUserById(Long id);
 }

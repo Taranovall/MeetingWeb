@@ -1,30 +1,30 @@
 package com.meeting.dao.impl;
 
 import com.meeting.dao.MeetingDao;
-import com.meeting.dao.TopicDao;
 import com.meeting.entitiy.Meeting;
-import com.meeting.entitiy.Topic;
+import com.meeting.util.SQLQuery;
 
 import java.sql.*;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static com.meeting.util.SQLQuery.CREATE_MEETING_SQL;
 import static com.meeting.util.SQLQuery.GET_ALL_MEETINGS_SQL;
 
 public class MeetingDaoImpl implements MeetingDao {
 
-    private final TopicDao topicDao;
-
-    public MeetingDaoImpl() {
-        this.topicDao = new TopicDaoImpl();
-    }
-
     @Override
-    public Optional<Meeting> getById(long id, Connection c) throws SQLException {
-        return Optional.empty();
+    public Optional<Meeting> getById(Long id, Connection c) throws SQLException {
+        Optional<Meeting> optionalMeeting = Optional.empty();
+        PreparedStatement p = c.prepareStatement(SQLQuery.GET_MEETING_BY_ID);
+        p.setLong(1, id);
+        ResultSet rs = p.executeQuery();
+        if (rs.next()) {
+            Meeting meeting = extractMeeting(rs, c);
+            optionalMeeting = Optional.of(meeting);
+        }
+        return optionalMeeting;
     }
 
     @Override
@@ -33,9 +33,7 @@ public class MeetingDaoImpl implements MeetingDao {
         PreparedStatement p = c.prepareStatement(GET_ALL_MEETINGS_SQL);
         ResultSet rs = p.executeQuery();
         while (rs.next()) {
-            Meeting meeting = extractMeeting(rs);
-            Set<Topic> meetingTopics = topicDao.getTopicsByMeetingId(meeting.getId(), c);
-            meeting.getTopics().addAll(meetingTopics);
+            Meeting meeting = extractMeeting(rs, c);
             meetings.add(meeting);
         }
         return meetings;
@@ -71,13 +69,17 @@ public class MeetingDaoImpl implements MeetingDao {
 
     }
 
-    private Meeting extractMeeting(ResultSet rs) throws SQLException {
+    /**
+     * Extracts meeting from result set
+     */
+    private Meeting extractMeeting(ResultSet rs, Connection c) throws SQLException {
         Long id = rs.getLong("id");
         String name = rs.getString("name");
         String date = rs.getString("date");
         String time = rs.getString("time");
         String place = rs.getString("place");
         String photoPath = rs.getString("photo_path");
-        return new Meeting(id,name, date, time, place, photoPath);
+        return new Meeting(id, name, date, time, place, photoPath);
     }
+
 }

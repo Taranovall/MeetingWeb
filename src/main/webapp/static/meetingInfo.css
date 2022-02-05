@@ -1,0 +1,26 @@
+table {
+    counter-reset: section;
+}
+
+.count:before {
+    counter-increment: section;
+    content: counter(section);
+}
+
+.become-speaker {
+    border: solid 1px;
+    padding: 1%;
+    border-top-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    background: none;
+    margin: 0;
+}
+
+.become-speaker:hover {
+    background: antiquewhite;
+    cursor: pointer;
+}
+
+td form {
+    margin: 0;
+}

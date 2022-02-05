@@ -1,4 +1,4 @@
-package com.meeting.controllers;
+package com.meeting.controller;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;

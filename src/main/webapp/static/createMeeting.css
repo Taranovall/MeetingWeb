@@ -1,0 +1,43 @@
+form .input-group {
+    margin-bottom: 1em ;
+}
+
+.container-fluid {
+    margin-top: 1em;
+}
+
+.field{
+    margin: 0.5em 0;
+}
+
+.add .field span {
+    display: block;
+    color: #ff0000;
+    padding: 0.3em 0;
+    float: left;
+}
+
+.field .input-group {
+    margin-bottom: 0;
+}
+
+/*CSS for upload image*/
+#upload {
+    opacity: 0;
+}
+
+#upload-label {
+    position: absolute;
+    top: 50%;
+    left: 1rem;
+    transform: translateY(-50%);
+}
+
+.image-area {
+    position: relative;
+}
+
+.image-area img {
+    z-index: 2;
+    position: relative;
+}
