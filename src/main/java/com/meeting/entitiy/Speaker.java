@@ -25,4 +25,22 @@ public class Speaker extends User {
     public void setSpeakerTopics(Map<Meeting, Map<Topic, State>> speakerTopics) {
         this.speakerTopics = speakerTopics;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        Speaker speaker = (Speaker) o;
+
+        return speakerTopics != null ? speakerTopics.equals(speaker.speakerTopics) : speaker.speakerTopics == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (speakerTopics != null ? speakerTopics.hashCode() : 0);
+        return result;
+    }
 }

@@ -14,7 +14,11 @@ public interface SpeakerService {
 
     boolean sendApplication(Long topicId, Long userSessionId);
 
-    boolean removeApplication(Long topicId, Long userSessionId);
+    boolean removeApplication(Long topicId, Long userId);
 
-    List<String> getSentApplication(Long speakerId);
+    boolean acceptInvitation(Long topicId, Long userId);
+
+    List<String> getSentApplications(Long speakerId);
+    
+    List<String> getReceivedApplications(Long speakerId);
 }

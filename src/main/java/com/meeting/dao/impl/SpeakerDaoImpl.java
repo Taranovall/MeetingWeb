@@ -42,6 +42,15 @@ public class SpeakerDaoImpl implements SpeakerDao {
     }
 
     @Override
+    public boolean answerToApplication(Long speakerId, Long topicId, String SQLQuery, Connection c) throws SQLException {
+        PreparedStatement p = c.prepareStatement(SQLQuery);
+        p.setLong(1, speakerId);
+        p.setLong(2, topicId);
+        p.executeUpdate();
+        return true;
+    }
+
+    @Override
     public List<Speaker> getAll(Connection c) throws SQLException {
         List<Speaker> speakers = new LinkedList<>();
         List<User> usersWithRoleSpeaker = userDao.getAllUserByRole(Role.SPEAKER.name(), c);
@@ -63,9 +72,9 @@ public class SpeakerDaoImpl implements SpeakerDao {
     }
 
     @Override
-    public List<String> getSentApplicationBySpeakerId(Long speakerId, Connection c) throws SQLException {
+    public List<String> getApplicationBySpeakerId(Long speakerId,String SQLQuery, Connection c) throws SQLException {
         List<String> applicationList = new ArrayList<>();
-        PreparedStatement p = c.prepareStatement(GET_SENT_APPLICATION_BY_SPEAKER_ID);
+        PreparedStatement p = c.prepareStatement(SQLQuery);
         p.setLong(1, speakerId);
         ResultSet rs = p.executeQuery();
         while (rs.next()) {
@@ -124,6 +133,13 @@ public class SpeakerDaoImpl implements SpeakerDao {
             }
             Map<Topic, State> responseMap = extractResponse(topicId, invitation, c);
             Meeting meeting = meetingDao.getById(meetingId, c).get();
+
+            Map<Topic, State> invitesMap = result.get(meeting);
+            if (Objects.nonNull(invitesMap)) {
+                invitesMap.putAll(responseMap);
+                continue;
+            }
+
             result.put(meeting, responseMap);
         }
         return result;

@@ -24,3 +24,33 @@ table {
 td form {
     margin: 0;
 }
+
+.response {
+    margin-left: 33%;
+}
+
+.response .become-speaker {
+    border-bottom-right-radius: 0;
+}
+
+.response button {
+    margin: auto 0;
+    padding: 10px;
+    background: 0;
+    border: 0;
+    visibility: hidden;
+}
+
+td:hover .response button {
+    border: 1px solid;
+    border-left: 0;
+    visibility: unset;
+}
+
+.response .yes:hover {
+    background: green;
+}
+
+.response .no:hover {
+    background: red;
+}

@@ -32,12 +32,12 @@ public class ApplyApplicationController extends HttpServlet {
 
         speakerService.sendApplication(Long.parseLong(topicId), userSession.getId());
 
-        List<String> applicationList = (List<String>) req.getSession().getAttribute("applicationList");
+        List<String> applicationList = (List<String>) req.getSession().getAttribute("sentApplicationList");
         if (applicationList == null) {
             applicationList = new ArrayList<>();
         }
         applicationList.add(topicId);
-        req.getSession().setAttribute("applicationList", applicationList);
+        req.getSession().setAttribute("sentApplicationList", applicationList);
         resp.sendRedirect(lastURI);
     }
 }

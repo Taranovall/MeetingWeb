@@ -6,6 +6,7 @@ import com.meeting.entitiy.Speaker;
 import com.meeting.exception.DataBaseException;
 import com.meeting.service.SpeakerService;
 import com.meeting.service.connection.ConnectionPool;
+import com.meeting.util.SQLQuery;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -14,6 +15,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.meeting.service.connection.ConnectionPool.*;
+import static com.meeting.util.SQLQuery.GET_RECEIVED_APPLICATIONS_BY_SPEAKER_ID_SQL;
+import static com.meeting.util.SQLQuery.GET_SENT_APPLICATIONS_BY_SPEAKER_ID_SQL;
 
 public class SpeakerServiceImpl implements SpeakerService {
 
@@ -55,7 +58,7 @@ public class SpeakerServiceImpl implements SpeakerService {
         Speaker speaker = null;
         try (Connection c = ConnectionPool.getInstance().getConnection()) {
             c.setAutoCommit(true);
-           speaker = speakerDao.getById(id, c).get();
+            speaker = speakerDao.getById(id, c).get();
         } catch (SQLException | DataBaseException e) {
             e.printStackTrace();
         }
@@ -63,14 +66,41 @@ public class SpeakerServiceImpl implements SpeakerService {
     }
 
     @Override
-    public List<String> getSentApplication(Long speakerId) {
+    public List<String> getSentApplications(Long speakerId) {
         List<String> applications = new ArrayList<>();
         try (Connection c = ConnectionPool.getInstance().getConnection()) {
-            applications.addAll(speakerDao.getSentApplicationBySpeakerId(speakerId, c));
+            applications.addAll(speakerDao.getApplicationBySpeakerId(speakerId, GET_SENT_APPLICATIONS_BY_SPEAKER_ID_SQL, c));
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return applications;
+    }
+
+    @Override
+    public List<String> getReceivedApplications(Long speakerId) {
+        List<String> applications = new ArrayList<>();
+        try (Connection c = ConnectionPool.getInstance().getConnection()) {
+            applications.addAll(speakerDao.getApplicationBySpeakerId(speakerId, GET_RECEIVED_APPLICATIONS_BY_SPEAKER_ID_SQL, c));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return applications;
+    }
+
+    @Override
+    public boolean acceptInvitation(Long topicId, Long userSessionId) {
+        Connection c = null;
+        try {
+            c = ConnectionPool.getInstance().getConnection();
+            speakerDao.answerToApplication(userSessionId, topicId, SQLQuery.ACCEPT_INVITATION_SQL, c);
+            c.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            rollback(c);
+        } finally {
+            close(c);
+        }
+        return true;
     }
 
     @Override

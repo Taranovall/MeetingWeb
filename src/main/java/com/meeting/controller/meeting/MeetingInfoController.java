@@ -47,10 +47,14 @@ public class MeetingInfoController extends HttpServlet {
             req.getSession().setAttribute("lastPageURI", req.getRequestURI());
 
             if (Objects.nonNull(userSession) && userSession.getRoles().contains(Role.SPEAKER)) {
-                List<String> applicationList = (List<String>) session.getAttribute("applicationList");
-                if (applicationList == null) {
-                    applicationList = speakerService.getSentApplication(userSession.getId());
-                    session.setAttribute("applicationList", applicationList);
+                List<String> sentApplicationList = (List<String>) session.getAttribute("sentApplicationList");
+                if (sentApplicationList == null) {
+                    sentApplicationList = speakerService.getSentApplications(userSession.getId());
+                    session.setAttribute("sentApplicationList", sentApplicationList);
+                }
+                List<String> receivedApplicationList = speakerService.getReceivedApplications(userSession.getId());
+                if (receivedApplicationList != null) {
+                    session.setAttribute("receivedApplicationList", receivedApplicationList);
                 }
             }
 

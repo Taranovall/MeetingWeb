@@ -112,12 +112,7 @@ public class Meeting implements Serializable {
         if (name != null ? !name.equals(meeting.name) : meeting.name != null) return false;
         if (date != null ? !date.equals(meeting.date) : meeting.date != null) return false;
         if (time != null ? !time.equals(meeting.time) : meeting.time != null) return false;
-        if (place != null ? !place.equals(meeting.place) : meeting.place != null) return false;
-        if (participants != null ? !participants.equals(meeting.participants) : meeting.participants != null)
-            return false;
-        if (freeTopics != null ? !freeTopics.equals(meeting.freeTopics) : meeting.freeTopics != null) return false;
-        if (photoPath != null ? !photoPath.equals(meeting.photoPath) : meeting.photoPath != null) return false;
-        return speakerTopics != null ? speakerTopics.equals(meeting.speakerTopics) : meeting.speakerTopics == null;
+        return place != null ? place.equals(meeting.place) : meeting.place == null;
     }
 
     @Override
@@ -127,10 +122,6 @@ public class Meeting implements Serializable {
         result = 31 * result + (date != null ? date.hashCode() : 0);
         result = 31 * result + (time != null ? time.hashCode() : 0);
         result = 31 * result + (place != null ? place.hashCode() : 0);
-        result = 31 * result + (participants != null ? participants.hashCode() : 0);
-        result = 31 * result + (freeTopics != null ? freeTopics.hashCode() : 0);
-        result = 31 * result + (photoPath != null ? photoPath.hashCode() : 0);
-        result = 31 * result + (speakerTopics != null ? speakerTopics.hashCode() : 0);
         return result;
     }
 }

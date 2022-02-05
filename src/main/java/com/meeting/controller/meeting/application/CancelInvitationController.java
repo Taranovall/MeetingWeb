@@ -4,25 +4,23 @@ import com.meeting.entitiy.User;
 import com.meeting.service.SpeakerService;
 import com.meeting.service.impl.SpeakerServiceImpl;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
 
-@WebServlet(name = "removeApplication", urlPatterns = "/meeting/remove-application")
-public class RemoveApplicationController extends HttpServlet {
+@WebServlet(name = "cancelInvitation", urlPatterns = "/meeting/cancel-invitation")
+public class CancelInvitationController extends HttpServlet {
 
     private final SpeakerService speakerService;
 
-    public RemoveApplicationController() {
+    public CancelInvitationController() {
         this.speakerService = new SpeakerServiceImpl();
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String lastURI = (String) req.getSession().getAttribute("lastPageURI");
         String topicId = req.getParameter("application");
         User userSession = (User) req.getSession().getAttribute("user");
@@ -31,9 +29,6 @@ public class RemoveApplicationController extends HttpServlet {
 
         speakerService.removeApplication(Long.parseLong(topicId), userSession.getId());
 
-        List<String> applicationList = (List<String>) req.getSession().getAttribute("sentApplicationList");
-        applicationList.remove(topicId);
-        req.getSession().setAttribute("sentApplicationList", applicationList);
         resp.sendRedirect(lastURI);
     }
 }

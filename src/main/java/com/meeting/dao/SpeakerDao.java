@@ -20,6 +20,7 @@ public interface SpeakerDao extends Dao<Speaker>{
 
     Optional<Speaker> getSpeakerByTopicId(Long topicId, Connection c) throws SQLException, DataBaseException;
 
-    List<String> getSentApplicationBySpeakerId(Long speakerId, Connection c) throws SQLException;
+    List<String> getApplicationBySpeakerId(Long speakerId,String SQLQuery, Connection c) throws SQLException;
 
+    boolean answerToApplication(Long speakerId, Long topicId, String SQLQuery, Connection c) throws SQLException;
 }

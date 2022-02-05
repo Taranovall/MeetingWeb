@@ -158,7 +158,6 @@ public class MeetingServiceImpl implements MeetingService {
 
             Map<Topic, State> topicStateMap = speaker.getSpeakerTopics().get(meeting);
 
-            // boolean can be true only if speaker has accepted offer to be a speaker of this topic
             if (topicStateMap.get(topic).equals(State.ACCEPTED)) {
                 allTopics.remove(topic);
                 Set<Topic> topicsOfCurrentSpeaker = speakerTopics.get(speaker);
