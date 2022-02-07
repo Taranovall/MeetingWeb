@@ -31,10 +31,11 @@ public class SQLQuery {
 
     //Speaker requests
     public static final String INVITE_SPEAKER_TO_MEETING_SQL = "INSERT INTO speaker_topics (speaker_id, topic_id, invited_by) VALUES (?, ?, ?)";
-    public static final String GET_SPEAKER_BY_TOPIC_ID = "SELECT speaker_id FROM speaker_topics WHERE topic_id = ? AND speaker_id != speaker_topics.invited_by";
+    public static final String GET_SPEAKER_BY_TOPIC_ID = "SELECT speaker_id FROM speaker_topics WHERE topic_id = ? AND invitation != 'false'";
     public static final String GET_SPEAKER_RESPONSE_TO_THE_OFFER = "SELECT st.topic_id, invitation, mt.meeting_id FROM speaker_topics st, meeting_topics mt WHERE st.topic_id = mt.topic_id AND speaker_id = ?";
     public static final String ROLLBACK_INVITE_SQL = "DELETE FROM speaker_topics WHERE speaker_id = ? AND topic_id = ?";
     public static final String GET_SENT_APPLICATIONS_BY_SPEAKER_ID_SQL = "SELECT topic_id FROM speaker_topics WHERE speaker_id = invited_by AND speaker_id = ?";
     public static final String GET_RECEIVED_APPLICATIONS_BY_SPEAKER_ID_SQL = "SELECT topic_id FROM speaker_topics WHERE speaker_id != invited_by AND speaker_id = ?";
     public static final String ACCEPT_INVITATION_SQL = "UPDATE speaker_topics SET invitation = true WHERE  speaker_id = ? AND topic_id = ?";
+    public static final String GET_ALL_SPEAKER_APPLICATIONS_BY_TOPIC_ID = "SELECT speaker_id FROM speaker_topics WHERE speaker_id = invited_by AND topic_id = ?";
 }

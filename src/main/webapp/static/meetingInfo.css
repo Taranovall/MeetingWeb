@@ -54,3 +54,29 @@ td:hover .response button {
 .response .no:hover {
     background: red;
 }
+
+.accept-application button {
+    margin: auto 0 auto 10px;
+    border-radius: 10px;
+    padding: 10px;
+    background: 0;
+    border: 0;
+    visibility: hidden;
+}
+
+.accept-application select {
+    width: 70%;
+}
+
+td:hover .accept-application button {
+    border: 1px solid;
+    visibility: unset;
+}
+
+.accept-application {
+    margin-left: 33%;
+}
+
+.accept-application .yes:hover {
+    background: green;
+}

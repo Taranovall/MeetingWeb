@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface SpeakerDao extends Dao<Speaker>{
 
@@ -23,4 +24,6 @@ public interface SpeakerDao extends Dao<Speaker>{
     List<String> getApplicationBySpeakerId(Long speakerId,String SQLQuery, Connection c) throws SQLException;
 
     boolean answerToApplication(Long speakerId, Long topicId, String SQLQuery, Connection c) throws SQLException;
+
+    Set<Speaker> getAllSpeakerApplicationsByTopicId(Long topicId, Connection c) throws SQLException, DataBaseException;
 }

@@ -8,6 +8,11 @@
 </head>
 <body>
 <jsp:include page="../component/navbar.jsp"></jsp:include>
+<c:if test="${error != null}">
+    <div class="alert alert-danger text-center" role="alert">
+            ${error}
+    </div>
+</c:if>
 <div class="px-3 pt-3">
     <div class="row">
         <div class="col-xs-12 col-sm-4">
@@ -81,7 +86,6 @@
                                                                 </button>
                                                             </form>
                                                         </div>
-
                                                     </c:when>
                                                     <c:otherwise>
                                                         <form action="apply-application" method="post">
@@ -96,7 +100,47 @@
                                         </c:choose>
                                     </c:when>
                                     <c:otherwise>
-                                        <span>Doesn't have speaker yet</span>
+                                        <c:choose>
+                                            <c:when test="${sessionScope.user.getRoles().toString().contains('MODERATOR')}">
+                                                <c:choose>
+                                                    <c:when test="${sentApplicationsBySpeaker.get(freeTopic).size() > 0}">
+                                                        <form action="accept-application" method="post"
+                                                              class="accept-application row">
+                                                            <select class="custom-select" id="inputGroupSelect"
+                                                                    name="speakerId">
+                                                                <option selected value="none" }>Choose speaker for this
+                                                                    topic
+                                                                </option>
+                                                                <c:forEach items="${sentApplicationsBySpeaker}"
+                                                                           var="sentApplicationMap">
+                                                                    <c:if test="${freeTopic.getId() == sentApplicationMap.getKey().getId()}">
+                                                                        <c:forEach
+                                                                                items="${sentApplicationMap.getValue()}"
+                                                                                var="speaker">
+                                                                            <option value="${speaker.getId()}">${speaker.getLogin()}</option>
+                                                                        </c:forEach>
+                                                                    </c:if>
+                                                                </c:forEach>
+                                                            </select>
+                                                            <button name="application" class="yes"
+                                                                    value="${freeTopic.getId()}" type="submit">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                                                     height="16" fill="currentColor"
+                                                                     class="bi bi-check" viewBox="0 0 16 16">
+                                                                    <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                                                                </svg>
+                                                            </button>
+                                                        </form>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <span>Doesn't have application yet</span>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <span>Doesn't have speaker yet</span>
+                                            </c:otherwise>
+                                        </c:choose>
                                     </c:otherwise>
                                 </c:choose>
                             </td>

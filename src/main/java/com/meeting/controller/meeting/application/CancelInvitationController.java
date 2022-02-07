@@ -27,7 +27,7 @@ public class CancelInvitationController extends HttpServlet {
 
         if (topicId == null) resp.sendRedirect(lastURI);
 
-        speakerService.removeApplication(Long.parseLong(topicId), userSession.getId());
+        speakerService.cancelInvitation(Long.parseLong(topicId), userSession.getId());
 
         resp.sendRedirect(lastURI);
     }

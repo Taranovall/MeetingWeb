@@ -1,8 +1,6 @@
 package com.meeting.controller.meeting;
 
-import com.meeting.entitiy.Meeting;
-import com.meeting.entitiy.Role;
-import com.meeting.entitiy.User;
+import com.meeting.entitiy.*;
 import com.meeting.exception.DataBaseException;
 import com.meeting.service.MeetingService;
 import com.meeting.service.SpeakerService;
@@ -16,8 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static com.meeting.util.Constant.PATH_TO_MEETING_INFO_PAGE;
 
@@ -40,23 +37,33 @@ public class MeetingInfoController extends HttpServlet {
         HttpSession session = req.getSession();
         User userSession = (User) req.getSession().getAttribute("user");
 
+        if (session.getAttribute("error") != null) {
+            req.setAttribute("error", session.getAttribute("error"));
+            session.removeAttribute("error");
+        }
+
         Meeting meeting = null;
         try {
             meeting = meetingService.getMeetingById(meetingId);
+
             req.setAttribute("meeting", meeting);
             req.getSession().setAttribute("lastPageURI", req.getRequestURI());
+                if (Objects.nonNull(userSession)) {
+                    if (userSession.getRoles().contains(Role.SPEAKER)){
+                        List<String> sentApplicationList = (List<String>) session.getAttribute("sentApplicationList");
+                        if (sentApplicationList == null) {
+                            sentApplicationList = speakerService.getSentApplications(userSession.getId());
+                            session.setAttribute("sentApplicationList", sentApplicationList);
+                        }
 
-            if (Objects.nonNull(userSession) && userSession.getRoles().contains(Role.SPEAKER)) {
-                List<String> sentApplicationList = (List<String>) session.getAttribute("sentApplicationList");
-                if (sentApplicationList == null) {
-                    sentApplicationList = speakerService.getSentApplications(userSession.getId());
-                    session.setAttribute("sentApplicationList", sentApplicationList);
+                        List<String> receivedApplicationList = speakerService.getReceivedApplications(userSession.getId());
+                        if (receivedApplicationList != null) {
+                            session.setAttribute("receivedApplicationList", receivedApplicationList);
+                        }
+                    } else if (userSession.getRoles().contains(Role.MODERATOR)) {
+                        session.setAttribute("sentApplicationsBySpeaker", meeting.getSentApplicationsMap());
+                    }
                 }
-                List<String> receivedApplicationList = speakerService.getReceivedApplications(userSession.getId());
-                if (receivedApplicationList != null) {
-                    session.setAttribute("receivedApplicationList", receivedApplicationList);
-                }
-            }
 
             req.getRequestDispatcher(PATH_TO_MEETING_INFO_PAGE).forward(req, resp);
         } catch (DataBaseException e) {

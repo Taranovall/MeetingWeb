@@ -170,6 +170,11 @@ public class MeetingServiceImpl implements MeetingService {
                     topicsOfCurrentSpeaker.add(topic);
                 }
             }
+
+            if (topicStateMap.get(topic).equals(State.NOT_DEFINED)) {
+                Set<Speaker> speakers = speakerDao.getAllSpeakerApplicationsByTopicId(topic.getId(), c);
+                meeting.getSentApplicationsMap().put(topic, speakers);
+            }
         }
         return speakerTopics;
     }

@@ -14,6 +14,7 @@ public class Meeting implements Serializable {
     private Set<Topic> freeTopics;
     private String photoPath;
     private Map<Speaker, Set<Topic>> speakerTopics;
+    private Map<Topic, Set<Speaker>> sentApplicationsMap;
 
     public Meeting(Long id, String name, String date, String time, String place, String photoPath) {
         this.id = id;
@@ -24,6 +25,7 @@ public class Meeting implements Serializable {
         this.photoPath = photoPath;
         this.freeTopics = new HashSet<>();
         this.speakerTopics = new HashMap<>();
+        this.sentApplicationsMap = new HashMap<>();
     }
 
     public Meeting() {
@@ -71,6 +73,14 @@ public class Meeting implements Serializable {
 
     public Map<Speaker, Set<Topic>> getSpeakerTopics() {
         return speakerTopics;
+    }
+
+    public Map<Topic, Set<Speaker>> getSentApplicationsMap() {
+        return sentApplicationsMap;
+    }
+
+    public void setSentApplicationsMap(Map<Topic, Set<Speaker>> sentApplicationsMap) {
+        this.sentApplicationsMap = sentApplicationsMap;
     }
 
     public void setSpeakerTopics(Map<Speaker, Set<Topic>> speakerTopics) {

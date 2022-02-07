@@ -10,9 +10,7 @@ import com.meeting.util.SQLQuery;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static com.meeting.service.connection.ConnectionPool.*;
 import static com.meeting.util.SQLQuery.GET_RECEIVED_APPLICATIONS_BY_SPEAKER_ID_SQL;
@@ -66,6 +64,23 @@ public class SpeakerServiceImpl implements SpeakerService {
     }
 
     @Override
+    public Set<Speaker> getAllSpeakerApplicationsByTopicId(Long topicId) {
+        Connection c = null;
+        Set<Speaker> speakers = new HashSet<>();
+        try {
+            c = ConnectionPool.getInstance().getConnection();
+            speakers.addAll(speakerDao.getAllSpeakerApplicationsByTopicId(topicId, c));
+            c.commit();
+        } catch (SQLException | DataBaseException e) {
+            e.printStackTrace();
+            rollback(c);
+        } finally {
+            close(c);
+        }
+        return speakers;
+    }
+
+    @Override
     public List<String> getSentApplications(Long speakerId) {
         List<String> applications = new ArrayList<>();
         try (Connection c = ConnectionPool.getInstance().getConnection()) {
@@ -93,6 +108,24 @@ public class SpeakerServiceImpl implements SpeakerService {
         try {
             c = ConnectionPool.getInstance().getConnection();
             speakerDao.answerToApplication(userSessionId, topicId, SQLQuery.ACCEPT_INVITATION_SQL, c);
+            c.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            rollback(c);
+        } finally {
+            close(c);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean cancelInvitation(Long topicId, Long userSessionId) {
+        Connection c = null;
+        Speaker speaker;
+        try {
+            speaker = getSpeakerById(userSessionId);
+            c = ConnectionPool.getInstance().getConnection();
+            speakerDao.rollbackInvite(userSessionId, topicId, c);
             c.commit();
         } catch (SQLException e) {
             e.printStackTrace();
