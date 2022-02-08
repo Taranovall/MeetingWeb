@@ -1,5 +1,6 @@
 package com.meeting.controller.filter;
 
+import com.meeting.entitiy.Role;
 import com.meeting.entitiy.User;
 
 import javax.servlet.*;
@@ -21,7 +22,7 @@ public class SecurityFilter implements Filter {
         HttpServletResponse resp = (HttpServletResponse) response;
         if (req.getRequestURI().equals("/create-meeting")) {
             User user = (User) req.getSession().getAttribute("user");
-            if (user != null && user.getRoles().toString().contains("MODERATOR")) {
+            if (user != null && user.getRoles().contains(Role.MODERATOR)) {
                 chain.doFilter(req, resp);
             }
         }

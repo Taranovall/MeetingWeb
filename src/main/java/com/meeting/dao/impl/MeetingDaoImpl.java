@@ -5,12 +5,9 @@ import com.meeting.entitiy.Meeting;
 import com.meeting.util.SQLQuery;
 
 import java.sql.*;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
-import static com.meeting.util.SQLQuery.CREATE_MEETING_SQL;
-import static com.meeting.util.SQLQuery.GET_ALL_MEETINGS_SQL;
+import static com.meeting.util.SQLQuery.*;
 
 public class MeetingDaoImpl implements MeetingDao {
 
@@ -64,9 +61,22 @@ public class MeetingDaoImpl implements MeetingDao {
         }
     }
 
+
     @Override
     public void delete(Meeting meeting, Connection c) {
 
+    }
+
+    @Override
+    public Set<Long> getAllMeetingsIdSpeakerInvolvesIn(Long speakerId, Connection c) throws SQLException {
+        Set<Long> meetingsIdSet = new HashSet<>();
+        PreparedStatement p = c.prepareStatement(GET_ALL_MEETINGS_ID_WHERE_SPEAKER_INVOLVES_IN);
+        p.setLong(1, speakerId);
+        ResultSet rs = p.executeQuery();
+        while (rs.next()) {
+            meetingsIdSet.add(rs.getLong("meeting_id"));
+        }
+        return meetingsIdSet;
     }
 
     /**

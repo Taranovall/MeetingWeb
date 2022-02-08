@@ -6,6 +6,7 @@ import com.meeting.exception.DataBaseException;
 
 import java.io.File;
 import java.util.List;
+import java.util.Set;
 
 public interface MeetingService {
 
@@ -14,4 +15,10 @@ public interface MeetingService {
    Meeting getMeetingById(Long id) throws DataBaseException;
 
    List<Meeting> getAllMeetings();
+
+   /**
+    *
+    * @return set with meetings in which speaker are involved in
+    */
+   Set<Meeting> getMeetingsSpeakerIsInvolvedIn(Long speakerId);
 }

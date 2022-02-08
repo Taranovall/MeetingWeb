@@ -11,5 +11,9 @@ public enum Role {
         return null;
     }
 
-
+    @Override
+    public String toString() {
+        String role = super.toString().toLowerCase();
+        return Character.toString(role.charAt(0)).toUpperCase() + role.substring(1);
+    }
 }

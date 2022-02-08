@@ -10,6 +10,7 @@ public class User implements Serializable {
     private Long id;
     private String login;
     private String password;
+    private String registrationDate;
     private Set<Role> roles = new HashSet<>();
 
     public User(String login, String password) {
@@ -33,6 +34,14 @@ public class User implements Serializable {
         this.login = login;
         this.password = password;
         this.roles = roles;
+    }
+
+    public String getRegistrationDate() {
+        return registrationDate;
+    }
+
+    public void setRegistrationDate(String registrationDate) {
+        this.registrationDate = registrationDate;
     }
 
     public User(Long id, String login, String password) {

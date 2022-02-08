@@ -4,7 +4,7 @@ public class SQLQuery {
 
     //User requests
     public static final String GET_USER_BY_ID_SQL ="SELECT * FROM users WHERE id=?";
-    public static final String CREATE_USER_SQL = "INSERT INTO users (login, password) VALUES (?,?)";
+    public static final String CREATE_USER_SQL = "INSERT INTO users (login, password, registration_date) VALUES (?,?,?)";
     public static final String GET_ALL_USERS_SQL = "SELECT * FROM users";
     public static final String GET_USER_BY_LOGIN_SQL = "SELECT * FROM users WHERE login=?";
     public static final String ADD_ROLE_FOR_USER_SQL = "INSERT INTO user_roles VALUES (?, (SELECT id FROM roles WHERE NAME ILIKE ?))";
@@ -28,10 +28,11 @@ public class SQLQuery {
     public static final String CREATE_MEETING_SQL = "INSERT INTO meetings (name, date, time, place, photo_path) VALUES (?, ?, ?, ?, ?)";
     public static final String GET_ALL_MEETINGS_SQL = "SELECT * FROM meetings";
     public static final String GET_MEETING_BY_ID = "SELECT * FROM meetings WHERE id = ?";
+    public static final String GET_ALL_MEETINGS_ID_WHERE_SPEAKER_INVOLVES_IN = "SELECT DISTINCT meeting_id FROM meeting_topics mt, speaker_topics st WHERE mt.topic_id = st.topic_id AND st.invitation is true AND speaker_id = ?";
 
     //Speaker requests
     public static final String INVITE_SPEAKER_TO_MEETING_SQL = "INSERT INTO speaker_topics (speaker_id, topic_id, invited_by) VALUES (?, ?, ?)";
-    public static final String GET_SPEAKER_BY_TOPIC_ID = "SELECT speaker_id FROM speaker_topics WHERE topic_id = ? AND invitation != 'false'";
+    public static final String GET_SPEAKER_BY_TOPIC_ID = "SELECT speaker_id FROM speaker_topics WHERE topic_id = ? AND invitation is not false";
     public static final String GET_SPEAKER_RESPONSE_TO_THE_OFFER = "SELECT st.topic_id, invitation, mt.meeting_id FROM speaker_topics st, meeting_topics mt WHERE st.topic_id = mt.topic_id AND speaker_id = ?";
     public static final String ROLLBACK_INVITE_SQL = "DELETE FROM speaker_topics WHERE speaker_id = ? AND topic_id = ?";
     public static final String GET_SENT_APPLICATIONS_BY_SPEAKER_ID_SQL = "SELECT topic_id FROM speaker_topics WHERE speaker_id = invited_by AND speaker_id = ?";

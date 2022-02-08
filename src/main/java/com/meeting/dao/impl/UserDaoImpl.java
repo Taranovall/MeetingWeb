@@ -5,6 +5,8 @@ import com.meeting.entitiy.Role;
 import com.meeting.entitiy.User;
 
 import java.sql.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static com.meeting.util.SQLQuery.*;
@@ -54,11 +56,16 @@ public class UserDaoImpl implements UserDao {
     public void save(User user, Connection c) throws SQLException {
         PreparedStatement p = c.prepareStatement(CREATE_USER_SQL, Statement.RETURN_GENERATED_KEYS);
 
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        LocalDateTime now = LocalDateTime.now();
+
         String login = user.getLogin();
         String password = user.getPassword();
+        String registrationDate = dtf.format(now);
 
         p.setString(1, login);
         p.setString(2, password);
+        p.setString(3, registrationDate);
 
         if (p.executeUpdate() > 0) {
             ResultSet rs = p.getGeneratedKeys();
@@ -113,7 +120,9 @@ public class UserDaoImpl implements UserDao {
         Long id = rs.getLong("id");
         String login = rs.getString("login");
         String password = rs.getString("password");
+        String registrationDate = rs.getString("registration_date");
         User user = new User(id, login, password);
+        user.setRegistrationDate(registrationDate);
         return user;
     }
 }

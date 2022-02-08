@@ -48,7 +48,7 @@
                             <td class="align-middle">${freeTopic.getName()}</td>
                             <td>
                                 <c:choose>
-                                    <c:when test="${sessionScope.user.getRoles().toString().contains('SPEAKER')}">
+                                    <c:when test="${sessionScope.user.getRoles().toString().toUpperCase().contains('SPEAKER')}">
                                         <c:choose>
                                             <c:when test="${sentApplicationList != null && sentApplicationList.indexOf(freeTopic.getId().toString()) != -1}">
                                                 <form action="remove-application" method="post">
@@ -101,7 +101,7 @@
                                     </c:when>
                                     <c:otherwise>
                                         <c:choose>
-                                            <c:when test="${sessionScope.user.getRoles().toString().contains('MODERATOR')}">
+                                            <c:when test="${sessionScope.user.getRoles().toString().toUpperCase().contains('MODERATOR')}">
                                                 <c:choose>
                                                     <c:when test="${sentApplicationsBySpeaker.get(freeTopic).size() > 0}">
                                                         <form action="accept-application" method="post"
@@ -114,9 +114,8 @@
                                                                 <c:forEach items="${sentApplicationsBySpeaker}"
                                                                            var="sentApplicationMap">
                                                                     <c:if test="${freeTopic.getId() == sentApplicationMap.getKey().getId()}">
-                                                                        <c:forEach
-                                                                                items="${sentApplicationMap.getValue()}"
-                                                                                var="speaker">
+                                                                        <c:forEach items="${sentApplicationMap.getValue()}"
+                                                                                   var="speaker">
                                                                             <option value="${speaker.getId()}">${speaker.getLogin()}</option>
                                                                         </c:forEach>
                                                                     </c:if>

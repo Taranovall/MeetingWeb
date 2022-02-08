@@ -108,6 +108,26 @@ public class MeetingServiceImpl implements MeetingService {
         return meetings;
     }
 
+    @Override
+    public Set<Meeting> getMeetingsSpeakerIsInvolvedIn(Long speakerId) {
+        Set<Meeting> meetings = new HashSet<>();
+        Connection c = null;
+        try {
+            c = ConnectionPool.getInstance().getConnection();
+            Set<Long> meetingsIdSet = meetingDao.getAllMeetingsIdSpeakerInvolvesIn(speakerId, c);
+            for (Long id : meetingsIdSet) {
+                meetings.add(getMeetingById(id));
+            }
+            c.commit();
+        } catch (SQLException | DataBaseException e) {
+            e.printStackTrace();
+            rollback(c);
+        } finally {
+            close(c);
+        }
+        return meetings;
+    }
+
     /**
      * creates map in which Topic is a key and Speaker is a value
      *
@@ -178,4 +198,6 @@ public class MeetingServiceImpl implements MeetingService {
         }
         return speakerTopics;
     }
+
+
 }

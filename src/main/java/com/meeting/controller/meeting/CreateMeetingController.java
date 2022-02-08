@@ -78,8 +78,6 @@ public class CreateMeetingController extends HttpServlet {
         User userFromSession = (User) req.getSession().getAttribute("user");
 
         meetingService.createMeeting(userFromSession, meeting, topics, speakers, image);
-
-
     }
 
     private Map<String, String> arrayValueToString(Map<String, String[]> map) {

@@ -37,12 +37,18 @@ public class LoginController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         User user = validationService.authValidator(req);
+        String redirectTo = (String) req.getSession().getAttribute("lastPageURI");
+
         req.getSession().setAttribute("user", user);
 
         if (nonNull(req.getAttribute("message"))) {
             doGet(req, resp);
         } else {
-            resp.sendRedirect("/");
+            if (redirectTo != null) {
+                resp.sendRedirect(redirectTo);
+            } else {
+                resp.sendRedirect("/");
+            }
             System.out.printf("User with id %d just signed in", user.getId());
         }
     }
