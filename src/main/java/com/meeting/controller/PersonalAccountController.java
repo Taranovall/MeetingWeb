@@ -45,7 +45,7 @@ public class PersonalAccountController extends HttpServlet {
 
         Speaker speaker = null;
 
-        if (userFromDataBase.getRoles().contains(Role.SPEAKER)) {
+        if (userFromDataBase.getRole() == Role.SPEAKER) {
              speaker = speakerService.getSpeakerById(userFromDataBase.getId());
             Set<Meeting> speakerMeetings = meetingService.getMeetingsSpeakerIsInvolvedIn(speaker.getId());
             req.setAttribute("meetingsSpeakerIsInvolvedIn", speakerMeetings);

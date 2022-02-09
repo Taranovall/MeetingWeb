@@ -12,10 +12,10 @@ DROP TABLE IF EXISTS meeting_participants CASCADE;
 
 create table users
 (
-    id       bigserial           not null primary key,
-    login    varchar(256) unique not null,
-    password varchar(256)        not null,
-    registration_date varchar(256) not null
+    id                bigserial           not null primary key,
+    login             varchar(256) unique not null,
+    password          varchar(256)        not null,
+    registration_date varchar(256)        not null
 );
 
 create table roles
@@ -67,6 +67,13 @@ create table meeting_participants
 (
     meeting_id int references meetings (id) on delete cascade,
     user_id    int references users (id) on delete cascade
+);
+
+create table proposed_topics
+(
+    proposed_by_speaker int references users(id) on delete cascade,
+    meeting_id int references meetings (id) on delete cascade,
+    topic_id   int references topics (id) on delete cascade
 );
 
 

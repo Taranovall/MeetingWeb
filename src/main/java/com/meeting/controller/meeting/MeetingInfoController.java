@@ -49,7 +49,7 @@ public class MeetingInfoController extends HttpServlet {
             req.setAttribute("meeting", meeting);
             req.getSession().setAttribute("lastPageURI", req.getRequestURI());
                 if (Objects.nonNull(userSession)) {
-                    if (userSession.getRoles().contains(Role.SPEAKER)){
+                    if (userSession.getRole() == Role.SPEAKER){
                         List<String> sentApplicationList = (List<String>) session.getAttribute("sentApplicationList");
                         if (sentApplicationList == null) {
                             sentApplicationList = speakerService.getSentApplications(userSession.getId());
@@ -60,8 +60,9 @@ public class MeetingInfoController extends HttpServlet {
                         if (receivedApplicationList != null) {
                             session.setAttribute("receivedApplicationList", receivedApplicationList);
                         }
-                    } else if (userSession.getRoles().contains(Role.MODERATOR)) {
+                    } else if (userSession.getRole() == Role.MODERATOR) {
                         session.setAttribute("sentApplicationsBySpeaker", meeting.getSentApplicationsMap());
+                        session.setAttribute("proposedTopics", meeting.getProposedTopicsMap());
                     }
                 }
 

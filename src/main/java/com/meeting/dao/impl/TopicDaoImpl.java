@@ -32,6 +32,20 @@ public class TopicDaoImpl implements TopicDao {
     }
 
     @Override
+    public Set<Topic> getAllFreeTopicsByMeetingId(Long meetingId, Connection c) throws SQLException {
+        Set<Topic> topics = new HashSet<>();
+        PreparedStatement p = c.prepareStatement(GET_ALL_FREE_TOPICS_BY_MEETING_ID);
+        p.setLong(1, meetingId);
+        ResultSet rs = p.executeQuery();
+        while (rs.next()) {
+            Long topicId = rs.getLong("topic_id");
+            Optional<Topic> optionalTopic = getById(topicId, c);
+            optionalTopic.ifPresent(topics::add);
+        }
+        return topics;
+    }
+
+    @Override
     public void save(Topic topic, Connection c) throws SQLException {
         PreparedStatement p = c.prepareStatement(CREATE_TOPIC_SQL, Statement.RETURN_GENERATED_KEYS);
         String topicName = topic.getName();
@@ -61,7 +75,8 @@ public class TopicDaoImpl implements TopicDao {
             p.executeUpdate();
         }
     }
-@Override
+
+    @Override
     public Set<Topic> getTopicsByMeetingId(Long meetingId, Connection c) throws SQLException {
         Set<Topic> topics = new HashSet<>();
         PreparedStatement p = c.prepareStatement(GET_ALL_TOPICS_BY_MEETING_ID_SQL);
@@ -74,7 +89,7 @@ public class TopicDaoImpl implements TopicDao {
     }
 
     @Override
-    public void freeTopic(Meeting meeting, Topic topic, Connection c) throws SQLException {
+    public void createFreeTopic(Meeting meeting, Topic topic, Connection c) throws SQLException {
         PreparedStatement p = c.prepareStatement(CREATE_FREE_TOPIC_SQL);
         p.setLong(1, meeting.getId());
         p.setLong(2, topic.getId());

@@ -22,7 +22,7 @@ public class SecurityFilter implements Filter {
         HttpServletResponse resp = (HttpServletResponse) response;
         if (req.getRequestURI().equals("/create-meeting")) {
             User user = (User) req.getSession().getAttribute("user");
-            if (user != null && user.getRoles().contains(Role.MODERATOR)) {
+            if (user != null && user.getRole().equals(Role.MODERATOR)) {
                 chain.doFilter(req, resp);
             }
         }

@@ -15,7 +15,6 @@ import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.Set;
 
 import static com.meeting.service.connection.ConnectionPool.*;
 
@@ -44,16 +43,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Set<Role> getAllUserRolesById(long id) throws DataBaseException {
-        Set<Role> roles;
-        try (Connection c = ConnectionPool.getInstance().getConnection()) {
+    public Role getAllUserRolesById(long id) throws DataBaseException {
+        Role role = null;
+        try (Connection c = getInstance().getConnection()) {
             c.setAutoCommit(true);
-            roles = userDao.getAllUserRoles(id, c);
+            role = userDao.getUserRole(id, c);
         } catch (SQLException e) {
             e.printStackTrace();
             throw new DataBaseException("Cannot get user roles", e);
         }
-        return roles;
+        return role;
     }
 
     @Override

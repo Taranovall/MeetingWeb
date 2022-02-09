@@ -13,11 +13,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @WebServlet(name = "acceptApplication", urlPatterns = "/meeting/accept-application")
-public class AcceptApplication extends HttpServlet {
+public class AcceptApplicationController extends HttpServlet {
 
     private final SpeakerService speakerService;
 
-    public AcceptApplication() {
+    public AcceptApplicationController() {
         this.speakerService = new SpeakerServiceImpl();
     }
 
@@ -33,9 +33,9 @@ public class AcceptApplication extends HttpServlet {
             String topicId = req.getParameter("application");
             User userSession = (User) req.getSession().getAttribute("user");
 
-            if (topicId == null || !userSession.getRoles().contains(Role.MODERATOR)) resp.sendRedirect(lastURI);
+            if (topicId == null || !userSession.getRole().equals(Role.MODERATOR)) resp.sendRedirect(lastURI);
 
-            speakerService.acceptInvitation(Long.parseLong(topicId), Long.parseLong(speakerId));
+            speakerService.acceptApplication(Long.parseLong(topicId), Long.parseLong(speakerId));
         }
 
         resp.sendRedirect(lastURI);

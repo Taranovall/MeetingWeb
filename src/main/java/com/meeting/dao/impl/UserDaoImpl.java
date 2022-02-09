@@ -21,7 +21,7 @@ public class UserDaoImpl implements UserDao {
         ResultSet rs = p.executeQuery();
         if (rs.next()) {
             User user = extractUser(rs);
-            user.setRoles(getAllUserRoles(user.getId(), c));
+            user.setRole(getUserRole(user.getId(),c));
             optionalUser = Optional.of(user);
         }
         return optionalUser;
@@ -34,22 +34,22 @@ public class UserDaoImpl implements UserDao {
         ResultSet rs = p.executeQuery();
         while (rs.next()) {
             User user = extractUser(rs);
-            user.setRoles(getAllUserRoles(user.getId(), c));
+            user.setRole(getUserRole(user.getId(), c));
             users.add(user);
         }
         return users;
     }
 
     @Override
-    public Set<Role> getAllUserRoles(long id, Connection c) throws SQLException {
-        Set<Role> roles = new HashSet<>();
-        PreparedStatement p = c.prepareStatement(GET_ALL_USER_ROLES_BY_ID_SQL);
+    public Role getUserRole(long id, Connection c) throws SQLException {
+        Role role = null;
+        PreparedStatement p = c.prepareStatement(GET_USER_ROLE_BY_ID_SQL);
         p.setLong(1, id);
         ResultSet rs = p.executeQuery();
         while(rs.next()) {
-            roles.add(Role.getRoleByString(rs.getString("name")));
+            role = Role.getRoleByString(rs.getString("name"));
         }
-        return roles;
+        return role;
     }
 
     @Override
@@ -71,7 +71,7 @@ public class UserDaoImpl implements UserDao {
             ResultSet rs = p.getGeneratedKeys();
             if (rs.next()) {
                 Long usedId = rs.getLong(1);
-                user.addRole(Role.USER);
+                user.setRole(Role.USER);
                 addRoleForUser(usedId, c);
             }
         }
@@ -85,7 +85,7 @@ public class UserDaoImpl implements UserDao {
         ResultSet rs = p.executeQuery();
         if (rs.next()) {
             User user = extractUser(rs);
-            user.setRoles(getAllUserRoles(user.getId(), c));
+            user.setRole(getUserRole(user.getId(), c));
             optionalUser = Optional.of(user);
         }
         return optionalUser;

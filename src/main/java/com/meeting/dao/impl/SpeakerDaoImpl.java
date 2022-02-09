@@ -30,7 +30,7 @@ public class SpeakerDaoImpl implements SpeakerDao {
     @Override
     public Optional<Speaker> getById(Long id, Connection c) throws SQLException, DataBaseException {
         Optional<User> user = userDao.getById(id, c);
-        if (!user.isPresent() || !userDao.getAllUserRoles(id ,c).contains(Role.SPEAKER)) {
+        if (!user.isPresent() || !userDao.getUserRole(id, c).equals(Role.SPEAKER)) {
             return Optional.empty();
         }
         Speaker speaker = new Speaker();
@@ -116,10 +116,23 @@ public class SpeakerDaoImpl implements SpeakerDao {
     }
 
     @Override
+    public boolean acceptApplication(Long speakerId, Long topicId, Connection c) throws SQLException {
+        answerToApplication(speakerId, topicId, ACCEPT_INVITATION_SQL, c);
+        PreparedStatement p = c.prepareStatement(REMOVE_REDUNDANT_APPLICATIONS_AFTER_ACCEPTING_ONE_SQL);
+        p.setLong(1, speakerId);
+        p.setLong(2, topicId);
+
+        p = c.prepareStatement(REMOVE_APPLICATION_FROM_FREE_TOPICS_AFTER_ACCEPTING_IT_SQL);
+        p.setLong(1, topicId);
+        p.executeUpdate();
+        return true;
+    }
+
+    @Override
     public Set<Speaker> getAllSpeakerApplicationsByTopicId(Long topicId, Connection c) throws SQLException, DataBaseException {
         Set<Speaker> speakers = new HashSet<>();
         Optional<Speaker> optionalSpeaker = Optional.empty();
-        PreparedStatement p = c.prepareStatement(GET_ALL_SPEAKER_APPLICATIONS_BY_TOPIC_ID);
+        PreparedStatement p = c.prepareStatement(GET_ALL_SPEAKER_APPLICATIONS_BY_TOPIC_ID_SQL);
         p.setLong(1, topicId);
         ResultSet rs = p.executeQuery();
         while (rs.next()) {

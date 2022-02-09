@@ -1,8 +1,6 @@
 package com.meeting.entitiy;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 
 public class User implements Serializable {
 
@@ -11,7 +9,7 @@ public class User implements Serializable {
     private String login;
     private String password;
     private String registrationDate;
-    private Set<Role> roles = new HashSet<>();
+    private Role role;
 
     public User(String login, String password) {
         this.login = login;
@@ -26,14 +24,13 @@ public class User implements Serializable {
         this.id = id;
         this.login = login;
         this.password = password;
-        this.roles.add(role);
+        this.role = role;
     }
 
-    public User(Long id, String login, String password, Set<Role> roles) {
+    public User(Long id, String login, Role role) {
         this.id = id;
         this.login = login;
-        this.password = password;
-        this.roles = roles;
+        this.role = role;
     }
 
     public String getRegistrationDate() {
@@ -59,16 +56,12 @@ public class User implements Serializable {
 
     }
 
-    public Set<Role> getRoles() {
-        return roles;
+    public Role getRole() {
+        return role;
     }
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
-
-    public void addRole(Role role) {
-        roles.add(role);
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public Long getId() {
@@ -105,7 +98,7 @@ public class User implements Serializable {
         if (id != null ? !id.equals(user.id) : user.id != null) return false;
         if (login != null ? !login.equals(user.login) : user.login != null) return false;
         if (password != null ? !password.equals(user.password) : user.password != null) return false;
-        return roles != null ? roles.equals(user.roles) : user.roles == null;
+        return role == user.role;
     }
 
     @Override
@@ -113,7 +106,7 @@ public class User implements Serializable {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (login != null ? login.hashCode() : 0);
         result = 31 * result + (password != null ? password.hashCode() : 0);
-        result = 31 * result + (roles != null ? roles.hashCode() : 0);
+        result = 31 * result + (role != null ? role.hashCode() : 0);
         return result;
     }
 }

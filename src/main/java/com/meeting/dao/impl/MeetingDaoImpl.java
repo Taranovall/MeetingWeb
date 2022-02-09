@@ -68,6 +68,20 @@ public class MeetingDaoImpl implements MeetingDao {
     }
 
     @Override
+    public Map<Long, Long> getTopicSpeakerIdMapByMeetingId(Long meetingId, Connection c) throws SQLException {
+        PreparedStatement p = c.prepareStatement(GET_ALL_ACCEPTED_TOPICS_BY_MEETING_ID);
+        p.setLong(1, meetingId);
+        ResultSet rs = p.executeQuery();
+        Map<Long, Long> topicSpeakerIdMap = new HashMap<>();
+        while (rs.next()) {
+            Long speakerId = rs.getLong("speaker_id");
+            Long topicId = rs.getLong("topic_id");
+            topicSpeakerIdMap.put(topicId, speakerId);
+        }
+        return topicSpeakerIdMap;
+    }
+
+    @Override
     public Set<Long> getAllMeetingsIdSpeakerInvolvesIn(Long speakerId, Connection c) throws SQLException {
         Set<Long> meetingsIdSet = new HashSet<>();
         PreparedStatement p = c.prepareStatement(GET_ALL_MEETINGS_ID_WHERE_SPEAKER_INVOLVES_IN);
@@ -77,6 +91,82 @@ public class MeetingDaoImpl implements MeetingDao {
             meetingsIdSet.add(rs.getLong("meeting_id"));
         }
         return meetingsIdSet;
+    }
+
+    @Override
+    public Map<Long, Set<Long>> getSentApplicationsByMeetingId(Long meetingId, Connection c) throws SQLException {
+        PreparedStatement p = c.prepareStatement(GET_SENT_APPLICATION_BY_MEETING_ID);
+        p.setLong(1, meetingId);
+        ResultSet rs = p.executeQuery();
+        Map<Long, Set<Long>> applicationMap = new HashMap<>();
+        while (rs.next()) {
+            Long speakerId = rs.getLong("speaker_id");
+            Long topicId = rs.getLong("topic_id");
+
+            Set<Long> speakerIdSet = applicationMap.get(topicId);
+
+            if (speakerIdSet == null) {
+                speakerIdSet = new HashSet<>();
+                speakerIdSet.add(speakerId);
+                applicationMap.put(topicId, speakerIdSet);
+                continue;
+            }
+            speakerIdSet.add(speakerId);
+        }
+        return applicationMap;
+    }
+
+    @Override
+    public boolean proposeTopic(Long meetingId, Long userSessionId, Long topicId, Connection c) throws SQLException {
+        PreparedStatement p = c.prepareStatement(PROPOSE_TOPIC_SQL);
+        p.setLong(1, userSessionId);
+        p.setLong(2, meetingId);
+        p.setLong(3, topicId);
+        p.executeUpdate();
+        return true;
+    }
+
+    @Override
+    public Map<Long, Long> getProposedTopicsBySpeakerIdMap(Long meetingId, Connection c) throws SQLException {
+        PreparedStatement p = c.prepareStatement(GET_PROPOSED_TOPICS_BY_MEETING_ID);
+        p.setLong(1, meetingId);
+        ResultSet rs = p.executeQuery();
+        Map<Long, Long> proposedTopicsMap = new HashMap<>();
+        while (rs.next()) {
+            Long topicId = rs.getLong("topic_id");
+            Long speakerId = rs.getLong("proposed_by_speaker");
+            proposedTopicsMap.put(topicId, speakerId);
+        }
+        return proposedTopicsMap;
+    }
+
+    @Override
+    public boolean acceptProposedTopics(Long topicId, Long speakerId, Long meetingId, Connection c) throws SQLException {
+        PreparedStatement p = c.prepareStatement(ACCEPT_PROPOSED_TOPIC_SQL);
+        p.setLong(1, speakerId);
+        p.setLong(2, topicId);
+        p.setLong(3, speakerId);
+        p.executeUpdate();
+
+        p = c.prepareStatement(LINK_TOPIC_WITH_MEETING_SQL);
+        p.setLong(1, meetingId);
+        p.setLong(2, topicId);
+        p.executeUpdate();
+
+        p = c.prepareStatement(REMOVE_PROPOSED_TOPIC_SQL);
+        p.setLong(1, speakerId);
+        p.setLong(2, topicId);
+        p.executeUpdate();
+        return true;
+    }
+
+    @Override
+    public boolean cancelProposedTopic(Long topicId, Long speakerId, Connection c) throws SQLException {
+        PreparedStatement p = c.prepareStatement(REMOVE_PROPOSED_TOPIC_SQL);
+        p.setLong(1, speakerId);
+        p.setLong(2, topicId);
+        p.executeUpdate();
+        return true;
     }
 
     /**

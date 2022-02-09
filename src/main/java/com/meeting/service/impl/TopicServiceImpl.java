@@ -9,6 +9,8 @@ import com.meeting.service.connection.ConnectionPool;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.Set;
 
 public class TopicServiceImpl implements TopicService {
 
@@ -28,5 +30,17 @@ public class TopicServiceImpl implements TopicService {
             e.printStackTrace();
         }
         return topic;
+    }
+
+    @Override
+    public Set<Topic> getAllFreeTopicsByMeetingId(Long meetingId) {
+        Set<Topic> topics = new HashSet<>();
+        try (Connection c = ConnectionPool.getInstance().getConnection()) {
+            c.setAutoCommit(true);
+            topics.addAll(topicDao.getAllFreeTopicsByMeetingId(meetingId, c));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return topics;
     }
 }

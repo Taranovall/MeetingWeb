@@ -7,11 +7,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 public interface UserDao extends Dao<User> {
 
-    Set<Role> getAllUserRoles(long id, Connection c) throws SQLException;
+    Role getUserRole(long id, Connection c) throws SQLException;
 
     void addRoleForUser(Long id, Connection c) throws SQLException;
 

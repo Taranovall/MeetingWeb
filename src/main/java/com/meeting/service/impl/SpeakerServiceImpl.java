@@ -6,15 +6,13 @@ import com.meeting.entitiy.Speaker;
 import com.meeting.exception.DataBaseException;
 import com.meeting.service.SpeakerService;
 import com.meeting.service.connection.ConnectionPool;
-import com.meeting.util.SQLQuery;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
 
 import static com.meeting.service.connection.ConnectionPool.*;
-import static com.meeting.util.SQLQuery.GET_RECEIVED_APPLICATIONS_BY_SPEAKER_ID_SQL;
-import static com.meeting.util.SQLQuery.GET_SENT_APPLICATIONS_BY_SPEAKER_ID_SQL;
+import static com.meeting.util.SQLQuery.*;
 
 public class SpeakerServiceImpl implements SpeakerService {
 
@@ -81,6 +79,22 @@ public class SpeakerServiceImpl implements SpeakerService {
     }
 
     @Override
+    public boolean acceptApplication(Long topicId, Long speakerId) {
+        Connection c = null;
+        try {
+            c = ConnectionPool.getInstance().getConnection();
+            speakerDao.acceptApplication(speakerId, topicId, c);
+            c.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            rollback(c);
+        } finally {
+            close(c);
+        }
+        return true;
+    }
+
+    @Override
     public List<String> getSentApplications(Long speakerId) {
         List<String> applications = new ArrayList<>();
         try (Connection c = ConnectionPool.getInstance().getConnection()) {
@@ -103,11 +117,11 @@ public class SpeakerServiceImpl implements SpeakerService {
     }
 
     @Override
-    public boolean acceptInvitation(Long topicId, Long userSessionId) {
+    public boolean acceptInvitation(Long topicId, Long speakerId) {
         Connection c = null;
         try {
             c = ConnectionPool.getInstance().getConnection();
-            speakerDao.answerToApplication(userSessionId, topicId, SQLQuery.ACCEPT_INVITATION_SQL, c);
+            speakerDao.acceptApplication(speakerId, topicId, c);
             c.commit();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -153,11 +167,11 @@ public class SpeakerServiceImpl implements SpeakerService {
     }
 
     @Override
-    public boolean removeApplication(Long topicId, Long userSessionId) {
+    public boolean removeApplication(Long topicId, Long speakerId) {
         Connection c = null;
         try {
             c = ConnectionPool.getInstance().getConnection();
-            speakerDao.rollbackInvite(userSessionId, topicId, c);
+            speakerDao.rollbackInvite(speakerId, topicId, c);
             c.commit();
         } catch (SQLException e) {
             e.printStackTrace();

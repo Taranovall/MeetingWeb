@@ -17,6 +17,9 @@ public interface SpeakerDao extends Dao<Speaker>{
      */
      boolean sendInvite(Long speakerId, Long topicId, Long userSessionId, Connection c) throws SQLException;
 
+    /**
+     * Rollback sent invite
+     */
      boolean rollbackInvite(Long speakerId, Long topicId, Connection c) throws SQLException;
 
     Optional<Speaker> getSpeakerByTopicId(Long topicId, Connection c) throws SQLException, DataBaseException;
@@ -24,6 +27,8 @@ public interface SpeakerDao extends Dao<Speaker>{
     List<String> getApplicationBySpeakerId(Long speakerId,String SQLQuery, Connection c) throws SQLException;
 
     boolean answerToApplication(Long speakerId, Long topicId, String SQLQuery, Connection c) throws SQLException;
+
+    boolean acceptApplication(Long speakerId, Long topicId, Connection c) throws SQLException;
 
     Set<Speaker> getAllSpeakerApplicationsByTopicId(Long topicId, Connection c) throws SQLException, DataBaseException;
 }

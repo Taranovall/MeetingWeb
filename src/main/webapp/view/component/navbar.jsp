@@ -31,11 +31,12 @@
                             <path fill-rule="evenodd"
                                   d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zM0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8z"/>
                         </svg>
+                            <%-- show user nickname if his authorized --%>
                         <span>${sessionScope.user.getLogin()} </span>
                     </a>
                     <div class="dropdown-menu">
                         <a class="dropdown-item" href="/account/${sessionScope.user.getId()}">Profile</a>
-                        <c:if test="${sessionScope.user.getRoles().toString().toUpperCase().contains('MODERATOR')}">
+                        <c:if test="${sessionScope.user.getRole().name() == 'MODERATOR'}">
                             <a class="dropdown-item" href="/create-meeting">Create meeting</a>
                         </c:if>
                         <a class="dropdown-item" href="/logout">Logout</a>
@@ -51,7 +52,7 @@
         <!-- /PROFILE -->
 
         <c:if test="${requestScope['javax.servlet.forward.request_uri'] == '/'}">
-            <!-- SEARCH FORM -->
+            <%-- SEARCH FORM --%>
             <form class="form-inline my-2 my-lg-0 navbar-query-form" method="post" action="search-meeting">
                 <input name="query" class="form-control mr-sm-2" type="search" placeholder="Input query"
                        aria-label="Search">
@@ -65,9 +66,9 @@
                 </c:if>
                 <button class="btn btn btn-outline-dark my-2 my-sm-0" type="submit">Search</button>
             </form>
-            <!-- /SEARCH FORM -->
+            <%-- /SEARCH FORM --%>
 
-            <!-- SORT FORM -->
+            <%-- SORT FORM --%>
             <form class="form-inline my-2 my-lg-0 navbar-soring-form" method="post" action="sort-meeting">
                 <select class="custom-select" name="sortMethod" onchange='if(this.value != 0) { this.form.submit(); }'>
                     <option value="" selected disabled hidden>Choose sorting method</option>
@@ -105,7 +106,7 @@
                     </c:choose>
                 </select>
             </form>
-            <!-- /SORT FORM -->
+            <%-- /SORT FORM --%>
         </c:if>
     </div>
 </nav>

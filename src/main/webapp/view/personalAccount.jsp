@@ -18,10 +18,7 @@
                     </li>
                     <li class="list-group-item"><small>User ID: ${requestScope.user.getId()}</small>
                     </li>
-                    <li class="list-group-item"><small>Roles: <c:forEach items="${requestScope.user.getRoles()}"
-                                                                         var="role">
-                        ${role.toString()}
-                    </c:forEach> </small>
+                    <li class="list-group-item"><small>Role: ${requestScope.user.getRole().toString()}</small>
                     </li>
                     <li class="list-group-item"><small>Registration
                         date: ${requestScope.user.getRegistrationDate()}</small></li>
@@ -30,18 +27,19 @@
         </div>
         <div class="col-xs-12 col-sm-8 data">
 
-                <nav>
-                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                        <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-involved"
-                           role="tab" aria-controls="nav-home" aria-selected="true">Involved in</a>
-                        <c:if test="${UserOwnAccount}">
+            <nav>
+                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                    <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-involved"
+                       role="tab" aria-controls="nav-home" aria-selected="true">Involved in</a>
+                    <%-- those nav item visible only if user opens his own account --%>
+                    <c:if test="${UserOwnAccount}">
                         <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-notifications"
                            role="tab" aria-controls="nav-profile" aria-selected="false">Notifications</a>
                         <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-edit" role="tab"
                            aria-controls="nav-contact" aria-selected="false">Edit</a>
-                        </c:if>
-                    </div>
-                </nav>
+                    </c:if>
+                </div>
+            </nav>
             <div class="tab-content" id="nav-tabContent">
                 <div class="tab-pane fade show active info-tab scroll" id="nav-involved" role="tabpanel"
                      aria-labelledby="nav-invitations-tab">
@@ -66,10 +64,11 @@
                     </c:if>
 
                 </div>
+                <%-- those nav item visible only if user opens his own account --%>
+                <c:if test="${UserOwnAccount}">
                 <div class="tab-pane fade" id="nav-notifications" role="tabpanel"
                      aria-labelledby="nav-notifications-tab">...
                 </div>
-                <c:if test="${UserOwnAccount}">
                     <div class="tab-pane fade" id="nav-edit" role="tabpanel" aria-labelledby="nav-edit-tab">...</div>
                 </c:if>
             </div>

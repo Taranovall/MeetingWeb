@@ -9,6 +9,8 @@ import com.meeting.dao.impl.TopicDaoImpl;
 import com.meeting.entitiy.*;
 import com.meeting.exception.DataBaseException;
 import com.meeting.service.MeetingService;
+import com.meeting.service.SpeakerService;
+import com.meeting.service.TopicService;
 import com.meeting.service.UserService;
 import com.meeting.service.connection.ConnectionPool;
 
@@ -28,12 +30,16 @@ public class MeetingServiceImpl implements MeetingService {
     private final SpeakerDao speakerDao;
 
     private final UserService userService;
+    private final TopicService topicService;
+    private final SpeakerService speakerService;
 
     public MeetingServiceImpl() {
         this.topicDao = new TopicDaoImpl();
         this.meetingDao = new MeetingDaoImpl();
         this.speakerDao = new SpeakerDaoImpl();
         this.userService = new UserServiceImpl();
+        this.topicService = new TopicServiceImpl();
+        this.speakerService = new SpeakerServiceImpl();
     }
 
 
@@ -60,7 +66,7 @@ public class MeetingServiceImpl implements MeetingService {
 
                 // creates topic and doesn't invite user to be a speaker if option wasn't selected
                 if (speaker.getLogin().equals("none")) {
-                    topicDao.freeTopic(meeting, topic, c);
+                    topicDao.createFreeTopic(meeting, topic, c);
                     continue;
                 }
 
@@ -84,7 +90,7 @@ public class MeetingServiceImpl implements MeetingService {
             Optional<Meeting> optionalMeeting = meetingDao.getById(id, c);
             if (!optionalMeeting.isPresent()) throw new DataBaseException("Meeting doesn't exist");
             meeting = optionalMeeting.get();
-            fillMeetingWithTopics(meeting, c);
+            extractMeetingInformation(meeting);
             c.commit();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -96,12 +102,63 @@ public class MeetingServiceImpl implements MeetingService {
     }
 
     @Override
+    public boolean proposeTopic(Long meetingId, Long userSessionId, String topicName) {
+        Connection c = null;
+        Topic topic = new Topic();
+        try {
+            c = ConnectionPool.getInstance().getConnection();
+            topic.setName(topicName);
+            topicDao.save(topic, c);
+            meetingDao.proposeTopic(meetingId,userSessionId, topic.getId(), c);
+            c.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            rollback(c);
+        } finally {
+            close(c);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean acceptProposedTopic(Long topicId, Long speakerId, Long meetingId) {
+        Connection c = null;
+        try {
+            c = ConnectionPool.getInstance().getConnection();
+            meetingDao.acceptProposedTopics(topicId, speakerId, meetingId, c);
+            c.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            rollback(c);
+        } finally {
+            close(c);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean cancelProposedTopic(Long topicId, Long speakerId) {
+        Connection c = null;
+        try {
+            c = ConnectionPool.getInstance().getConnection();
+            meetingDao.cancelProposedTopic(topicId, speakerId, c);
+            c.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            rollback(c);
+        } finally {
+            close(c);
+        }
+        return true;
+    }
+
+    @Override
     public List<Meeting> getAllMeetings() {
         List<Meeting> meetings = null;
         try (Connection c = getInstance().getConnection()) {
             c.setAutoCommit(true);
             meetings = meetingDao.getAll(c);
-            for (Meeting meeting : meetings) fillMeetingWithTopics(meeting, c);
+            for (Meeting meeting : meetings) extractMeetingInformation(meeting);
         } catch (SQLException | DataBaseException e) {
             e.printStackTrace();
         }
@@ -128,6 +185,70 @@ public class MeetingServiceImpl implements MeetingService {
         return meetings;
     }
 
+    @Override
+    public Map<Speaker, Set<Topic>> getAcceptedTopicsMapByMeetingId(Long meetingId) {
+        Map<Speaker, Set<Topic>> acceptedTopicsBySpeaker = new HashMap<>();
+        try (Connection c = ConnectionPool.getInstance().getConnection()) {
+            c.setAutoCommit(true);
+            // topic id - key, speaker id - value
+            Map<Long, Long> topicSpeakerIdMap = meetingDao.getTopicSpeakerIdMapByMeetingId(meetingId, c);
+
+            for (Map.Entry<Long, Long> entry : topicSpeakerIdMap.entrySet()) {
+                Speaker speaker = speakerService.getSpeakerById(entry.getValue());
+                Topic topic = topicService.getById(entry.getKey());
+
+                Set<Topic> topicSet = acceptedTopicsBySpeaker.get(speaker);
+
+                if (topicSet == null) {
+                    topicSet = new HashSet<>();
+                    topicSet.add(topic);
+                    acceptedTopicsBySpeaker.put(speaker, topicSet);
+                    continue;
+                }
+                topicSet.add(topic);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return acceptedTopicsBySpeaker;
+    }
+
+    @Override
+    public Map<Topic, Set<Speaker>> getSentApplicationMapByMeetingId(Long meetingId) {
+        Map<Topic, Set<Speaker>> sentApplicationMap = new HashMap<>();
+        try (Connection c = ConnectionPool.getInstance().getConnection()) {
+            c.setAutoCommit(true);
+            // key - topic ID, speaker id - value
+            Map<Long, Set<Long>> sentApplicationMapWithIDs = meetingDao.getSentApplicationsByMeetingId(meetingId, c);
+            for (Map.Entry<Long, Set<Long>> entry : sentApplicationMapWithIDs.entrySet()) {
+                Topic topic = topicService.getById(entry.getKey());
+                Set<Speaker> speakerSet = new HashSet<>();
+                entry.getValue().forEach(speakerId -> speakerSet.add(speakerService.getSpeakerById(speakerId)));
+                sentApplicationMap.put(topic, speakerSet);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return sentApplicationMap;
+    }
+
+    @Override
+    public Map<Topic, Speaker> getProposedTopicsBySpeakerByMeetingId(Long meetingId) {
+        Map<Topic, Speaker> proposedTopicsBySpeaker = new HashMap<>();
+        try(Connection c = ConnectionPool.getInstance().getConnection()) {
+            //topic Id - key, speaker id - value
+            Map<Long,Long> proposedTopicsMap = meetingDao.getProposedTopicsBySpeakerIdMap(meetingId, c);
+            proposedTopicsMap.entrySet().forEach(entry -> {
+                Topic topic = topicService.getById(entry.getKey());
+                Speaker speaker = speakerService.getSpeakerById(entry.getValue());
+                proposedTopicsBySpeaker.put(topic, speaker);
+            });
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return proposedTopicsBySpeaker;
+    }
+
     /**
      * creates map in which Topic is a key and Speaker is a value
      *
@@ -147,14 +268,19 @@ public class MeetingServiceImpl implements MeetingService {
                         }));
     }
 
-    private void fillMeetingWithTopics(Meeting meeting, Connection c) throws SQLException, DataBaseException {
-        //When the variable is initialized, all topics are stored in it
-        // but after the next line, only free topics will remain here
-        Set<Topic> topicsWithoutSpeakers = topicDao.getTopicsByMeetingId(meeting.getId(), c);
-        Map<Speaker, Set<Topic>> topicsWithSpeakers = separateTopics(topicsWithoutSpeakers, meeting, c);
+    private void extractMeetingInformation(Meeting meeting) throws SQLException, DataBaseException {
+        Set<Topic> freeTopics = topicService.getAllFreeTopicsByMeetingId(meeting.getId());
+        Map<Speaker, Set<Topic>> topicsWithSpeakers = getAcceptedTopicsMapByMeetingId(meeting.getId());
+        Map<Topic, Set<Speaker>> sentApplicationMap = getSentApplicationMapByMeetingId(meeting.getId());
+        Map<Topic, Speaker> proposedTopics = getProposedTopicsBySpeakerByMeetingId(meeting.getId());
+
+        meeting.setFreeTopics(freeTopics);
         meeting.setSpeakerTopics(topicsWithSpeakers);
-        meeting.setFreeTopics(topicsWithoutSpeakers);
+        meeting.setSentApplicationsMap(sentApplicationMap);
+        meeting.setProposedTopicsMap(proposedTopics);
     }
+
+    /*
 
     /**
      * Separates topics into those to which the speaker was invited and those to which he was not
@@ -164,7 +290,8 @@ public class MeetingServiceImpl implements MeetingService {
      * without speaker.
      *
      * @param allTopics set with all topics of this current meeting
-     */
+     *
+
     private Map<Speaker, Set<Topic>> separateTopics(Set<Topic> allTopics, Meeting meeting, Connection c) throws SQLException, DataBaseException {
         Map<Speaker, Set<Topic>> speakerTopics = new HashMap<>();
         Set<Topic> topics = new HashSet<>(allTopics);
@@ -197,7 +324,5 @@ public class MeetingServiceImpl implements MeetingService {
             }
         }
         return speakerTopics;
-    }
-
-
+    }*/
 }
