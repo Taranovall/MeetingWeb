@@ -1,8 +1,11 @@
 package com.meeting.controller;
 
 import com.meeting.entitiy.Meeting;
+import com.meeting.exception.DataBaseException;
 import com.meeting.service.MeetingService;
 import com.meeting.service.impl.MeetingServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,6 +21,7 @@ import static com.meeting.util.Constant.*;
 @WebServlet(name = "meetings", urlPatterns = "")
 public class MainPageController extends HttpServlet {
 
+    private static final Logger log = LoggerFactory.getLogger(MainPageController.class);
     private final MeetingService meetingService;
 
     public MainPageController() {
@@ -36,7 +40,11 @@ public class MainPageController extends HttpServlet {
         }
 
         if (meetingList == null) {
-            meetingList = meetingService.getAllMeetings();
+            try {
+                    meetingList = meetingService.getAllMeetings();
+                } catch (DataBaseException e) {
+                    e.printStackTrace();
+                }
             //removes redundant attributes if user's reloading the page
             if (!isUserHasUsedForm) {
                 session.removeAttribute(SORT_METHOD_ATTRIBUTE_NAME);
@@ -48,6 +56,9 @@ public class MainPageController extends HttpServlet {
         req.getRequestDispatcher(PATH_TO_MAIN_PAGE_JSP).forward(req, resp);
     }
 
+    /**
+     * Reverses order of meetings if sort method has been chosen for the second time in a row
+     */
     private void htmlReverseOrder(HttpSession session) {
         Object previousSortingMethod = session.getAttribute(SORT_METHOD_ATTRIBUTE_NAME);
         Object currentSortingMethod = session.getAttribute(IS_FORM_HAS_BEEN_USED_ATTRIBUTE_NAME);

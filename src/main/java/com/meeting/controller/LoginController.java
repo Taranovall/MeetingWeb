@@ -3,6 +3,8 @@ package com.meeting.controller;
 import com.meeting.entitiy.User;
 import com.meeting.service.ValidationService;
 import com.meeting.service.impl.ValidationServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,6 +18,7 @@ import static java.util.Objects.nonNull;
 
 @WebServlet(name = "login", urlPatterns = "/login")
 public class LoginController extends HttpServlet {
+    private static final Logger log = LoggerFactory.getLogger(LoginController.class);
 
     private final ValidationService validationService;
 
@@ -25,7 +28,6 @@ public class LoginController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        System.out.println("Session ID: " + req.getSession().getId());
         User sessionUser = (User) req.getSession().getAttribute("user");
         if (sessionUser != null) {
             resp.getWriter().write("You're already logged");
@@ -49,7 +51,7 @@ public class LoginController extends HttpServlet {
             } else {
                 resp.sendRedirect("/");
             }
-            System.out.printf("User with id %d just signed in", user.getId());
+            log.info("{}[{}] just signed in", user.getLogin(), user.getId());
         }
     }
 }

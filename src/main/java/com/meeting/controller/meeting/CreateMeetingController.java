@@ -3,6 +3,7 @@ package com.meeting.controller.meeting;
 import com.meeting.entitiy.Meeting;
 import com.meeting.entitiy.Speaker;
 import com.meeting.entitiy.User;
+import com.meeting.exception.DataBaseException;
 import com.meeting.service.MeetingService;
 import com.meeting.service.SpeakerService;
 import com.meeting.service.impl.MeetingServiceImpl;
@@ -77,7 +78,11 @@ public class CreateMeetingController extends HttpServlet {
 
         User userFromSession = (User) req.getSession().getAttribute("user");
 
-        meetingService.createMeeting(userFromSession, meeting, topics, speakers, image);
+        try {
+            meetingService.createMeeting(userFromSession, meeting, topics, speakers, image);
+        } catch (DataBaseException e) {
+            e.printStackTrace();
+        }
     }
 
     private Map<String, String> arrayValueToString(Map<String, String[]> map) {

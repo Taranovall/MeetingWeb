@@ -13,11 +13,11 @@ import java.util.Set;
 
 public interface MeetingService {
 
-   void createMeeting(User sessionUser, Meeting meeting, String[] topics, String[] speakers, File image);
+   void createMeeting(User sessionUser, Meeting meeting, String[] topics, String[] speakers, File image) throws DataBaseException;
 
    Meeting getMeetingById(Long id) throws DataBaseException;
 
-   List<Meeting> getAllMeetings();
+   List<Meeting> getAllMeetings() throws DataBaseException;
 
    /**
     *

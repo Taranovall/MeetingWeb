@@ -11,10 +11,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 @WebServlet(name = "acceptApplication", urlPatterns = "/meeting/accept-application")
 public class AcceptApplicationController extends HttpServlet {
-
     private final SpeakerService speakerService;
 
     public AcceptApplicationController() {

@@ -6,13 +6,18 @@ import com.meeting.dao.TopicDao;
 import com.meeting.dao.impl.MeetingDaoImpl;
 import com.meeting.dao.impl.SpeakerDaoImpl;
 import com.meeting.dao.impl.TopicDaoImpl;
-import com.meeting.entitiy.*;
+import com.meeting.entitiy.Meeting;
+import com.meeting.entitiy.Speaker;
+import com.meeting.entitiy.Topic;
+import com.meeting.entitiy.User;
 import com.meeting.exception.DataBaseException;
 import com.meeting.service.MeetingService;
 import com.meeting.service.SpeakerService;
 import com.meeting.service.TopicService;
 import com.meeting.service.UserService;
 import com.meeting.service.connection.ConnectionPool;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.sql.Connection;
@@ -24,6 +29,8 @@ import java.util.stream.IntStream;
 import static com.meeting.service.connection.ConnectionPool.*;
 
 public class MeetingServiceImpl implements MeetingService {
+
+    private static final Logger log = LoggerFactory.getLogger(MeetingServiceImpl.class);
 
     private final TopicDao topicDao;
     private final MeetingDao meetingDao;
@@ -44,7 +51,7 @@ public class MeetingServiceImpl implements MeetingService {
 
 
     @Override
-    public void createMeeting(User sessionUser, Meeting meeting, String[] topics, String[] speakers, File image) {
+    public void createMeeting(User sessionUser, Meeting meeting, String[] topics, String[] speakers, File image) throws DataBaseException {
         Connection c = null;
         String imageFolderPath = this.getClass().getClassLoader().getResource("images").getPath();
 
@@ -78,6 +85,8 @@ public class MeetingServiceImpl implements MeetingService {
             e.printStackTrace();
             rollback(c);
             image.delete();
+            log.error("Cannot create meeting: ", e);
+            throw new DataBaseException("Cannot create meeting", e);
         }
     }
 
@@ -95,6 +104,7 @@ public class MeetingServiceImpl implements MeetingService {
         } catch (SQLException e) {
             e.printStackTrace();
             rollback(c);
+            log.error("Cannot get meeting by ID: ", e);
         } finally {
             close(c);
         }
@@ -114,6 +124,7 @@ public class MeetingServiceImpl implements MeetingService {
         } catch (SQLException e) {
             e.printStackTrace();
             rollback(c);
+            log.error("Cannot propose topic: ", e);
         } finally {
             close(c);
         }
@@ -130,6 +141,7 @@ public class MeetingServiceImpl implements MeetingService {
         } catch (SQLException e) {
             e.printStackTrace();
             rollback(c);
+            log.error("Cannot accept proposed topic: ", e);
         } finally {
             close(c);
         }
@@ -146,6 +158,7 @@ public class MeetingServiceImpl implements MeetingService {
         } catch (SQLException e) {
             e.printStackTrace();
             rollback(c);
+            log.error("Cannot cancel proposed topic", e);
         } finally {
             close(c);
         }
@@ -153,14 +166,16 @@ public class MeetingServiceImpl implements MeetingService {
     }
 
     @Override
-    public List<Meeting> getAllMeetings() {
+    public List<Meeting> getAllMeetings() throws DataBaseException {
         List<Meeting> meetings = null;
         try (Connection c = getInstance().getConnection()) {
             c.setAutoCommit(true);
             meetings = meetingDao.getAll(c);
             for (Meeting meeting : meetings) extractMeetingInformation(meeting);
-        } catch (SQLException | DataBaseException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
+            log.error("Cannot get all meetings", e);
+            throw new DataBaseException("Cannot get all meetings", e);
         }
         return meetings;
     }

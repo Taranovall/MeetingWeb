@@ -6,6 +6,8 @@ import com.meeting.service.ValidationService;
 import com.meeting.exception.DataBaseException;
 import com.meeting.service.impl.UserServiceImpl;
 import com.meeting.service.impl.ValidationServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -19,6 +21,7 @@ import static com.meeting.util.Constant.PATH_TO_REGISTRATION_JSP;
 @WebServlet(name = "registration", urlPatterns = "/registration")
 public class RegistrationController extends HttpServlet {
 
+    private static final Logger log = LoggerFactory.getLogger(RegistrationController.class);
     private final UserService userService;
     private final ValidationService validationService;
 
@@ -41,8 +44,10 @@ public class RegistrationController extends HttpServlet {
         } else {
             try {
                 userService.signUpUser(user);
+                log.info("{}[{}] just signed up", user.getLogin(), user.getId());
             } catch (DataBaseException e) {
                 e.printStackTrace();
+                log.error("Sign up error: {}", e.getMessage());
             }
         }
     }

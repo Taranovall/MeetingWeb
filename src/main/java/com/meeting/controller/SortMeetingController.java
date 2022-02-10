@@ -2,6 +2,8 @@ package com.meeting.controller;
 
 import com.meeting.entitiy.Meeting;
 import com.meeting.util.SortingUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,7 +18,7 @@ import static com.meeting.util.Constant.*;
 
 @WebServlet(name = "sortMeeting", urlPatterns = "/sort-meeting")
 public class SortMeetingController extends HttpServlet {
-
+private static final Logger log = LoggerFactory.getLogger(SortMeetingController.class);
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -28,6 +30,7 @@ public class SortMeetingController extends HttpServlet {
 
         session.setAttribute(MEETING_ATTRIBUTE_NAME, meetingList);
         session.setAttribute(IS_FORM_HAS_BEEN_USED_ATTRIBUTE_NAME, sortMethod);
+        log.debug("User {} just sorted meetings", session.getId());
         resp.sendRedirect("/");
     }
 }

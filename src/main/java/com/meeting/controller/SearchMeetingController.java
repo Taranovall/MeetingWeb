@@ -1,11 +1,14 @@
 package com.meeting.controller;
 
 import com.meeting.entitiy.Meeting;
+import com.meeting.exception.DataBaseException;
 import com.meeting.service.MeetingService;
 import com.meeting.service.ValidationService;
 import com.meeting.service.impl.MeetingServiceImpl;
 import com.meeting.service.impl.ValidationServiceImpl;
 import com.meeting.util.SearchQueryUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -22,6 +25,7 @@ import static com.meeting.util.Constant.MEETING_ATTRIBUTE_NAME;
 @WebServlet(name = "searchMeeting", urlPatterns = "/search-meeting")
 public class SearchMeetingController extends HttpServlet {
 
+    private final Logger log = LoggerFactory.getLogger(SearchMeetingController.class);
     private final MeetingService meetingService;
     private final ValidationService validationService;
 
@@ -35,14 +39,19 @@ public class SearchMeetingController extends HttpServlet {
         // puts query in a session
         String query = req.getParameter("query");
         HttpSession session = req.getSession();
-
-        List<Meeting> meetingList = meetingService.getAllMeetings();
+        List<Meeting> meetingList = null;
+        try {
+            meetingList = meetingService.getAllMeetings();
+        } catch (DataBaseException e) {
+            e.printStackTrace();
+        }
         if (query != null) {
             boolean isValid = validationService.isQueryValid(query, req.getSession());
             if (isValid) {
                 SearchQueryUtil.executeQuery(meetingList, query);
                 session.setAttribute(MEETING_ATTRIBUTE_NAME, meetingList);
                 session.removeAttribute("queryIsNotValid");
+                log.debug("User {} just made a search by query: {}",session.getId(), query);
             }
         }
 
