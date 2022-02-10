@@ -30,6 +30,17 @@ public class Meeting implements Serializable {
         this.proposedTopicsMap = new HashMap<>();
     }
 
+    public Meeting(String name, String date, String time, String place) {
+        this.name = name;
+        this.date = date;
+        this.time = time;
+        this.place = place;
+        this.freeTopics = new HashSet<>();
+        this.speakerTopics = new HashMap<>();
+        this.sentApplicationsMap = new HashMap<>();
+        this.proposedTopicsMap = new HashMap<>();
+    }
+
     public Meeting() {
     }
 

@@ -10,6 +10,11 @@
 <div class="container mt-5 mb-5 text-center">
     <h1>Create new meeting</h1><br>
     <form action="create-meeting" method="get" class="add">
+        <c:if test="${error != null}">
+            <div class="alert alert-danger text-center" role="alert">
+                    ${error}
+            </div>
+        </c:if>
         <div class="field">
             <input type="text" name="name" placeholder="Meeting's name" class="form-control">
         </div>

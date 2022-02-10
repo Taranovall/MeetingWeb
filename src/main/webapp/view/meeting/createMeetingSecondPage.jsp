@@ -10,6 +10,11 @@
 <div class="container mt-5 mb-5 text-center">
     <h1>Create new meeting</h1><br>
     <form action="create-meeting" method="post" class="add" enctype="multipart/form-data">
+        <c:if test="${error != null}">
+            <div class="alert alert-danger text-center" role="alert">
+                    ${error}
+            </div>
+        </c:if>
         <c:forEach var="i" begin="1" end="${countOfTopics}">
             <div class="field">
                 <div class="input-group mb-3">

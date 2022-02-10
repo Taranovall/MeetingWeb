@@ -46,7 +46,7 @@ public class SearchMeetingController extends HttpServlet {
             e.printStackTrace();
         }
         if (query != null) {
-            boolean isValid = validationService.isQueryValid(query, req.getSession());
+            boolean isValid = validationService.searchValidator(query, req.getSession());
             if (isValid) {
                 SearchQueryUtil.executeQuery(meetingList, query);
                 session.setAttribute(MEETING_ATTRIBUTE_NAME, meetingList);

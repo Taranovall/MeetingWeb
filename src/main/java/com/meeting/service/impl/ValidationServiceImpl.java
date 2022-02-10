@@ -1,11 +1,16 @@
 package com.meeting.service.impl;
 
+import com.meeting.entitiy.Meeting;
 import com.meeting.entitiy.User;
 import com.meeting.service.UserService;
 import com.meeting.service.ValidationService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 import static com.meeting.util.Constant.QUERY_IS_NOT_VALID_ATTRIBUTE_NAME;
 
@@ -53,7 +58,7 @@ public class ValidationServiceImpl implements ValidationService {
     }
 
     @Override
-    public boolean isQueryValid(String query, HttpSession session) {
+    public boolean searchValidator(String query, HttpSession session) {
         int queryLength = query.trim().length();
         if (queryLength == 0) {
             session.setAttribute(QUERY_IS_NOT_VALID_ATTRIBUTE_NAME, "Query cannot be empty");
@@ -94,5 +99,74 @@ public class ValidationServiceImpl implements ValidationService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean createMeetingGetValidator(Meeting meeting, HttpServletRequest request) {
+        String errorMessage = null;
+        String regex = "^\\d{4}-\\d{2}-\\d{2}$";
+        if (!meeting.getDate().matches(regex)) {
+            errorMessage = "Date isn't valid";
+        }
+
+        regex = "^\\d{2}:\\d{2}$";
+        if (!meeting.getTime().matches(regex)) {
+            errorMessage = "Time isn't valid";
+        }
+
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        String meetingStartTime = String.format("%s %s", meeting.getDate(), meeting.getTime());
+        LocalDateTime now = LocalDateTime.now();
+        String currentTime = dtf.format(now);
+        if (meetingStartTime.compareTo(currentTime) <= 0) {
+            errorMessage = "Incorrect date and time of the meeting";
+        }
+
+        regex = "^.{8,32}$";
+        if (!meeting.getName().matches(regex)) {
+            errorMessage = "Name length have to be from 8 to 32 symbols";
+        }
+
+        String countOfTopics = request.getParameter("countOfTopics");
+        if (countOfTopics.length() > 0) {
+            regex = "^\\d+$";
+            if (!countOfTopics.matches(regex)) {
+                errorMessage = "Count of topics must contain only numbers";
+            } else {
+                Integer countOfTopicsInt = Integer.parseInt(countOfTopics);
+                if (countOfTopicsInt > 10) {
+                    errorMessage = "Count of topics cannot be more that 10";
+                }
+            }
+        } else {
+            errorMessage = "Count of topics cannot be null";
+        }
+
+        if (Objects.nonNull(errorMessage)) {
+            request.setAttribute("error", errorMessage);
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean createMeetingPostValidator(String[] topics, Part uploadedImage, HttpServletRequest req) {
+        String errorMessage = null;
+
+        for (String topic : topics) {
+            if (Objects.isNull(topic) || topic.length() < 1 || topic.length() > 32) {
+                errorMessage = "Invalid topic name";
+                break;
+            }
+        }
+
+        if (uploadedImage.getSize() <= 0) errorMessage = "Photo hasn't been chosen";
+
+        if (Objects.nonNull(errorMessage)) {
+            req.setAttribute("error", errorMessage);
+            return false;
+        }
+
+        return true;
     }
 }
