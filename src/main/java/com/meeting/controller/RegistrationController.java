@@ -1,13 +1,13 @@
 package com.meeting.controller;
 
 import com.meeting.entitiy.User;
+import com.meeting.exception.DataBaseException;
 import com.meeting.service.UserService;
 import com.meeting.service.ValidationService;
-import com.meeting.exception.DataBaseException;
 import com.meeting.service.impl.UserServiceImpl;
 import com.meeting.service.impl.ValidationServiceImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -21,7 +21,7 @@ import static com.meeting.util.Constant.PATH_TO_REGISTRATION_JSP;
 @WebServlet(name = "registration", urlPatterns = "/registration")
 public class RegistrationController extends HttpServlet {
 
-    private static final Logger log = LoggerFactory.getLogger(RegistrationController.class);
+    private static final Logger log = LogManager.getLogger(RegistrationController.class);
     private final UserService userService;
     private final ValidationService validationService;
 

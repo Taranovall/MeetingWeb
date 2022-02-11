@@ -1,9 +1,10 @@
 package com.meeting.controller;
 
 import com.meeting.entitiy.Meeting;
+import com.meeting.service.impl.MeetingServiceImpl;
 import com.meeting.util.SortingUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,7 +19,8 @@ import static com.meeting.util.Constant.*;
 
 @WebServlet(name = "sortMeeting", urlPatterns = "/sort-meeting")
 public class SortMeetingController extends HttpServlet {
-private static final Logger log = LoggerFactory.getLogger(SortMeetingController.class);
+    private static final Logger log = LogManager.getLogger(MeetingServiceImpl.class);
+
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

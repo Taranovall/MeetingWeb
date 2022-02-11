@@ -24,7 +24,17 @@ public interface ValidationService {
     boolean createMeetingGetValidator(Meeting meeting, HttpServletRequest request);
 
     /**
-     * @return true if fields are valid
+     * @return true only if fields are valid
      */
     boolean createMeetingPostValidator(String[] topics, Part uploadedImage, HttpServletRequest req);
+
+    /**
+     * @return true only if topic name is valid
+     */
+    boolean proposingTopicsValidator(String topicName, HttpServletRequest req);
+
+    /**
+     * @return true only if speaker has been chosen
+     */
+    boolean chooseSpeakerValidator(String speakerId, HttpServletRequest req);
 }

@@ -31,7 +31,7 @@
                 <div class="nav nav-tabs" id="nav-tab" role="tablist">
                     <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-involved"
                        role="tab" aria-controls="nav-home" aria-selected="true">Involved in</a>
-                    <%-- those nav item visible only if user opens his own account --%>
+                    <%-- those nav items visible only if user opens his own account --%>
                     <c:if test="${UserOwnAccount}">
                         <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-notifications"
                            role="tab" aria-controls="nav-profile" aria-selected="false">Notifications</a>
@@ -64,7 +64,7 @@
                     </c:if>
 
                 </div>
-                <%-- those nav item visible only if user opens his own account --%>
+                <%-- those nav items visible only if user opens his own account --%>
                 <c:if test="${UserOwnAccount}">
                 <div class="tab-pane fade" id="nav-notifications" role="tabpanel"
                      aria-labelledby="nav-notifications-tab">...

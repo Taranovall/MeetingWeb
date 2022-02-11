@@ -7,8 +7,8 @@ import com.meeting.service.ValidationService;
 import com.meeting.service.impl.MeetingServiceImpl;
 import com.meeting.service.impl.ValidationServiceImpl;
 import com.meeting.util.SearchQueryUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -25,7 +25,7 @@ import static com.meeting.util.Constant.MEETING_ATTRIBUTE_NAME;
 @WebServlet(name = "searchMeeting", urlPatterns = "/search-meeting")
 public class SearchMeetingController extends HttpServlet {
 
-    private final Logger log = LoggerFactory.getLogger(SearchMeetingController.class);
+    private static final Logger log = LogManager.getLogger(SearchMeetingController.class);
     private final MeetingService meetingService;
     private final ValidationService validationService;
 

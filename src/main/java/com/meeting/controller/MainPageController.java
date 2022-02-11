@@ -4,8 +4,8 @@ import com.meeting.entitiy.Meeting;
 import com.meeting.exception.DataBaseException;
 import com.meeting.service.MeetingService;
 import com.meeting.service.impl.MeetingServiceImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -21,7 +21,7 @@ import static com.meeting.util.Constant.*;
 @WebServlet(name = "meetings", urlPatterns = "")
 public class MainPageController extends HttpServlet {
 
-    private static final Logger log = LoggerFactory.getLogger(MainPageController.class);
+    private static final Logger log = LogManager.getLogger(MainPageController.class);
     private final MeetingService meetingService;
 
     public MainPageController() {

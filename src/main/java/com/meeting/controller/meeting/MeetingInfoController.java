@@ -37,6 +37,7 @@ public class MeetingInfoController extends HttpServlet {
         HttpSession session = req.getSession();
         User userSession = (User) req.getSession().getAttribute("user");
 
+        // if user has any error it is moved from session to request
         if (session.getAttribute("error") != null) {
             req.setAttribute("error", session.getAttribute("error"));
             session.removeAttribute("error");
@@ -48,6 +49,7 @@ public class MeetingInfoController extends HttpServlet {
 
             req.setAttribute("meeting", meeting);
             req.getSession().setAttribute("lastPageURI", req.getRequestURI());
+            // if user is authorized
                 if (Objects.nonNull(userSession)) {
                     if (userSession.getRole() == Role.SPEAKER){
                         List<String> sentApplicationList = (List<String>) session.getAttribute("sentApplicationList");

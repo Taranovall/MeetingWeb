@@ -169,4 +169,23 @@ public class ValidationServiceImpl implements ValidationService {
 
         return true;
     }
+
+    @Override
+    public boolean proposingTopicsValidator(String topicName, HttpServletRequest req) {
+        String regex = "^.{4,32}$";
+        if (!topicName.matches(regex)) {
+            req.getSession().setAttribute("error", "Invalid topic name");
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean chooseSpeakerValidator(String speakerId, HttpServletRequest req) {
+        if (speakerId.equals("none")) {
+            req.getSession().setAttribute("error", "Option hasn't been selected");
+            return false;
+        }
+        return true;
+    }
 }

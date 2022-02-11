@@ -70,7 +70,7 @@ public class CreateMeetingController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // removes error attribute in case user got any error before successful input
+        // removes error attribute in case if user got any error before successful input
         req.getSession().removeAttribute("error");
         String[] topics = req.getParameterValues("topicName");
         String[] speakers = req.getParameterValues("speakerName");

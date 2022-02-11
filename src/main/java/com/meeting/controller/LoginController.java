@@ -3,8 +3,8 @@ package com.meeting.controller;
 import com.meeting.entitiy.User;
 import com.meeting.service.ValidationService;
 import com.meeting.service.impl.ValidationServiceImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,7 +18,7 @@ import static java.util.Objects.nonNull;
 
 @WebServlet(name = "login", urlPatterns = "/login")
 public class LoginController extends HttpServlet {
-    private static final Logger log = LoggerFactory.getLogger(LoginController.class);
+    private static final Logger log = LogManager.getLogger(LoginController.class);
 
     private final ValidationService validationService;
 

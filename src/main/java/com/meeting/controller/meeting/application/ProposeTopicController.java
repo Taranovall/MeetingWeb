@@ -2,7 +2,9 @@ package com.meeting.controller.meeting.application;
 
 import com.meeting.entitiy.User;
 import com.meeting.service.MeetingService;
+import com.meeting.service.ValidationService;
 import com.meeting.service.impl.MeetingServiceImpl;
+import com.meeting.service.impl.ValidationServiceImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,9 +18,11 @@ import java.io.IOException;
 public class ProposeTopicController  extends HttpServlet {
 
     private final MeetingService meetingService;
+    private final ValidationService validationService;
 
     public ProposeTopicController() {
         this.meetingService = new MeetingServiceImpl();
+        this.validationService = new ValidationServiceImpl();
     }
 
     @Override
@@ -29,7 +33,10 @@ public class ProposeTopicController  extends HttpServlet {
         User user = (User) session.getAttribute("user");
         Long meetingId = Long.valueOf(lastURI.split("/")[2]);
 
-        meetingService.proposeTopic(meetingId, user.getId(), topicName);
+        // topic will be proposed only if topic name is valid
+        if (validationService.proposingTopicsValidator(topicName, req)) {
+            meetingService.proposeTopic(meetingId, user.getId(), topicName);
+        }
 
         resp.sendRedirect(lastURI);
     }

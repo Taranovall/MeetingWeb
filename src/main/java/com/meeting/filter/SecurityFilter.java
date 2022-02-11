@@ -1,15 +1,14 @@
-package com.meeting.controller.filter;
+package com.meeting.filter;
 
 import com.meeting.entitiy.Role;
 import com.meeting.entitiy.User;
 
 import javax.servlet.*;
-import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebFilter(filterName = "securityFilet", urlPatterns = "/create-meeting")
+//@WebFilter(filterName = "securityFilet", urlPatterns = "/create-meeting")
 public class SecurityFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
