@@ -41,4 +41,6 @@ public interface MeetingService {
    boolean cancelProposedTopic(Long topicId, Long speakerId);
 
    Map<Topic, Speaker> getProposedTopicsBySpeakerByMeetingId(Long meetingId);
+
+    void updateInformation(Meeting meeting) throws DataBaseException;
 }

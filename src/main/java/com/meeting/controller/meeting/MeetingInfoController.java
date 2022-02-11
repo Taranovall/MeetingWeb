@@ -65,6 +65,8 @@ public class MeetingInfoController extends HttpServlet {
                     } else if (userSession.getRole() == Role.MODERATOR) {
                         session.setAttribute("sentApplicationsBySpeaker", meeting.getSentApplicationsMap());
                         session.setAttribute("proposedTopics", meeting.getProposedTopicsMap());
+                        // for editing meeting
+                        session.setAttribute("meeting", meeting);
                     }
                 }
 

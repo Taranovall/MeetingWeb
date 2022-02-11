@@ -12,7 +12,7 @@
 <c:if test="${sessionScope.user.getRole().name() != 'user' && sessionScope.user.getRole() != null}">
     <div class="text-center">
         <button type="button" class="btn btn-outline-dark mt-2" data-toggle="modal"
-                data-target="#staticBackdrop">
+                data-target="#TopicProposing">
                 <%-- This way see button's content speaker --%>
             <c:if test="${sessionScope.user.getRole().name() == 'SPEAKER'}">
                 Propose a topic
@@ -23,7 +23,7 @@
             </c:if>
         </button>
     </div>
-    <div class="modal fade propose" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1"
+    <div class="modal fade propose" id="TopicProposing" data-backdrop="static" data-keyboard="false" tabindex="-1"
          aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">

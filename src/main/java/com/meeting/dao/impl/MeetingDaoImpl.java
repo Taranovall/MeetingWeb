@@ -169,6 +169,16 @@ public class MeetingDaoImpl implements MeetingDao {
         return true;
     }
 
+    @Override
+    public void updateInformation(Meeting meeting, Connection c) throws SQLException {
+        PreparedStatement p = c.prepareStatement(SQLQuery.UPDATE_MEETING_INFORMATION_SQL);
+        p.setString(1, meeting.getTime());
+        p.setString(2, meeting.getDate());
+        p.setString(3, meeting.getPlace());
+        p.setLong(4, meeting.getId());
+        p.executeUpdate();
+    }
+
     /**
      * Extracts meeting from result set
      */

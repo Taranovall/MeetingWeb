@@ -102,7 +102,7 @@ public class ValidationServiceImpl implements ValidationService {
     }
 
     @Override
-    public boolean createMeetingGetValidator(Meeting meeting, HttpServletRequest request) {
+    public boolean meetingMainInfoValidator(Meeting meeting, HttpServletRequest request) {
         String errorMessage = null;
         String regex = "^\\d{4}-\\d{2}-\\d{2}$";
         if (!meeting.getDate().matches(regex)) {
@@ -122,35 +122,38 @@ public class ValidationServiceImpl implements ValidationService {
             errorMessage = "Incorrect date and time of the meeting";
         }
 
-        regex = "^.{8,32}$";
+        regex = "^.{1,32}$";
         if (!meeting.getName().matches(regex)) {
             errorMessage = "Name length have to be from 8 to 32 symbols";
         }
 
-        String countOfTopics = request.getParameter("countOfTopics");
-        if (countOfTopics.length() > 0) {
-            regex = "^\\d+$";
-            if (!countOfTopics.matches(regex)) {
-                errorMessage = "Count of topics must contain only numbers";
-            } else {
-                Integer countOfTopicsInt = Integer.parseInt(countOfTopics);
-                if (countOfTopicsInt > 10) {
-                    errorMessage = "Count of topics cannot be more that 10";
+        // checks if data is valid only when creating meeting
+        if (request.getRequestURI().equals("/create-meeting")) {
+            String countOfTopics = request.getParameter("countOfTopics");
+            if (countOfTopics.length() > 0) {
+                regex = "^\\d+$";
+                if (!countOfTopics.matches(regex)) {
+                    errorMessage = "Count of topics must contain only numbers";
+                } else {
+                    Integer countOfTopicsInt = Integer.parseInt(countOfTopics);
+                    if (countOfTopicsInt > 10) {
+                        errorMessage = "Count of topics cannot be more that 10";
+                    }
                 }
+            } else {
+                errorMessage = "Count of topics cannot be null";
             }
-        } else {
-            errorMessage = "Count of topics cannot be null";
         }
 
         if (Objects.nonNull(errorMessage)) {
-            request.setAttribute("error", errorMessage);
+            request.getSession().setAttribute("error", errorMessage);
             return false;
         }
         return true;
     }
 
     @Override
-    public boolean createMeetingPostValidator(String[] topics, Part uploadedImage, HttpServletRequest req) {
+    public boolean meetingPostValidator(String[] topics, Part uploadedImage, HttpServletRequest req) {
         String errorMessage = null;
 
         for (String topic : topics) {

@@ -21,12 +21,12 @@ public interface ValidationService {
     /**
      * @return true if fields are valid otherwise return false and set attribute 'error' with message
      */
-    boolean createMeetingGetValidator(Meeting meeting, HttpServletRequest request);
+    boolean meetingMainInfoValidator(Meeting meeting, HttpServletRequest request);
 
     /**
      * @return true only if fields are valid
      */
-    boolean createMeetingPostValidator(String[] topics, Part uploadedImage, HttpServletRequest req);
+    boolean meetingPostValidator(String[] topics, Part uploadedImage, HttpServletRequest req);
 
     /**
      * @return true only if topic name is valid

@@ -38,4 +38,6 @@ public interface MeetingDao extends Dao<Meeting> {
     Map<Long, Long> getProposedTopicsBySpeakerIdMap(Long meetingId, Connection c) throws SQLException;
 
     boolean cancelProposedTopic(Long topicId, Long speakerId, Connection c) throws SQLException;
+
+    void updateInformation(Meeting meeting, Connection c) throws SQLException;
 }

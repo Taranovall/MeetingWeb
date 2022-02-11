@@ -55,7 +55,7 @@ public class CreateMeetingController extends HttpServlet {
             // create meeting from get parameters
             Meeting meeting = new Meeting(name, date, time, place);
             // check if parameters are valid
-            if (validationService.createMeetingGetValidator(meeting, req)) {
+            if (validationService.meetingMainInfoValidator(meeting, req)) {
                 List<Speaker> speakerList = speakerService.getAllSpeakers();
                 req.setAttribute("speakers", speakerList);
                 req.getSession().setAttribute("meeting", meeting);
@@ -79,7 +79,7 @@ public class CreateMeetingController extends HttpServlet {
 
         Part uploadedImage = req.getPart("photo");
 
-        if (validationService.createMeetingPostValidator(topics, uploadedImage, req)) {
+        if (validationService.meetingPostValidator(topics, uploadedImage, req)) {
 
             // creates temp file and write image in it
             File image = new File(uploadedImage.getSubmittedFileName());

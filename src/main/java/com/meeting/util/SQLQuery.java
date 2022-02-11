@@ -38,6 +38,7 @@ public class SQLQuery {
     public static final String GET_MEETING_BY_ID = "SELECT * FROM meetings WHERE id = ?";
     public static final String GET_ALL_MEETINGS_ID_WHERE_SPEAKER_INVOLVES_IN = "SELECT DISTINCT meeting_id FROM meeting_topics mt, speaker_topics st WHERE mt.topic_id = st.topic_id AND st.invitation is true AND speaker_id = ?";
     public static final String GET_PROPOSED_TOPICS_BY_MEETING_ID = "SELECT proposed_by_speaker, topic_id FROM proposed_topics WHERE meeting_id = ?";
+    public static final String UPDATE_MEETING_INFORMATION_SQL = "UPDATE meetings SET time=?, date=?, place=? WHERE id = ?";
 
 
     //Speaker requests

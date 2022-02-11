@@ -16,7 +16,40 @@
 <div class="px-3 pt-3">
     <div class="row">
         <div class="col-xs-12 col-sm-4">
-            <img src="${meeting.getPhotoPath()}" class="img-thumbnail"/>
+            <div class="img">
+                <img src="${meeting.getPhotoPath()}" class="img-thumbnail"/>
+                <%--------------- EDIT BUTTON ---------------%>
+                <c:if test="${sessionScope.user.getRole().name() == 'MODERATOR'}">
+                    <button type="button" class="edit-button" data-toggle="modal"
+                            data-target="#editInfo">Edit
+                    </button>
+                </c:if>
+            </div>
+            <%--------------- EDIT BUTTON CONTENT ---------------%>
+            <div class="modal fade" id="editInfo" data-backdrop="static" data-keyboard="false"
+                 tabindex="-1"
+                 aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <form action="edit-meeting" method="post">
+                            <div class="modal-body edit-modal-content">
+                                <input type="time" name="meetingTime" placeholder="Name" value="${meeting.getTime()}"
+                                       class="form-control">
+                                <input type="date" name="meetingDate" placeholder="Name" value="${meeting.getDate()}"
+                                       class="form-control">
+                                <input type="text" name="meetingPlace" placeholder="Name" value="${meeting.getPlace()}"
+                                       class="form-control">
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close
+                                </button>
+                                <button class="btn btn-primary" type="submit">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <%--------------- /EDIT BUTTON CONTENT ---------------%>
             <ul class="list-group pt-2">
                 <li class="list-group-item"><small>Name: ${meeting.getName()}</small>
                 </li>

@@ -264,6 +264,22 @@ public class MeetingServiceImpl implements MeetingService {
         return proposedTopicsBySpeaker;
     }
 
+    @Override
+    public void updateInformation(Meeting meeting) throws DataBaseException{
+        Connection c = null;
+        try {
+            c = ConnectionPool.getInstance().getConnection();
+            meetingDao.updateInformation(meeting, c);
+            c.commit();
+        } catch (SQLException e) {
+            log.error("Cannot update information:", e);
+            rollback(c);
+            throw new DataBaseException("Cannot update information", e);
+        } finally {
+            close(c);
+        }
+    }
+
     /**
      * creates map in which Topic is a key and Speaker is a value
      *
@@ -294,50 +310,4 @@ public class MeetingServiceImpl implements MeetingService {
         meeting.setSentApplicationsMap(sentApplicationMap);
         meeting.setProposedTopicsMap(proposedTopics);
     }
-
-    /*
-
-    /**
-     * Separates topics into those to which the speaker was invited and those to which he was not
-     * removing topics that already have speaker from 'allTopics' and put it into map.
-     * <p>
-     * After successful execution of the method in collection 'allTopics' remains only topics
-     * without speaker.
-     *
-     * @param allTopics set with all topics of this current meeting
-     *
-
-    private Map<Speaker, Set<Topic>> separateTopics(Set<Topic> allTopics, Meeting meeting, Connection c) throws SQLException, DataBaseException {
-        Map<Speaker, Set<Topic>> speakerTopics = new HashMap<>();
-        Set<Topic> topics = new HashSet<>(allTopics);
-        for (Topic topic : topics) {
-            Optional<Speaker> optionalSpeaker = speakerDao.getSpeakerByTopicId(topic.getId(), c);
-
-            // if this topic doesn't have speaker, iteration is skipped
-            if (!optionalSpeaker.isPresent()) continue;
-
-            Speaker speaker = optionalSpeaker.get();
-
-            Map<Topic, State> topicStateMap = speaker.getSpeakerTopics().get(meeting);
-
-            if (topicStateMap.get(topic).equals(State.ACCEPTED)) {
-                allTopics.remove(topic);
-                Set<Topic> topicsOfCurrentSpeaker = speakerTopics.get(speaker);
-
-                if (topicsOfCurrentSpeaker == null) {
-                    Set<Topic> topicSet = new HashSet<>();
-                    topicSet.add(topic);
-                    speakerTopics.put(speaker, topicSet);
-                } else {
-                    topicsOfCurrentSpeaker.add(topic);
-                }
-            }
-
-            if (topicStateMap.get(topic).equals(State.NOT_DEFINED)) {
-                Set<Speaker> speakers = speakerDao.getAllSpeakerApplicationsByTopicId(topic.getId(), c);
-                meeting.getSentApplicationsMap().put(topic, speakers);
-            }
-        }
-        return speakerTopics;
-    }*/
 }
