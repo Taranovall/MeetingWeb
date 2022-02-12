@@ -50,10 +50,11 @@ public class CreateMeetingController extends HttpServlet {
             // retrieve get parameters
             String name = req.getParameter("name");
             String date = req.getParameter("date");
-            String time = req.getParameter("time");
+            String startTime = req.getParameter("startTime");
+            String endTime = req.getParameter("endTime");
             String place = req.getParameter("place");
             // create meeting from get parameters
-            Meeting meeting = new Meeting(name, date, time, place);
+            Meeting meeting = new Meeting(name, date, startTime, endTime, place);
             // check if parameters are valid
             if (validationService.meetingMainInfoValidator(meeting, req)) {
                 List<Speaker> speakerList = speakerService.getAllSpeakers();

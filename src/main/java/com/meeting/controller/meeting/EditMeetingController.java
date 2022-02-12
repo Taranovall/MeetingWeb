@@ -1,6 +1,7 @@
 package com.meeting.controller.meeting;
 
 import com.meeting.entitiy.Meeting;
+import com.meeting.exception.DataBaseException;
 import com.meeting.service.MeetingService;
 import com.meeting.service.ValidationService;
 import com.meeting.service.impl.MeetingServiceImpl;
@@ -32,16 +33,22 @@ public class EditMeetingController extends HttpServlet {
         Meeting meeting = (Meeting) session.getAttribute("meeting");
         session.removeAttribute("meeting");
 
-        String newMeetingTime = req.getParameter("meetingTime");
+        String newMeetingStartTime = req.getParameter("meetingStartTime");
+        String newMeetingEndTime = req.getParameter("meetingEndTime");
         String newMeetingDate = req.getParameter("meetingDate");
         String newMeetingPlace = req.getParameter("meetingPlace");
 
-        meeting.setTime(newMeetingTime);
+        meeting.setTimeStart(newMeetingStartTime);
+        meeting.setTimeEnd(newMeetingEndTime);
         meeting.setDate(newMeetingDate);
         meeting.setPlace(newMeetingPlace);
 
         if (validationService.meetingMainInfoValidator(meeting, req)) {
-            meetingService.updateInformation(meeting);
+            try {
+                meetingService.updateInformation(meeting);
+            } catch (DataBaseException e) {
+                e.printStackTrace();
+            }
         }
         resp.sendRedirect(lastURI);
     }

@@ -3,6 +3,7 @@ package com.meeting.dao.impl;
 import com.meeting.dao.UserDao;
 import com.meeting.entitiy.Role;
 import com.meeting.entitiy.User;
+import com.meeting.util.SQLQuery;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -20,8 +21,7 @@ public class UserDaoImpl implements UserDao {
         p.setLong(1, id);
         ResultSet rs = p.executeQuery();
         if (rs.next()) {
-            User user = extractUser(rs);
-            user.setRole(getUserRole(user.getId(),c));
+            User user = extractUser(rs, c);
             optionalUser = Optional.of(user);
         }
         return optionalUser;
@@ -33,7 +33,7 @@ public class UserDaoImpl implements UserDao {
         PreparedStatement p = c.prepareStatement(GET_ALL_USERS_SQL);
         ResultSet rs = p.executeQuery();
         while (rs.next()) {
-            User user = extractUser(rs);
+            User user = extractUser(rs, c);
             user.setRole(getUserRole(user.getId(), c));
             users.add(user);
         }
@@ -46,7 +46,7 @@ public class UserDaoImpl implements UserDao {
         PreparedStatement p = c.prepareStatement(GET_USER_ROLE_BY_ID_SQL);
         p.setLong(1, id);
         ResultSet rs = p.executeQuery();
-        while(rs.next()) {
+        while (rs.next()) {
             role = Role.getRoleByString(rs.getString("name"));
         }
         return role;
@@ -72,6 +72,7 @@ public class UserDaoImpl implements UserDao {
             if (rs.next()) {
                 Long usedId = rs.getLong(1);
                 user.setRole(Role.USER);
+                user.setId(usedId);
                 addRoleForUser(usedId, c);
             }
         }
@@ -84,8 +85,7 @@ public class UserDaoImpl implements UserDao {
         p.setString(1, login);
         ResultSet rs = p.executeQuery();
         if (rs.next()) {
-            User user = extractUser(rs);
-            user.setRole(getUserRole(user.getId(), c));
+            User user = extractUser(rs, c);
             optionalUser = Optional.of(user);
         }
         return optionalUser;
@@ -98,9 +98,38 @@ public class UserDaoImpl implements UserDao {
         p.setString(1, role);
         ResultSet rs = p.executeQuery();
         while (rs.next()) {
-            users.add(extractUser(rs));
+            users.add(extractUser(rs, c));
         }
         return users;
+    }
+
+    @Override
+    public void participate(Long userId, Long meetingId, Connection c) throws SQLException {
+        PreparedStatement p = c.prepareStatement(SQLQuery.USER_PARTICIPATE_SQL);
+        p.setLong(1, meetingId);
+        p.setLong(2, userId);
+        p.executeUpdate();
+    }
+
+    @Override
+    public List<Long> getMeetingIdsUserTakesPart(Long userId, Connection c) throws SQLException {
+        PreparedStatement p = c.prepareStatement(SQLQuery.GET_MEETING_IDS_IN_WHICH_USER_TAKES_PARK_SQL);
+        p.setLong(1, userId);
+        List<Long> userMeetingIds = new LinkedList<>();
+        ResultSet rs = p.executeQuery();
+        while (rs.next()) {
+            Long meetingId = rs.getLong(1);
+            userMeetingIds.add(meetingId);
+        }
+        return userMeetingIds;
+     }
+
+    @Override
+    public void stopParticipating(Long userId, Long meetingId, Connection c) throws SQLException {
+        PreparedStatement p = c.prepareStatement(SQLQuery.USER_STOP_PARTICIPATING_SQL);
+        p.setLong(1, meetingId);
+        p.setLong(2, userId);
+        p.executeUpdate();
     }
 
     @Override
@@ -116,13 +145,15 @@ public class UserDaoImpl implements UserDao {
         p.executeUpdate();
     }
 
-    private User extractUser(ResultSet rs) throws SQLException {
+    private User extractUser(ResultSet rs, Connection c) throws SQLException {
         Long id = rs.getLong("id");
         String login = rs.getString("login");
         String password = rs.getString("password");
         String registrationDate = rs.getString("registration_date");
         User user = new User(id, login, password);
         user.setRegistrationDate(registrationDate);
+        user.setRole(getUserRole(user.getId(), c));
+        user.setMeetingIdsSetUserTakesPart(getMeetingIdsUserTakesPart(user.getId(), c));
         return user;
     }
 }

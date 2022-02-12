@@ -107,3 +107,9 @@ td:hover .accept-application button {
 .edit-modal-content input {
     margin-bottom: 0.5rem !important;
 }
+
+.href {
+    text-decoration: none !important;
+    cursor: pointer;
+    color: unset;
+}

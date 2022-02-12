@@ -43,4 +43,6 @@ public interface MeetingService {
    Map<Topic, Speaker> getProposedTopicsBySpeakerByMeetingId(Long meetingId);
 
     void updateInformation(Meeting meeting) throws DataBaseException;
+
+    List<User> getParticipantsByMeetingId(Long meetingId);
 }

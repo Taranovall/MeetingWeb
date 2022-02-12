@@ -110,12 +110,15 @@ public class ValidationServiceImpl implements ValidationService {
         }
 
         regex = "^\\d{2}:\\d{2}$";
-        if (!meeting.getTime().matches(regex)) {
+        boolean timeIsValidCheck = meeting.getTimeStart().matches(regex) && meeting.getTimeEnd().matches(regex);
+        // return true if end time is greater than start time
+        boolean correctMeetingDuration = meeting.getTimeStart().compareTo(meeting.getTimeEnd()) <= 0;
+        if (!timeIsValidCheck || !correctMeetingDuration) {
             errorMessage = "Time isn't valid";
         }
 
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        String meetingStartTime = String.format("%s %s", meeting.getDate(), meeting.getTime());
+        String meetingStartTime = String.format("%s %s", meeting.getDate(), meeting.getTimeStart());
         LocalDateTime now = LocalDateTime.now();
         String currentTime = dtf.format(now);
         if (meetingStartTime.compareTo(currentTime) <= 0) {

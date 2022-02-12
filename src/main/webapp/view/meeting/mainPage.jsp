@@ -30,7 +30,7 @@
                                           d="M5.216 14A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216z"/>
                                     <path d="M4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/>
                                 </svg>
-                                <span>${m.getParticipants().size()}</span>
+                                <span>${m.getParticipants().size() + m.getSpeakerTopics().size()}</span>
                             </div>
                             <div class="amount amount-topic" title="Количество тем">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen" viewBox="0 0 16 16">
@@ -45,7 +45,7 @@
                     <ul class="info list-group">
                         <li class="list-group-item"><small>Date: ${m.getDate()}</small>
                         </li>
-                        <li class="list-group-item"><small>Time: ${m.getTime()}</small>
+                        <li class="list-group-item"><small>Time: ${m.getTimeStart()} - ${m.getTimeEnd()}</small>
                         </li>
                         <li class="list-group-item"><small>Place: ${m.getPlace()}</small>
                         </li>

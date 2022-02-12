@@ -16,6 +16,7 @@ import com.meeting.service.SpeakerService;
 import com.meeting.service.TopicService;
 import com.meeting.service.UserService;
 import com.meeting.service.connection.ConnectionPool;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -119,7 +120,7 @@ public class MeetingServiceImpl implements MeetingService {
             c = ConnectionPool.getInstance().getConnection();
             topic.setName(topicName);
             topicDao.save(topic, c);
-            meetingDao.proposeTopic(meetingId,userSessionId, topic.getId(), c);
+            meetingDao.proposeTopic(meetingId, userSessionId, topic.getId(), c);
             c.commit();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -250,9 +251,9 @@ public class MeetingServiceImpl implements MeetingService {
     @Override
     public Map<Topic, Speaker> getProposedTopicsBySpeakerByMeetingId(Long meetingId) {
         Map<Topic, Speaker> proposedTopicsBySpeaker = new HashMap<>();
-        try(Connection c = ConnectionPool.getInstance().getConnection()) {
+        try (Connection c = ConnectionPool.getInstance().getConnection()) {
             //topic Id - key, speaker id - value
-            Map<Long,Long> proposedTopicsMap = meetingDao.getProposedTopicsBySpeakerIdMap(meetingId, c);
+            Map<Long, Long> proposedTopicsMap = meetingDao.getProposedTopicsBySpeakerIdMap(meetingId, c);
             proposedTopicsMap.entrySet().forEach(entry -> {
                 Topic topic = topicService.getById(entry.getKey());
                 Speaker speaker = speakerService.getSpeakerById(entry.getValue());
@@ -265,7 +266,7 @@ public class MeetingServiceImpl implements MeetingService {
     }
 
     @Override
-    public void updateInformation(Meeting meeting) throws DataBaseException{
+    public void updateInformation(Meeting meeting) throws DataBaseException {
         Connection c = null;
         try {
             c = ConnectionPool.getInstance().getConnection();
@@ -278,6 +279,18 @@ public class MeetingServiceImpl implements MeetingService {
         } finally {
             close(c);
         }
+    }
+
+    @Override
+    public List<User> getParticipantsByMeetingId(Long meetingId) {
+        List<User> participants = new LinkedList<>();
+        try (Connection c = ConnectionPool.getInstance().getConnection()) {
+            List<Long> listWithParticipantIds = meetingDao.getParticipantsIdByMeetingId(meetingId, c);
+            listWithParticipantIds.forEach(id -> participants.add(userService.getUserById(id)));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return participants;
     }
 
     /**
@@ -304,10 +317,12 @@ public class MeetingServiceImpl implements MeetingService {
         Map<Speaker, Set<Topic>> topicsWithSpeakers = getAcceptedTopicsMapByMeetingId(meeting.getId());
         Map<Topic, Set<Speaker>> sentApplicationMap = getSentApplicationMapByMeetingId(meeting.getId());
         Map<Topic, Speaker> proposedTopics = getProposedTopicsBySpeakerByMeetingId(meeting.getId());
+        List<User> participants = getParticipantsByMeetingId(meeting.getId());
 
         meeting.setFreeTopics(freeTopics);
         meeting.setSpeakerTopics(topicsWithSpeakers);
         meeting.setSentApplicationsMap(sentApplicationMap);
         meeting.setProposedTopicsMap(proposedTopics);
+        meeting.setParticipants(participants);
     }
 }

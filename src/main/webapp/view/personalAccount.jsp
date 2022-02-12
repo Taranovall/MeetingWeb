@@ -54,7 +54,7 @@
                                         <p class="mb-0 text-center"><small>Name: ${m.getName()}</small></p>
                                         <p class="mb-0 text-center"><small>Date: ${m.getDate()}</small>
                                         </p>
-                                        <p class="mb-0 text-center"><small>Time: ${m.getTime()}</small>
+                                        <p class="mb-0 text-center"><small>Time: ${m.getTimeStart()} - ${m.getTimeEnd()}</small>
                                         </p>
                                         <p class="mb-0 text-center"><small>Place: ${m.getPlace()}</small></p>
                                     </div>

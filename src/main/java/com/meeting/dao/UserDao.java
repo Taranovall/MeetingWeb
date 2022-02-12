@@ -18,6 +18,12 @@ public interface UserDao extends Dao<User> {
 
     List<User> getAllUserByRole(String role, Connection c) throws SQLException;
 
+    void participate(Long userId, Long meetingId, Connection c) throws SQLException;
 
+    /**
+     * @return set with meeting IDs in which user takes part
+     */
+    List<Long> getMeetingIdsUserTakesPart(Long userId, Connection c) throws SQLException;
 
+    void stopParticipating(Long userId, Long meetingId, Connection c) throws SQLException;
 }

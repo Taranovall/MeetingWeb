@@ -4,6 +4,7 @@ import com.meeting.entitiy.Meeting;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -40,4 +41,6 @@ public interface MeetingDao extends Dao<Meeting> {
     boolean cancelProposedTopic(Long topicId, Long speakerId, Connection c) throws SQLException;
 
     void updateInformation(Meeting meeting, Connection c) throws SQLException;
+
+    List<Long> getParticipantsIdByMeetingId(Long meetingId, Connection c) throws SQLException;
 }

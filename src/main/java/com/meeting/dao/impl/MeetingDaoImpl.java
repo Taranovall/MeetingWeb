@@ -42,15 +42,18 @@ public class MeetingDaoImpl implements MeetingDao {
 
         String meetingName = meeting.getName();
         String meetingDate = meeting.getDate();
-        String meetingTime = meeting.getTime();
+        String meetingStartTime = meeting.getTimeStart();
+        String meetingEndTime = meeting.getTimeEnd();
         String meetingPlace = meeting.getPlace();
         String meetingPhotoPath = meeting.getPhotoPath();
 
-        p.setString(1, meetingName);
-        p.setString(2, meetingDate);
-        p.setString(3, meetingTime);
-        p.setString(4, meetingPlace);
-        p.setString(5, meetingPhotoPath);
+        int k = 1;
+        p.setString(k++, meetingName);
+        p.setString(k++, meetingDate);
+        p.setString(k++, meetingStartTime);
+        p.setString(k++, meetingEndTime);
+        p.setString(k++, meetingPlace);
+        p.setString(k++, meetingPhotoPath);
 
         if (p.executeUpdate() > 0) {
             ResultSet rs = p.getGeneratedKeys();
@@ -172,11 +175,26 @@ public class MeetingDaoImpl implements MeetingDao {
     @Override
     public void updateInformation(Meeting meeting, Connection c) throws SQLException {
         PreparedStatement p = c.prepareStatement(SQLQuery.UPDATE_MEETING_INFORMATION_SQL);
-        p.setString(1, meeting.getTime());
-        p.setString(2, meeting.getDate());
-        p.setString(3, meeting.getPlace());
-        p.setLong(4, meeting.getId());
+        int k = 1;
+        p.setString(k++, meeting.getTimeStart());
+        p.setString(k++, meeting.getTimeEnd());
+        p.setString(k++, meeting.getDate());
+        p.setString(k++, meeting.getPlace());
+        p.setLong(k++, meeting.getId());
         p.executeUpdate();
+    }
+
+    @Override
+    public List<Long> getParticipantsIdByMeetingId(Long meetingId, Connection c) throws SQLException {
+        PreparedStatement p = c.prepareStatement(SQLQuery.GET_ALL_PARTICIPANTS_BY_MEETING_ID);
+        p.setLong(1, meetingId);
+        List<Long> participantsList = new LinkedList<>();
+        ResultSet rs = p.executeQuery();
+        while (rs.next()) {
+            Long participantId = rs.getLong(1);
+            participantsList.add(participantId);
+        }
+        return participantsList;
     }
 
     /**
@@ -186,10 +204,11 @@ public class MeetingDaoImpl implements MeetingDao {
         Long id = rs.getLong("id");
         String name = rs.getString("name");
         String date = rs.getString("date");
-        String time = rs.getString("time");
+        String timeStart = rs.getString("time_start");
+        String timeEnd = rs.getString("time_end");
         String place = rs.getString("place");
         String photoPath = rs.getString("photo_path");
-        return new Meeting(id, name, date, time, place, photoPath);
+        return new Meeting(id, name, date, timeStart, timeEnd, place, photoPath);
     }
 
 }

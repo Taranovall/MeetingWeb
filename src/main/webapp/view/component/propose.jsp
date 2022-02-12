@@ -9,7 +9,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <%-- user cannot see this button --%>
-<c:if test="${sessionScope.user.getRole().name() != 'user' && sessionScope.user.getRole() != null}">
+<c:if test="${sessionScope.user.getRole().name() != 'USER' && sessionScope.user.getRole() != null}">
     <div class="text-center">
         <button type="button" class="btn btn-outline-dark mt-2" data-toggle="modal"
                 data-target="#TopicProposing">
@@ -22,6 +22,11 @@
                 Proposed topics
             </c:if>
         </button>
+    <c:if test="${sessionScope.user.getRole().name() == 'MODERATOR'}">
+        <a href="/meeting/moderator/mark-present-users/${meeting.getId()}" class="btn btn-outline-dark mt-2">
+            Mark present users
+        </a>
+    </c:if>
     </div>
     <div class="modal fade propose" id="TopicProposing" data-backdrop="static" data-keyboard="false" tabindex="-1"
          aria-labelledby="staticBackdropLabel" aria-hidden="true">

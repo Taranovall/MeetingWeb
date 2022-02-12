@@ -9,14 +9,6 @@ form .input-group {
 .field{
     margin: 0.5em 0;
 }
-
-.add .field span {
-    display: block;
-    color: #ff0000;
-    padding: 0.3em 0;
-    float: left;
-}
-
 .field .input-group {
     margin-bottom: 0;
 }

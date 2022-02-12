@@ -29,7 +29,8 @@ create table meetings
     id         serial       not null primary key,
     name       varchar(256) not null,
     date       varchar(256) not null,
-    time       varchar(256) not null,
+    time_start       varchar(256) not null,
+    time_end       varchar(256) not null,
     place      varchar(256) not null,
     photo_path varchar(256) not null
 );
@@ -66,7 +67,9 @@ create table meeting_topics
 create table meeting_participants
 (
     meeting_id int references meetings (id) on delete cascade,
-    user_id    int references users (id) on delete cascade
+    user_id    int references users (id) on delete cascade,
+    is_present bool,
+    UNIQUE (meeting_id, user_id)
 );
 
 create table proposed_topics

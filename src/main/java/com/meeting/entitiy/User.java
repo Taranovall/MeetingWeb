@@ -1,15 +1,18 @@
 package com.meeting.entitiy;
 
 import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
 
 public class User implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -4017985734240189107L;
     private Long id;
     private String login;
     private String password;
     private String registrationDate;
     private Role role;
+    private List<Long> meetingIdsSetUserTakesPart = new LinkedList<>();
 
     public User(String login, String password) {
         this.login = login;
@@ -31,6 +34,14 @@ public class User implements Serializable {
         this.id = id;
         this.login = login;
         this.role = role;
+    }
+
+    public List<Long> getMeetingIdsSetUserTakesPart() {
+        return meetingIdsSetUserTakesPart;
+    }
+
+    public void setMeetingIdsSetUserTakesPart(List<Long> meetingIdsSetUserTakesPart) {
+        this.meetingIdsSetUserTakesPart = meetingIdsSetUserTakesPart;
     }
 
     public String getRegistrationDate() {

@@ -45,6 +45,8 @@ public class RegistrationController extends HttpServlet {
             try {
                 userService.signUpUser(user);
                 log.info("{}[{}] just signed up", user.getLogin(), user.getId());
+                req.getSession().setAttribute("user", user);
+                resp.sendRedirect("/");
             } catch (DataBaseException e) {
                 e.printStackTrace();
                 log.error("Sign up error: {}", e.getMessage());

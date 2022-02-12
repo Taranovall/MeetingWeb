@@ -11,6 +11,8 @@ public class Constant {
     public static final String PATH_TO_CREATE_MEETING_SECOND_PAGE_JSP = "/view/meeting/createMeetingSecondPage.jsp";
     public static final String PATH_TO_MEETING_INFO_PAGE = "/view/meeting/meetingInformation.jsp";
     public static final String PATH_TO_PERSONAL_ACCOUNT_JSP = "/view/personalAccount.jsp";
+    public static final String PATH_TO_MARK_PRESENT_USERS_JSP = "/view/meeting/markPresentUsers.jsp";
+
 
     // Attribute names
     public static final String MEETING_ATTRIBUTE_NAME = "meetings";

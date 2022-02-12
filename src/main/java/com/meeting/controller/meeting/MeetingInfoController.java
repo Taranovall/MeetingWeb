@@ -37,7 +37,7 @@ public class MeetingInfoController extends HttpServlet {
         HttpSession session = req.getSession();
         User userSession = (User) req.getSession().getAttribute("user");
 
-        // if user has any error it is moved from session to request
+        // if user has any error attribute is moved from session to request
         if (session.getAttribute("error") != null) {
             req.setAttribute("error", session.getAttribute("error"));
             session.removeAttribute("error");
@@ -47,28 +47,32 @@ public class MeetingInfoController extends HttpServlet {
         try {
             meeting = meetingService.getMeetingById(meetingId);
 
-            req.setAttribute("meeting", meeting);
+            req.getSession().setAttribute("meeting", meeting);
             req.getSession().setAttribute("lastPageURI", req.getRequestURI());
             // if user is authorized
-                if (Objects.nonNull(userSession)) {
-                    if (userSession.getRole() == Role.SPEAKER){
-                        List<String> sentApplicationList = (List<String>) session.getAttribute("sentApplicationList");
-                        if (sentApplicationList == null) {
-                            sentApplicationList = speakerService.getSentApplications(userSession.getId());
-                            session.setAttribute("sentApplicationList", sentApplicationList);
-                        }
-
-                        List<String> receivedApplicationList = speakerService.getReceivedApplications(userSession.getId());
-                        if (receivedApplicationList != null) {
-                            session.setAttribute("receivedApplicationList", receivedApplicationList);
-                        }
-                    } else if (userSession.getRole() == Role.MODERATOR) {
-                        session.setAttribute("sentApplicationsBySpeaker", meeting.getSentApplicationsMap());
-                        session.setAttribute("proposedTopics", meeting.getProposedTopicsMap());
-                        // for editing meeting
-                        session.setAttribute("meeting", meeting);
+            if (Objects.nonNull(userSession)) {
+                if (userSession.getRole() == Role.USER) {
+                    if (userSession.getMeetingIdsSetUserTakesPart().contains(meetingId)) {
+                        req.setAttribute("participating", true);
                     }
                 }
+                if (userSession.getRole() == Role.SPEAKER) {
+                    List<String> sentApplicationList = (List<String>) session.getAttribute("sentApplicationList");
+                    if (sentApplicationList == null) {
+                        sentApplicationList = speakerService.getSentApplications(userSession.getId());
+                        session.setAttribute("sentApplicationList", sentApplicationList);
+                    }
+
+                    List<String> receivedApplicationList = speakerService.getReceivedApplications(userSession.getId());
+                    if (receivedApplicationList != null) {
+                        session.setAttribute("receivedApplicationList", receivedApplicationList);
+                    }
+                }
+                if (userSession.getRole() == Role.MODERATOR) {
+                    session.setAttribute("sentApplicationsBySpeaker", meeting.getSentApplicationsMap());
+                    session.setAttribute("proposedTopics", meeting.getProposedTopicsMap());
+                }
+            }
 
             req.getRequestDispatcher(PATH_TO_MEETING_INFO_PAGE).forward(req, resp);
         } catch (DataBaseException e) {

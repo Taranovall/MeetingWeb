@@ -62,7 +62,7 @@ public class SortingUtil {
 
         meetingList.sort((o1, o2) -> {
             if (o1.getDate().equals(o2.getDate())) {
-                return o2.getTime().compareTo(o1.getTime());
+                return o2.getTimeStart().compareTo(o1.getTimeStart());
             } else {
                 return o2.getDate().compareTo(o1.getDate());
             }

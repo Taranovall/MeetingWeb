@@ -8,7 +8,8 @@ public class Meeting implements Serializable {
     private Long id;
     private String name;
     private String date;
-    private String time;
+    private String timeStart;
+    private String timeEnd;
     private String place;
     private List<User> participants;
     private Set<Topic> freeTopics;
@@ -17,31 +18,40 @@ public class Meeting implements Serializable {
     private Map<Topic, Set<Speaker>> sentApplicationsMap;
     private Map<Topic, Speaker> proposedTopicsMap;
 
-    public Meeting(Long id, String name, String date, String time, String place, String photoPath) {
+    public Meeting(Long id, String name, String date, String timeStart, String timeEnd, String place, String photoPath) {
         this.id = id;
         this.name = name;
         this.date = date;
-        this.time = time;
+        this.timeStart = timeStart;
+        this.timeEnd = timeEnd;
         this.place = place;
         this.photoPath = photoPath;
         this.freeTopics = new HashSet<>();
         this.speakerTopics = new HashMap<>();
         this.sentApplicationsMap = new HashMap<>();
         this.proposedTopicsMap = new HashMap<>();
+        this.participants = new LinkedList<>();
     }
 
-    public Meeting(String name, String date, String time, String place) {
+    public Meeting(String name, String date, String timeStart, String timeEnd, String place) {
         this.name = name;
         this.date = date;
-        this.time = time;
+        this.timeStart = timeStart;
+        this.timeEnd = timeEnd;
         this.place = place;
         this.freeTopics = new HashSet<>();
         this.speakerTopics = new HashMap<>();
         this.sentApplicationsMap = new HashMap<>();
         this.proposedTopicsMap = new HashMap<>();
+        this.participants = new LinkedList<>();
     }
 
     public Meeting() {
+        this.freeTopics = new HashSet<>();
+        this.speakerTopics = new HashMap<>();
+        this.sentApplicationsMap = new HashMap<>();
+        this.proposedTopicsMap = new HashMap<>();
+        this.participants = new LinkedList<>();
     }
 
     public Long getId() {
@@ -68,13 +78,6 @@ public class Meeting implements Serializable {
         this.date = date;
     }
 
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
-    }
 
     public String getPlace() {
         return place;
@@ -132,6 +135,22 @@ public class Meeting implements Serializable {
         this.proposedTopicsMap = proposedTopicsMap;
     }
 
+    public String getTimeEnd() {
+        return timeEnd;
+    }
+
+    public void setTimeEnd(String timeEnd) {
+        this.timeEnd = timeEnd;
+    }
+
+    public String getTimeStart() {
+        return timeStart;
+    }
+
+    public void setTimeStart(String timeStart) {
+        this.timeStart = timeStart;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -142,8 +161,10 @@ public class Meeting implements Serializable {
         if (id != null ? !id.equals(meeting.id) : meeting.id != null) return false;
         if (name != null ? !name.equals(meeting.name) : meeting.name != null) return false;
         if (date != null ? !date.equals(meeting.date) : meeting.date != null) return false;
-        if (time != null ? !time.equals(meeting.time) : meeting.time != null) return false;
-        return place != null ? place.equals(meeting.place) : meeting.place == null;
+        if (timeStart != null ? !timeStart.equals(meeting.timeStart) : meeting.timeStart != null) return false;
+        if (timeEnd != null ? !timeEnd.equals(meeting.timeEnd) : meeting.timeEnd != null) return false;
+        if (place != null ? !place.equals(meeting.place) : meeting.place != null) return false;
+        return photoPath != null ? photoPath.equals(meeting.photoPath) : meeting.photoPath == null;
     }
 
     @Override
@@ -151,8 +172,10 @@ public class Meeting implements Serializable {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (date != null ? date.hashCode() : 0);
-        result = 31 * result + (time != null ? time.hashCode() : 0);
+        result = 31 * result + (timeStart != null ? timeStart.hashCode() : 0);
+        result = 31 * result + (timeEnd != null ? timeEnd.hashCode() : 0);
         result = 31 * result + (place != null ? place.hashCode() : 0);
+        result = 31 * result + (photoPath != null ? photoPath.hashCode() : 0);
         return result;
     }
 }

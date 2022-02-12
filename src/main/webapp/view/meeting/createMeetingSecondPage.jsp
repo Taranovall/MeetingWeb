@@ -7,6 +7,7 @@
     <link rel="stylesheet" type="text/css" href="/static/createMeeting.css">
 </head>
 <body>
+<jsp:include page="../component/navbar.jsp"></jsp:include>
 <div class="container mt-5 mb-5 text-center">
     <h1>Create new meeting</h1><br>
     <form action="create-meeting" method="post" class="add" enctype="multipart/form-data">

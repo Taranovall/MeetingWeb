@@ -14,6 +14,13 @@ public class SQLQuery {
             "AND u.id=ur.user_id " +
             "AND u.id=?";
     public static final String GET_ALL_USERS_BY_ROLE_SQL = "SELECT * FROM roles r, users u, user_roles ur WHERE r.id=ur.role_id AND u.id=ur.user_id AND r.name ILIKE ?";
+    public static final String USER_PARTICIPATE_SQL = "INSERT INTO meeting_participants (meeting_id, user_id) VALUES (?, ?)";
+    public static final String GET_MEETING_IDS_IN_WHICH_USER_TAKES_PARK_SQL = "SELECT meeting_id FROM meeting_participants WHERE user_id = ?";
+    public static final String USER_STOP_PARTICIPATING_SQL = "DELETE FROM meeting_participants WHERE meeting_id = ? AND user_id = ?";
+    public static final String GET_ALL_PARTICIPANTS_BY_MEETING_ID = "SELECT user_id FROM meeting_participants WHERE meeting_id = ?";
+
+
+
 
 
     //Topic requests
@@ -33,12 +40,12 @@ public class SQLQuery {
 
 
     //Meeting requests
-    public static final String CREATE_MEETING_SQL = "INSERT INTO meetings (name, date, time, place, photo_path) VALUES (?, ?, ?, ?, ?)";
+    public static final String CREATE_MEETING_SQL = "INSERT INTO meetings (name, date, time_start, time_end, place, photo_path) VALUES (?, ?, ?, ?, ?, ?)";
     public static final String GET_ALL_MEETINGS_SQL = "SELECT * FROM meetings";
     public static final String GET_MEETING_BY_ID = "SELECT * FROM meetings WHERE id = ?";
     public static final String GET_ALL_MEETINGS_ID_WHERE_SPEAKER_INVOLVES_IN = "SELECT DISTINCT meeting_id FROM meeting_topics mt, speaker_topics st WHERE mt.topic_id = st.topic_id AND st.invitation is true AND speaker_id = ?";
     public static final String GET_PROPOSED_TOPICS_BY_MEETING_ID = "SELECT proposed_by_speaker, topic_id FROM proposed_topics WHERE meeting_id = ?";
-    public static final String UPDATE_MEETING_INFORMATION_SQL = "UPDATE meetings SET time=?, date=?, place=? WHERE id = ?";
+    public static final String UPDATE_MEETING_INFORMATION_SQL = "UPDATE meetings SET time_start=?, time_end=?, date=?, place=? WHERE id = ?";
 
 
     //Speaker requests
