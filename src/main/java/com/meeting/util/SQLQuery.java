@@ -17,7 +17,12 @@ public class SQLQuery {
     public static final String USER_PARTICIPATE_SQL = "INSERT INTO meeting_participants (meeting_id, user_id) VALUES (?, ?)";
     public static final String GET_MEETING_IDS_IN_WHICH_USER_TAKES_PARK_SQL = "SELECT meeting_id FROM meeting_participants WHERE user_id = ?";
     public static final String USER_STOP_PARTICIPATING_SQL = "DELETE FROM meeting_participants WHERE meeting_id = ? AND user_id = ?";
-    public static final String GET_ALL_PARTICIPANTS_BY_MEETING_ID = "SELECT user_id FROM meeting_participants WHERE meeting_id = ?";
+    public static final String GET_ALL_PARTICIPANTS_BY_MEETING_ID_SQL = "SELECT user_id FROM meeting_participants WHERE meeting_id = ?";
+    public static final String SET_PRESENCE_FALSE_SQL = "UPDATE meeting_participants SET is_present = false WHERE meeting_id = ?";
+    public static final String MARK_PRESENT_USERS_SQL = "UPDATE meeting_participants SET is_present = true WHERE meeting_id = ? AND user_id = ?";
+    public static final String GET_PRESENT_USERS_SQL = "SELECT user_id FROM meeting_participants WHERE is_present is true AND meeting_id = ?";
+    public static final String GET_ATTENDED_PARTICIPANTS_SQL = "SELECT count(*) FROM meeting_participants WHERE is_present is true AND meeting_id = ?";
+
 
 
 

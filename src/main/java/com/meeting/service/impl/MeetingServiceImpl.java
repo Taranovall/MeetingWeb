@@ -93,21 +93,15 @@ public class MeetingServiceImpl implements MeetingService {
 
     @Override
     public Meeting getMeetingById(Long id) throws DataBaseException {
-        Connection c = null;
         Meeting meeting = null;
-        try {
-            c = ConnectionPool.getInstance().getConnection();
+        try (Connection c = ConnectionPool.getInstance().getConnection()) {
             Optional<Meeting> optionalMeeting = meetingDao.getById(id, c);
             if (!optionalMeeting.isPresent()) throw new DataBaseException("Meeting doesn't exist");
             meeting = optionalMeeting.get();
             extractMeetingInformation(meeting);
-            c.commit();
         } catch (SQLException e) {
             e.printStackTrace();
-            rollback(c);
-            log.error("Cannot get meeting by ID: ", e);
-        } finally {
-            close(c);
+            log.error("Meeting with ID = {} doesn't exist: ", id, e);
         }
         return meeting;
     }
@@ -293,6 +287,47 @@ public class MeetingServiceImpl implements MeetingService {
         return participants;
     }
 
+    @Override
+    public void markPresentUsers(String[] presentUsers, Long meetingId) throws DataBaseException {
+        Connection c = null;
+        try {
+            c = ConnectionPool.getInstance().getConnection();
+            meetingDao.markPresentUsers(presentUsers, meetingId, c);
+            c.commit();
+        } catch (SQLException e) {
+            rollback(c);
+            log.error("Cannot mark present users", e);
+            throw new DataBaseException("Cannot mark present users", e);
+        } finally {
+            close(c);
+        }
+    }
+
+    @Override
+    public List<Long> getPresentUserIds(Long meetingId) throws DataBaseException {
+        List<Long> presentUserIds = new LinkedList<>();
+        try (Connection c = ConnectionPool.getInstance().getConnection()) {
+            presentUserIds.addAll(meetingDao.getPresentUserIds(meetingId, c));
+        } catch (SQLException e) {
+            e.printStackTrace();
+            log.error("Cannot get present users", e);
+            throw new DataBaseException("Cannot get present users", e);
+        }
+        return presentUserIds;
+    }
+
+    @Override
+    public double getAttendancePercentageByMeetingId(Long meetingId) throws DataBaseException {
+        double res = 0;
+        try (Connection c = ConnectionPool.getInstance().getConnection()) {
+            res = meetingDao.getAttendancePercentageByMeetingId(meetingId, c);
+        } catch (SQLException e) {
+            log.error("Cannot calculate percentage", e);
+            throw new DataBaseException("Cannot calculate percentage", e);
+        }
+        return res;
+    }
+
     /**
      * creates map in which Topic is a key and Speaker is a value
      *
@@ -318,11 +353,13 @@ public class MeetingServiceImpl implements MeetingService {
         Map<Topic, Set<Speaker>> sentApplicationMap = getSentApplicationMapByMeetingId(meeting.getId());
         Map<Topic, Speaker> proposedTopics = getProposedTopicsBySpeakerByMeetingId(meeting.getId());
         List<User> participants = getParticipantsByMeetingId(meeting.getId());
+        double percentageAttendance = getAttendancePercentageByMeetingId(meeting.getId());
 
         meeting.setFreeTopics(freeTopics);
         meeting.setSpeakerTopics(topicsWithSpeakers);
         meeting.setSentApplicationsMap(sentApplicationMap);
         meeting.setProposedTopicsMap(proposedTopics);
         meeting.setParticipants(participants);
+        meeting.setPercentageAttendance(percentageAttendance);
     }
 }

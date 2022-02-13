@@ -186,7 +186,7 @@ public class MeetingDaoImpl implements MeetingDao {
 
     @Override
     public List<Long> getParticipantsIdByMeetingId(Long meetingId, Connection c) throws SQLException {
-        PreparedStatement p = c.prepareStatement(SQLQuery.GET_ALL_PARTICIPANTS_BY_MEETING_ID);
+        PreparedStatement p = c.prepareStatement(SQLQuery.GET_ALL_PARTICIPANTS_BY_MEETING_ID_SQL);
         p.setLong(1, meetingId);
         List<Long> participantsList = new LinkedList<>();
         ResultSet rs = p.executeQuery();
@@ -195,6 +195,51 @@ public class MeetingDaoImpl implements MeetingDao {
             participantsList.add(participantId);
         }
         return participantsList;
+    }
+
+    @Override
+    public void markPresentUsers(String[] presentUsers, Long meetingId, Connection c) throws SQLException {
+        //set is present in table meeting participants in case if user was presence but left meeting
+        PreparedStatement p = c.prepareStatement(SQLQuery.SET_PRESENCE_FALSE_SQL);
+        p.setLong(1, meetingId);
+        p.executeUpdate();
+        if (presentUsers != null) {
+            p = c.prepareStatement(SQLQuery.MARK_PRESENT_USERS_SQL);
+            p.setLong(1, meetingId);
+            for (String id : presentUsers) {
+                long convertedId = Long.parseLong(id);
+                p.setLong(2, convertedId);
+                p.executeUpdate();
+            }
+        }
+    }
+
+    @Override
+    public List<Long> getPresentUserIds(Long meetingId, Connection c) throws SQLException {
+        PreparedStatement p = c.prepareStatement(SQLQuery.GET_PRESENT_USERS_SQL);
+        p.setLong(1, meetingId);
+        List<Long> userIds = new LinkedList<>();
+        ResultSet rs = p.executeQuery();
+        while (rs.next()) {
+            userIds.add(rs.getLong(1));
+        }
+        return userIds;
+    }
+
+    @Override
+    public double getAttendancePercentageByMeetingId(Long meetingId, Connection c) throws SQLException {
+        int attendedParticipants = 0;
+        int participantsCount = getParticipantsIdByMeetingId(meetingId, c).size();
+        PreparedStatement p = c.prepareStatement(SQLQuery.GET_ATTENDED_PARTICIPANTS_SQL);
+        p.setLong(1, meetingId);
+        ResultSet rs = p.executeQuery();
+        while (rs.next()) {
+            attendedParticipants = rs.getInt(1);
+        }
+        if (attendedParticipants == 0 || participantsCount == 0) return 0;
+        double percentage = (double) attendedParticipants / participantsCount * 100;
+        String formattedValue = String.format("%.1f", percentage).replace(",", ".");
+        return Double.parseDouble(formattedValue);
     }
 
     /**

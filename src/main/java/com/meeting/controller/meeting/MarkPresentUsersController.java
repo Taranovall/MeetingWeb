@@ -1,10 +1,8 @@
 package com.meeting.controller.meeting;
 
-import com.meeting.entitiy.Meeting;
 import com.meeting.exception.DataBaseException;
 import com.meeting.service.MeetingService;
 import com.meeting.service.impl.MeetingServiceImpl;
-import com.meeting.util.Constant;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -23,22 +21,16 @@ public class MarkPresentUsersController extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String lastURI = (String) req.getSession().getAttribute("lastPageURI");
+        String[] presentUsers = req.getParameterValues("presentUserId");
         Long meetingId = Long.valueOf(req.getPathInfo().split("/")[1]);
-        Meeting meeting = null;
+        req.getParameterMap();
         try {
-            meeting = meetingService.getMeetingById(meetingId);
+            meetingService.markPresentUsers(presentUsers, meetingId);
         } catch (DataBaseException e) {
             e.printStackTrace();
         }
-        req.setAttribute("meeting", meeting);
-        req.getRequestDispatcher(Constant.PATH_TO_MARK_PRESENT_USERS_JSP).forward(req, resp);
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String[] presentUsers = req.getParameterValues("presentUserId");
-        req.getParameterMap();
+        resp.sendRedirect(lastURI);
     }
 }

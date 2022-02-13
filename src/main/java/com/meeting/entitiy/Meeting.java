@@ -14,6 +14,7 @@ public class Meeting implements Serializable {
     private List<User> participants;
     private Set<Topic> freeTopics;
     private String photoPath;
+    double percentageAttendance;
     private Map<Speaker, Set<Topic>> speakerTopics;
     private Map<Topic, Set<Speaker>> sentApplicationsMap;
     private Map<Topic, Speaker> proposedTopicsMap;
@@ -61,6 +62,15 @@ public class Meeting implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public double getPercentageAttendance() {
+        return percentageAttendance;
+    }
+
+    public void setPercentageAttendance(double percentageAttendance) {
+        this.percentageAttendance = percentageAttendance;
+    }
+
 
     public String getName() {
         return name;

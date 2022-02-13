@@ -43,4 +43,10 @@ public interface MeetingDao extends Dao<Meeting> {
     void updateInformation(Meeting meeting, Connection c) throws SQLException;
 
     List<Long> getParticipantsIdByMeetingId(Long meetingId, Connection c) throws SQLException;
+
+    void markPresentUsers(String[] presentUsers, Long meetingId, Connection c) throws SQLException;
+
+    List<Long> getPresentUserIds(Long meetingId, Connection c) throws SQLException;
+
+    double getAttendancePercentageByMeetingId(Long meetingId, Connection c) throws SQLException;
 }

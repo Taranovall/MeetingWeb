@@ -11,7 +11,7 @@
 <head>
     <title>Title</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="/static/meetings.css">
+    <link rel="stylesheet" type="text/css" href="/style/meetings.css">
 </head>
 <body>
 <jsp:include page="../component/navbar.jsp"></jsp:include>

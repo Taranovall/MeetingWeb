@@ -71,9 +71,9 @@ public class MeetingInfoController extends HttpServlet {
                 if (userSession.getRole() == Role.MODERATOR) {
                     session.setAttribute("sentApplicationsBySpeaker", meeting.getSentApplicationsMap());
                     session.setAttribute("proposedTopics", meeting.getProposedTopicsMap());
+                    req.setAttribute("presentUser", meetingService.getPresentUserIds(meetingId));
                 }
             }
-
             req.getRequestDispatcher(PATH_TO_MEETING_INFO_PAGE).forward(req, resp);
         } catch (DataBaseException e) {
             e.printStackTrace();

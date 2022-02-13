@@ -8,7 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
-<link rel="stylesheet" type="text/css" href="/static/navbar.css">
+<link rel="stylesheet" type="text/css" href="/style/navbar.css">
 <nav class="navbar navbar-expand navbar-light bg-light" style="border-bottom: 1px solid #dee2e6;">
     <a class="navbar-brand" href="/">Meetings</a>
     <button class="navbar-toggler" id="navbar" type="button" data-toggle="collapse" data-target="#navbar-content"

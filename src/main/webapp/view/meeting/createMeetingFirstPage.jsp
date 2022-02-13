@@ -4,7 +4,7 @@
 <head>
     <title>Create meeting</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="/static/createMeeting.css">
+    <link rel="stylesheet" type="text/css" href="/style/createMeeting.css">
 </head>
 <body>
 <jsp:include page="../component/navbar.jsp"></jsp:include>

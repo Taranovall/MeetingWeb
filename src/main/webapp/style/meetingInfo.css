@@ -113,3 +113,21 @@ td:hover .accept-application button {
     cursor: pointer;
     color: unset;
 }
+
+form .modal-body .form-check {
+    left: 35%;
+}
+
+.percentage {
+    margin-top: 10px;
+}
+
+.percentage .progress {
+    margin-left: 15%;
+    margin-right: 15%;
+    border: 1px solid #343a40;
+}
+
+.percentage .progress .progress-bar{
+    background-color: gray;
+}
