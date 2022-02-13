@@ -20,8 +20,7 @@ import static com.meeting.util.Constant.*;
 @WebServlet(name = "sortMeeting", urlPatterns = "/sort-meeting")
 public class SortMeetingController extends HttpServlet {
     private static final Logger log = LogManager.getLogger(MeetingServiceImpl.class);
-
-
+    
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();

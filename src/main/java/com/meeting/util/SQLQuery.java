@@ -51,6 +51,8 @@ public class SQLQuery {
     public static final String GET_ALL_MEETINGS_ID_WHERE_SPEAKER_INVOLVES_IN = "SELECT DISTINCT meeting_id FROM meeting_topics mt, speaker_topics st WHERE mt.topic_id = st.topic_id AND st.invitation is true AND speaker_id = ?";
     public static final String GET_PROPOSED_TOPICS_BY_MEETING_ID = "SELECT proposed_by_speaker, topic_id FROM proposed_topics WHERE meeting_id = ?";
     public static final String UPDATE_MEETING_INFORMATION_SQL = "UPDATE meetings SET time_start=?, time_end=?, date=?, place=? WHERE id = ?";
+    public static final String SET_MEETING_IS_STARTED_VALUE_SQL = "UPDATE meetings SET is_started = ? WHERE meeting_id = ?";
+
 
 
     //Speaker requests

@@ -22,6 +22,7 @@
                 Proposed topics
             </c:if>
         </button>
+        <%-- this button only for moderator to mark present users --%>
         <c:if test="${sessionScope.user.getRole().name() == 'MODERATOR'}">
             <button type="button" class="btn btn-outline-dark mt-2" data-toggle="modal"
                     data-target="#markUsers">

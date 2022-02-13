@@ -37,7 +37,7 @@ public class SortingUtil {
 
     private static List<Meeting> sortByNumberOfParticipants(List<Meeting> meetingList) {
         List<Meeting> listBeforeSorting = new LinkedList<>(meetingList);
-        meetingList.sort((o1, o2) -> o2.getParticipants().size() - o1.getParticipants().size());
+        meetingList.sort((o1, o2) -> (o2.getParticipants().size() + o2.getSpeakerTopics().size()) - (o1.getParticipants().size() + o1.getSpeakerTopics().size()));
         log.debug("Meetings were sorted by number of participants");
 
         return listBeforeSorting.equals(meetingList) ? reverseList(meetingList) : meetingList;

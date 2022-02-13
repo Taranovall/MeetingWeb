@@ -107,6 +107,56 @@
                 </select>
             </form>
             <%-- /SORT FORM --%>
+            <%-- DISPLAYED MEETINGS --%>
+            <button type="button" class="btn btn-outline-dark" data-toggle="modal"
+                    data-target="#chooseWhichMeetingToShow">
+                <c:if test="${option != null}">
+                    ${option}
+                </c:if>
+                <c:if test="${option == null}">
+                    Choose which meetings to show
+                </c:if>
+            </button>
+            <div class="modal fade" id="chooseWhichMeetingToShow" data-backdrop="static" data-keyboard="false" tabindex="-1"
+                 aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+                    <div class="modal-content">
+                        <form action="/show-meetings" method="post">
+                            <div class="modal-body">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="radioButton" value="all" id="defaultCheck1">
+                                    <label class="form-check-label" for="defaultCheck1">
+                                        All meetings
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="radioButton" value="goingOnNow" id="defaultCheck2">
+                                    <label class="form-check-label" for="defaultCheck2">
+                                        Meetings which are going on right now
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="radioButton" value="passed" id="defaultCheck3">
+                                    <label class="form-check-label" for="defaultCheck3">
+                                        Past meetings
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="radioButton" value="notStarted" id="defaultCheck4">
+                                    <label class="form-check-label" for="defaultCheck4">
+                                        Future meetings
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-outline-dark">Select</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <%-- /DISPLAYED MEETINGS --%>
         </c:if>
     </div>
 </nav>

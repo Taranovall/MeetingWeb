@@ -18,6 +18,9 @@ public class Meeting implements Serializable {
     private Map<Speaker, Set<Topic>> speakerTopics;
     private Map<Topic, Set<Speaker>> sentApplicationsMap;
     private Map<Topic, Speaker> proposedTopicsMap;
+    private boolean isStarted;
+    private boolean isGoingOnNow;
+    private boolean isPassed;
 
     public Meeting(Long id, String name, String date, String timeStart, String timeEnd, String place, String photoPath) {
         this.id = id;
@@ -71,6 +74,29 @@ public class Meeting implements Serializable {
         this.percentageAttendance = percentageAttendance;
     }
 
+    public boolean isStarted() {
+        return isStarted;
+    }
+
+    public void setStarted(boolean started) {
+        isStarted = started;
+    }
+
+    public boolean isGoingOnNow() {
+        return isGoingOnNow;
+    }
+
+    public void setGoingOnNow(boolean goingOnNow) {
+        isGoingOnNow = goingOnNow;
+    }
+
+    public boolean isPassed() {
+        return isPassed;
+    }
+
+    public void setPassed(boolean passed) {
+        isPassed = passed;
+    }
 
     public String getName() {
         return name;

@@ -11,13 +11,11 @@ import java.util.Set;
 public interface MeetingDao extends Dao<Meeting> {
 
     /**
-     *
      * @return set with meeting's id in which speaker are involved in by his ID
      */
     Set<Long> getAllMeetingsIdSpeakerInvolvesIn(Long speakerId, Connection c) throws SQLException;
 
     /**
-     *
      * @param meetingId
      * @param c
      * @return Speaker IDs and Topic IDs in which speakers has agreed to take part
@@ -25,7 +23,6 @@ public interface MeetingDao extends Dao<Meeting> {
     Map<Long, Long> getTopicSpeakerIdMapByMeetingId(Long meetingId, Connection c) throws SQLException;
 
     /**
-     *
      * @param meetingId
      * @param c
      * @return map with Topic IDs and Set with Speaker ID IDs which sent application to this topic

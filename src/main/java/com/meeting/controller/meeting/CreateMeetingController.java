@@ -92,7 +92,7 @@ public class CreateMeetingController extends HttpServlet {
                 // removes because it already doesn't need
                 req.getSession().removeAttribute("countOfTopics");
                 req.getSession().removeAttribute("firstPageURL");
-                resp.reset();
+                req.getRequestDispatcher(PATH_TO_MAIN_PAGE_JSP).forward(req, resp);
             } catch (DataBaseException e) {
                 e.printStackTrace();
             }

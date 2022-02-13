@@ -47,6 +47,7 @@ public class MainPageController extends HttpServlet {
                 }
             //removes redundant attributes if user's reloading the page
             if (!isUserHasUsedForm) {
+                session.removeAttribute("option");
                 session.removeAttribute(SORT_METHOD_ATTRIBUTE_NAME);
                 session.removeAttribute(QUERY_IS_NOT_VALID_ATTRIBUTE_NAME);
             }

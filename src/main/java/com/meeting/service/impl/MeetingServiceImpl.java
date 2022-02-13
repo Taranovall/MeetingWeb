@@ -16,13 +16,14 @@ import com.meeting.service.SpeakerService;
 import com.meeting.service.TopicService;
 import com.meeting.service.UserService;
 import com.meeting.service.connection.ConnectionPool;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -328,6 +329,34 @@ public class MeetingServiceImpl implements MeetingService {
         return res;
     }
 
+    @Override
+    public boolean isMeetingStarted(Meeting meeting) {
+        boolean isStarted = false;
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        LocalDateTime now = LocalDateTime.now();
+        String meetingStartTime = String.format("%s %s", meeting.getDate(), meeting.getTimeStart());
+        String currentTime = dtf.format(now);
+        if (meetingStartTime.compareTo(currentTime) <= 0) isStarted = true;
+        return isStarted;
+    }
+
+    @Override
+    public boolean isMeetingGoingOnNow(Meeting meeting) {
+        boolean isStarted = isMeetingStarted(meeting);
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        LocalDateTime now = LocalDateTime.now();
+        String meetingEndTime = String.format("%s %s", meeting.getDate(), meeting.getTimeEnd());
+        String currentTime = dtf.format(now);
+        // is true only if current time less than end time of the meeting
+        boolean meetingIsNotEnded = meetingEndTime.compareTo(currentTime) >= 0;
+        return isStarted && meetingIsNotEnded;
+    }
+
+    @Override
+    public boolean isMeetingPassed(Meeting meeting) {
+        return isMeetingStarted(meeting) && !isMeetingGoingOnNow(meeting);
+    }
+
     /**
      * creates map in which Topic is a key and Speaker is a value
      *
@@ -361,5 +390,8 @@ public class MeetingServiceImpl implements MeetingService {
         meeting.setProposedTopicsMap(proposedTopics);
         meeting.setParticipants(participants);
         meeting.setPercentageAttendance(percentageAttendance);
+        meeting.setStarted(isMeetingStarted(meeting));
+        meeting.setGoingOnNow(isMeetingGoingOnNow(meeting));
+        meeting.setPassed(isMeetingPassed(meeting));
     }
 }

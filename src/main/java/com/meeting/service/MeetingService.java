@@ -67,4 +67,21 @@ public interface MeetingService {
      */
     double getAttendancePercentageByMeetingId(Long meetingId) throws DataBaseException;
 
+    /**
+     *
+     * @return true if meeting is already started
+     */
+    boolean isMeetingStarted(Meeting meeting);
+
+    /**
+     *
+     * @return true if meeting is going on right now
+     */
+    boolean isMeetingGoingOnNow(Meeting meeting);
+
+    /**
+     *
+     * @return true if meeting is passed
+     */
+    boolean isMeetingPassed(Meeting meeting);
 }
