@@ -73,7 +73,7 @@ public class UserDaoImpl implements UserDao {
                 Long usedId = rs.getLong(1);
                 user.setRole(Role.USER);
                 user.setId(usedId);
-                addRoleForUser(usedId, c);
+                updateUserRole(usedId, c);
             }
         }
     }
@@ -138,7 +138,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public void addRoleForUser(Long id, Connection c) throws SQLException {
+    public void updateUserRole(Long id, Connection c) throws SQLException {
         PreparedStatement p = c.prepareStatement(ADD_ROLE_FOR_USER_SQL);
         p.setLong(1, id);
         p.setString(2, Role.USER.name());

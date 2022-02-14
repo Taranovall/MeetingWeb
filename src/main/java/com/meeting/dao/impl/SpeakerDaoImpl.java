@@ -42,15 +42,6 @@ public class SpeakerDaoImpl implements SpeakerDao {
     }
 
     @Override
-    public boolean answerToApplication(Long speakerId, Long topicId, String SQLQuery, Connection c) throws SQLException {
-        PreparedStatement p = c.prepareStatement(SQLQuery);
-        p.setLong(1, speakerId);
-        p.setLong(2, topicId);
-        p.executeUpdate();
-        return true;
-    }
-
-    @Override
     public List<Speaker> getAll(Connection c) throws SQLException {
         List<Speaker> speakers = new LinkedList<>();
         List<User> usersWithRoleSpeaker = userDao.getAllUserByRole(Role.SPEAKER.name(), c);
@@ -117,11 +108,17 @@ public class SpeakerDaoImpl implements SpeakerDao {
 
     @Override
     public boolean acceptApplication(Long speakerId, Long topicId, Connection c) throws SQLException {
-        answerToApplication(speakerId, topicId, ACCEPT_INVITATION_SQL, c);
-        PreparedStatement p = c.prepareStatement(REMOVE_REDUNDANT_APPLICATIONS_AFTER_ACCEPTING_ONE_SQL);
+        //accepts application by speaker or invitation by moderator to speaker
+        PreparedStatement p = c.prepareStatement(ACCEPT_INVITATION_SQL);
         p.setLong(1, speakerId);
         p.setLong(2, topicId);
-
+        p.executeUpdate();
+        //removes the remaining applications
+        p = c.prepareStatement(REMOVE_REDUNDANT_APPLICATIONS_AFTER_ACCEPTING_ONE_SQL);
+        p.setLong(1, speakerId);
+        p.setLong(2, topicId);
+        p.executeUpdate();
+        //makes topics not free
         p = c.prepareStatement(REMOVE_APPLICATION_FROM_FREE_TOPICS_AFTER_ACCEPTING_IT_SQL);
         p.setLong(1, topicId);
         p.executeUpdate();

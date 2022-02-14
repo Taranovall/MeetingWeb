@@ -10,7 +10,7 @@
 <jsp:include page="../component/navbar.jsp"></jsp:include>
 <div class="container mt-5 mb-5 text-center">
     <h1>Create new meeting</h1><br>
-    <form action="create-meeting" method="get" class="add">
+    <form action="/moderator/create-meeting" method="get" class="add">
         <c:if test="${error != null}">
             <div class="alert alert-danger text-center" role="alert">
                     ${error}

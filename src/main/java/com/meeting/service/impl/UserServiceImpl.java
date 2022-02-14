@@ -2,7 +2,6 @@ package com.meeting.service.impl;
 
 import com.meeting.dao.UserDao;
 import com.meeting.dao.impl.UserDaoImpl;
-import com.meeting.entitiy.Role;
 import com.meeting.entitiy.User;
 import com.meeting.exception.DataBaseException;
 import com.meeting.exception.UserNotFoundException;
@@ -44,19 +43,6 @@ public class UserServiceImpl implements UserService {
         } finally {
             close(c);
         }
-    }
-
-    @Override
-    public Role getAllUserRolesById(long id) throws DataBaseException {
-        Role role = null;
-        try (Connection c = getInstance().getConnection()) {
-            c.setAutoCommit(true);
-            role = userDao.getUserRole(id, c);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new DataBaseException("Cannot get user roles", e);
-        }
-        return role;
     }
 
     @Override

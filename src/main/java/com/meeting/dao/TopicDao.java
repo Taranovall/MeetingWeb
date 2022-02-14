@@ -25,5 +25,9 @@ public interface TopicDao extends Dao<Topic> {
      */
     Set<Topic> getTopicsByMeetingId(Long meetingId, Connection c) throws SQLException;
 
+    /**
+     *
+     * @return set with all topics without speaker
+     */
     Set<Topic> getAllFreeTopicsByMeetingId(Long meetingId, Connection c) throws SQLException;
 }

@@ -16,7 +16,7 @@
          aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
-                <form action="/meeting/moderator/mark-present-users/${meeting.getId()}" method="post">
+                <form action="/moderator/meeting/mark-present-users/${meeting.getId()}" method="post">
                     <div class="modal-body">
                         <c:choose>
                             <c:when test="${meeting.getParticipants().size() > 0}">

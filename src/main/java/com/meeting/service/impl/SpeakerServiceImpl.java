@@ -35,21 +35,6 @@ public class SpeakerServiceImpl implements SpeakerService {
     }
 
     @Override
-    public Speaker getSpeakerByTopicId(Long topicId) {
-        Speaker speaker = null;
-        try (Connection c = ConnectionPool.getInstance().getConnection()) {
-            c.setAutoCommit(true);
-            Optional<Speaker> optionalSpeaker = speakerDao.getSpeakerByTopicId(topicId, c);
-            if (optionalSpeaker.isPresent()) {
-                speaker = optionalSpeaker.get();
-            }
-        } catch (SQLException | DataBaseException e) {
-            e.printStackTrace();
-        }
-        return speaker;
-    }
-
-    @Override
     public Speaker getSpeakerById(Long id) {
         Speaker speaker = null;
         try (Connection c = ConnectionPool.getInstance().getConnection()) {
@@ -59,23 +44,6 @@ public class SpeakerServiceImpl implements SpeakerService {
             e.printStackTrace();
         }
         return speaker;
-    }
-
-    @Override
-    public Set<Speaker> getAllSpeakerApplicationsByTopicId(Long topicId) {
-        Connection c = null;
-        Set<Speaker> speakers = new HashSet<>();
-        try {
-            c = ConnectionPool.getInstance().getConnection();
-            speakers.addAll(speakerDao.getAllSpeakerApplicationsByTopicId(topicId, c));
-            c.commit();
-        } catch (SQLException | DataBaseException e) {
-            e.printStackTrace();
-            rollback(c);
-        } finally {
-            close(c);
-        }
-        return speakers;
     }
 
     @Override

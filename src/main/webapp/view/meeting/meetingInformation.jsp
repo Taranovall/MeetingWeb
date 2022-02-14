@@ -31,7 +31,7 @@
                  aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
-                        <form action="edit-meeting" method="post">
+                        <form action="/moderator/meeting/edit-meeting" method="post">
                             <div class="modal-body edit-modal-content">
                                 <input type="time" name="meetingStartTime" class="form-control"
                                        value="${meeting.getTimeStart()}"
@@ -134,7 +134,7 @@
                                 <c:if test="${sessionScope.user.getRole().name() == 'SPEAKER'}">
                                     <c:choose>
                                         <c:when test="${sentApplicationList != null && sentApplicationList.indexOf(freeTopic.getId().toString()) != -1}">
-                                            <form action="remove-application" method="post">
+                                            <form action="/speaker/meeting/remove-application" method="post">
                                                 <button name="application" class="become-speaker"
                                                         value="${freeTopic.getId()}" type="submit">Application
                                                     Submitted
@@ -148,7 +148,7 @@
                                                         <div class="become-speaker justify-content-center">You've
                                                             been invited to be a speaker
                                                         </div>
-                                                        <form action="accept-invitation" method="post">
+                                                        <form action="/speaker/meeting/accept-invitation" method="post">
                                                             <button class="yes" name="application"
                                                                     value="${freeTopic.getId()}" type="submit">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16"
@@ -158,7 +158,7 @@
                                                                 </svg>
                                                             </button>
                                                         </form>
-                                                        <form action="cancel-invitation" method="post">
+                                                        <form action="/speaker/meeting/cancel-invitation" method="post">
                                                             <button class="no" name="application"
                                                                     value="${freeTopic.getId()}" type="sumbit">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16"
@@ -172,7 +172,7 @@
                                                 </c:when>
                                                 <c:otherwise>
                                                     <%-- if meeting is started button is disabled --%>
-                                                    <form action="apply-application" method="post">
+                                                    <form action="/speaker/meeting/apply-application" method="post">
                                                         <c:if test="${!meeting.isStarted()}">
                                                             <button name="application" class="become-speaker"
                                                                     value="${freeTopic.getId()}" type="submit">Become
@@ -194,7 +194,7 @@
                                 <c:if test="${sessionScope.user.getRole().name() == 'MODERATOR'}">
                                     <c:choose>
                                         <c:when test="${sentApplicationsBySpeaker.get(freeTopic).size() > 0}">
-                                            <form action="accept-application" method="post"
+                                            <form action="/moderator/meeting/accept-application" method="post"
                                                   class="accept-application row">
                                                 <select class="custom-select" id="inputGroupSelect"
                                                         name="speakerId">

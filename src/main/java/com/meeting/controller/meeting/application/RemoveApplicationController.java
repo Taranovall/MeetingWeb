@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(name = "removeApplication", urlPatterns = "/meeting/remove-application")
+@WebServlet(name = "removeApplication", urlPatterns = "/speaker/meeting/remove-application")
 public class RemoveApplicationController extends HttpServlet {
 
     private final SpeakerService speakerService;

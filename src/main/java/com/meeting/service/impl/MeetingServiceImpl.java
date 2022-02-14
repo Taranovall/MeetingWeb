@@ -246,7 +246,7 @@ public class MeetingServiceImpl implements MeetingService {
         Map<Topic, Speaker> proposedTopicsBySpeaker = new HashMap<>();
         try (Connection c = ConnectionPool.getInstance().getConnection()) {
             //topic Id - key, speaker id - value
-            Map<Long, Long> proposedTopicsMap = meetingDao.getProposedTopicsBySpeakerIdMap(meetingId, c);
+            Map<Long, Long> proposedTopicsMap = meetingDao.getProposedTopicsBySpeakerByMeetingId(meetingId, c);
             proposedTopicsMap.entrySet().forEach(entry -> {
                 Topic topic = topicService.getById(entry.getKey());
                 Speaker speaker = speakerService.getSpeakerById(entry.getValue());

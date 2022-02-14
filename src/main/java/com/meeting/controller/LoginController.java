@@ -28,12 +28,7 @@ public class LoginController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        User sessionUser = (User) req.getSession().getAttribute("user");
-        if (sessionUser != null) {
-            resp.getWriter().write("You're already logged");
-        } else {
-            req.getRequestDispatcher(PATH_TO_LOGIN_JSP).forward(req, resp);
-        }
+        req.getRequestDispatcher(PATH_TO_LOGIN_JSP).forward(req, resp);
     }
 
     @Override

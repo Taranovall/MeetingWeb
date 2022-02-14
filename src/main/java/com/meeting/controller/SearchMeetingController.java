@@ -50,6 +50,7 @@ public class SearchMeetingController extends HttpServlet {
             if (isValid) {
                 SearchQueryUtil.executeQuery(meetingList, query);
                 session.setAttribute(MEETING_ATTRIBUTE_NAME, meetingList);
+                session.setAttribute("query", query);
                 session.removeAttribute("queryIsNotValid");
                 log.debug("User {} just made a search by query: {}",session.getId(), query);
             }

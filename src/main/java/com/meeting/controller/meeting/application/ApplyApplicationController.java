@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-@WebServlet(name = "applyApplication", urlPatterns = "/meeting/apply-application")
+@WebServlet(name = "applyApplication", urlPatterns = "/speaker/meeting/apply-application")
 public class ApplyApplicationController extends HttpServlet {
 
     private final SpeakerService speakerService;

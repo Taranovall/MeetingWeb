@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(name = "acceptInvitation", urlPatterns = "/meeting/accept-invitation")
+@WebServlet(name = "acceptInvitation", urlPatterns = "/speaker/meeting/accept-invitation")
 public class AcceptInvitationController extends HttpServlet {
 
     private final SpeakerService speakerService;

@@ -134,7 +134,7 @@ public class ValidationServiceImpl implements ValidationService {
         }
 
         // checks if data is valid only when creating meeting
-        if (request.getRequestURI().equals("/create-meeting")) {
+        if (request.getRequestURI().equals("/moderator/create-meeting")) {
             String countOfTopics = request.getParameter("countOfTopics");
             if (countOfTopics.length() > 0) {
                 regex = "^\\d+$";

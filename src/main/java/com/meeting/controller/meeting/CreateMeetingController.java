@@ -21,7 +21,7 @@ import java.util.List;
 
 import static com.meeting.util.Constant.*;
 
-@WebServlet(name = "createMeeting", urlPatterns = "/create-meeting")
+@WebServlet(name = "createMeeting", urlPatterns = "/moderator/create-meeting")
 @MultipartConfig(
         fileSizeThreshold = 1024 * 1024 * 1, // 1 MB
         maxFileSize = 1024 * 1024 * 10,      // 10 MB

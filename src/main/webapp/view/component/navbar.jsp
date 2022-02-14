@@ -37,7 +37,7 @@
                     <div class="dropdown-menu">
                         <a class="dropdown-item" href="/account/${sessionScope.user.getId()}">Profile</a>
                         <c:if test="${sessionScope.user.getRole().name() == 'MODERATOR'}">
-                            <a class="dropdown-item" href="/create-meeting">Create meeting</a>
+                            <a class="dropdown-item" href="/moderator/create-meeting">Create meeting</a>
                         </c:if>
                         <a class="dropdown-item" href="/logout">Logout</a>
                     </div>
@@ -64,7 +64,6 @@
                         </svg>
                     </div>
                 </c:if>
-                <c:if test="${query}"
                 <button class="btn btn btn-outline-dark my-2 my-sm-0" type="submit">Search</button>
             </form>
             <%-- /SEARCH FORM --%>

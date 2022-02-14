@@ -39,7 +39,7 @@
             <div class="modal-content">
                     <%---------------------- This way see modal content speaker---------------------%>
                 <c:if test="${sessionScope.user.getRole().name() == 'SPEAKER'}">
-                <form action="propose-topic" method="post">
+                <form action="/speaker/meeting/propose-topic" method="post">
                     <div class="modal-body">
                         <input type="text" name="topicName" placeholder="Name" class="form-control">
                     </div>
@@ -66,7 +66,7 @@
                                                 <td>
                                                     <div class="row">
                                                             <%-- Accept speaker's topic --%>
-                                                        <form action="accept-proposition" method="post">
+                                                        <form action="/moderator/meeting/accept-proposition" method="post">
                                                                 <%-- Input contains speaker ID value --%>
                                                             <input type="text" hidden value="${map.getValue().getId()}"
                                                                    name="speakerId">
@@ -80,7 +80,7 @@
                                                             </button>
                                                         </form>
                                                             <%-- Cancel speaker's topic --%>
-                                                        <form action="cancel-proposition" method="post">
+                                                        <form action="/moderator/meeting/cancel-proposition" method="post">
                                                                 <%-- Input contains speaker ID value --%>
                                                             <input type="text" hidden value="${map.getValue().getId()}"
                                                                    name="speakerId">

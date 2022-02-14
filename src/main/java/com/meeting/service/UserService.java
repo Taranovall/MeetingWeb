@@ -1,14 +1,16 @@
 package com.meeting.service;
 
-import com.meeting.entitiy.Role;
 import com.meeting.entitiy.User;
 import com.meeting.exception.DataBaseException;
 
 public interface UserService {
 
+    /**
+     * Signs up user in the site
+     * @param user
+     * @throws DataBaseException
+     */
     void signUpUser(User user) throws DataBaseException;
-
-    Role getAllUserRolesById(long id) throws DataBaseException;
 
     User getUserByLogin(String login);
 

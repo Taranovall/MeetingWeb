@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(name = "markUsers", urlPatterns = "/meeting/moderator/mark-present-users/*")
+@WebServlet(name = "markUsers", urlPatterns = "/moderator/meeting/mark-present-users/*")
 public class MarkPresentUsersController extends HttpServlet {
 
     private final MeetingService meetingService;

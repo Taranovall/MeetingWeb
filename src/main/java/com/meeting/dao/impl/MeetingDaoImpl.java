@@ -130,7 +130,7 @@ public class MeetingDaoImpl implements MeetingDao {
     }
 
     @Override
-    public Map<Long, Long> getProposedTopicsBySpeakerIdMap(Long meetingId, Connection c) throws SQLException {
+    public Map<Long, Long> getProposedTopicsBySpeakerByMeetingId(Long meetingId, Connection c) throws SQLException {
         PreparedStatement p = c.prepareStatement(GET_PROPOSED_TOPICS_BY_MEETING_ID);
         p.setLong(1, meetingId);
         ResultSet rs = p.executeQuery();

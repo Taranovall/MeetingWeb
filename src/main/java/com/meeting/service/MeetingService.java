@@ -30,20 +30,46 @@ public interface MeetingService {
      */
     Map<Speaker, Set<Topic>> getAcceptedTopicsMapByMeetingId(Long meetingId);
 
+    /**
+     *
+     * @param meetingId
+     * @return map with topics(key) and set of speakers(value) which sent application to be a speaker in topic which is a key
+     */
     Map<Topic, Set<Speaker>> getSentApplicationMapByMeetingId(Long meetingId);
 
+    /**
+     * Function for speaker to propose his own topic for particular meeting
+     * @param meetingId
+     * @param userSessionId speaker's ID
+     * @param topicName
+     * @return true if the function was successful
+     */
     boolean proposeTopic(Long meetingId, Long userSessionId, String topicName);
 
+    /**
+     * Function for moderator to accept proposed topic by speaker
+     * @return true if the function was successful
+     */
     boolean acceptProposedTopic(Long topicId, Long speakerId, Long meetingId);
 
+    /**
+     * Function for moderator to cancel proposed topic by speaker
+     * @return true if the function was successful
+     */
     boolean cancelProposedTopic(Long topicId, Long speakerId);
 
+    /**
+     *
+     * @param meetingId
+     * @return map in which key is a topic, which is proposed by speaker(value)
+     */
     Map<Topic, Speaker> getProposedTopicsBySpeakerByMeetingId(Long meetingId);
 
     /**
      * Updates meeting's name, start time, end time, place, date
      */
     void updateInformation(Meeting meeting) throws DataBaseException;
+
 
     List<User> getParticipantsByMeetingId(Long meetingId);
 
