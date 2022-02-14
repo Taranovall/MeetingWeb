@@ -36,7 +36,7 @@ public class SQLQuery {
     public static final String GET_TOPIC_BY_ID_SQL = "SELECT * FROM topics WHERE id = ?";
     public static final String GET_ALL_ACCEPTED_TOPICS_BY_MEETING_ID = "SELECT st.speaker_id, st.topic_id FROM speaker_topics st, meeting_topics mt WHERE st.invitation is true AND st.topic_id = mt.topic_id AND meeting_id = ?";
     public static final String GET_ALL_FREE_TOPICS_BY_MEETING_ID = "SELECT topic_id FROM free_topics WHERE meeting_id = ?";
-    public static final String GET_SENT_APPLICATION_BY_MEETING_ID = "SELECT st.topic_id, st.speaker_id FROM speaker_topics st, meeting_topics mt WHERE st.invitation is null AND st.topic_id = mt.topic_id AND mt.meeting_id = ?";
+    public static final String GET_SENT_APPLICATION_BY_MEETING_ID = "SELECT st.topic_id, st.speaker_id FROM speaker_topics st, meeting_topics mt WHERE st.invitation is null AND st.topic_id = mt.topic_id AND st.speaker_id = st.invited_by AND mt.meeting_id = ?";
     public static final String REMOVE_APPLICATION_FROM_FREE_TOPICS_AFTER_ACCEPTING_IT_SQL = "DELETE FROM free_topics WHERE topic_id = ?";
     public static final String PROPOSE_TOPIC_SQL = "INSERT INTO proposed_topics (proposed_by_speaker, meeting_id, topic_id) VALUES (?, ?, ?)";
     public static final String ACCEPT_PROPOSED_TOPIC_SQL = "INSERT INTO speaker_topics (speaker_id, topic_id, invitation, invited_by) VALUES (?, ?, true, ?)";

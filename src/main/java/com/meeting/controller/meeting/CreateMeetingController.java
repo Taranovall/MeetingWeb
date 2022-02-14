@@ -14,10 +14,7 @@ import com.meeting.service.impl.ValidationServiceImpl;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
+import javax.servlet.http.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -57,11 +54,12 @@ public class CreateMeetingController extends HttpServlet {
             Meeting meeting = new Meeting(name, date, startTime, endTime, place);
             // check if parameters are valid
             if (validationService.meetingMainInfoValidator(meeting, req)) {
+                HttpSession session = req.getSession();
                 List<Speaker> speakerList = speakerService.getAllSpeakers();
-                req.setAttribute("speakers", speakerList);
-                req.getSession().setAttribute("meeting", meeting);
-                req.getSession().setAttribute("countOfTopics", req.getParameter("countOfTopics"));
-                req.getSession().setAttribute("firstPageURL", req.getRequestURI());
+                session.setAttribute("speakers", speakerList);
+                session.setAttribute("meeting", meeting);
+                session.setAttribute("countOfTopics", req.getParameter("countOfTopics"));
+                session.setAttribute("firstPageURL", req.getRequestURI());
                 req.getRequestDispatcher(PATH_TO_CREATE_MEETING_SECOND_PAGE_JSP).forward(req, resp);
             } else {
                 req.getRequestDispatcher(PATH_TO_CREATE_MEETING_FIRST_PAGE_JSP).forward(req, resp);
@@ -72,7 +70,8 @@ public class CreateMeetingController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         // removes error attribute in case if user got any error before successful input
-        req.getSession().removeAttribute("error");
+        HttpSession session = req.getSession();
+        session.removeAttribute("error");
         String[] topics = req.getParameterValues("topicName");
         String[] speakers = req.getParameterValues("speakerName");
 
@@ -90,9 +89,10 @@ public class CreateMeetingController extends HttpServlet {
             try {
                 meetingService.createMeeting(userFromSession, meeting, topics, speakers, image);
                 // removes because it already doesn't need
-                req.getSession().removeAttribute("countOfTopics");
-                req.getSession().removeAttribute("firstPageURL");
-                req.getRequestDispatcher(PATH_TO_MAIN_PAGE_JSP).forward(req, resp);
+                session.removeAttribute("countOfTopics");
+                session.removeAttribute("firstPageURL");
+                session.removeAttribute("speakers");
+                resp.sendRedirect("/");
             } catch (DataBaseException e) {
                 e.printStackTrace();
             }

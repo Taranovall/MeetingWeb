@@ -40,7 +40,7 @@
                             </c:when>
                             <c:otherwise>
                                 <p class="text-center mt-2">
-                                    There's no participants yet
+                                    There's no participants
                                 </p>
                             </c:otherwise>
                         </c:choose>

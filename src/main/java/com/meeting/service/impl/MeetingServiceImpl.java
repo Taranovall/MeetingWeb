@@ -73,14 +73,12 @@ public class MeetingServiceImpl implements MeetingService {
                 Speaker speaker = entry.getValue();
                 Topic topic = entry.getKey();
 
-                // creates topic and doesn't invite user to be a speaker if option wasn't selected
-                if (speaker.getLogin().equals("none")) {
-                    topicDao.createFreeTopic(meeting, topic, c);
-                    continue;
-                }
-
                 // invites user to be a speaker therefore option with his name was selected
-                speakerDao.sendInvite(speaker.getId(), topic.getId(), sessionUser.getId(), c);
+                if (!speaker.getLogin().equals("none")) {
+                    speakerDao.sendInvite(speaker.getId(), topic.getId(), sessionUser.getId(), c);
+                }
+                // creates free topic
+                topicDao.createFreeTopic(meeting, topic, c);
             }
             c.commit();
         } catch (SQLException e) {

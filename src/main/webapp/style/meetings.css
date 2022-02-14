@@ -73,3 +73,16 @@ BODY #meetingList {
     padding-right: 15px;
     padding-left: 15px;
 }
+
+.meeting .going-on-now {
+    position: absolute;
+    left: 2%;
+    top: 2%;
+    border: 1px solid;
+    padding: 1%;
+    border-radius: 10px;
+}
+
+.meeting .going-on-now:hover {
+    background: #b93945;
+}

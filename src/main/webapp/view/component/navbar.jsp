@@ -64,6 +64,7 @@
                         </svg>
                     </div>
                 </c:if>
+                <c:if test="${query}"
                 <button class="btn btn btn-outline-dark my-2 my-sm-0" type="submit">Search</button>
             </form>
             <%-- /SEARCH FORM --%>

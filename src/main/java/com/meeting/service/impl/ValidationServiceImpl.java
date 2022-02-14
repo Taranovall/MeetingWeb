@@ -10,7 +10,10 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import static com.meeting.util.Constant.QUERY_IS_NOT_VALID_ATTRIBUTE_NAME;
 
@@ -158,6 +161,11 @@ public class ValidationServiceImpl implements ValidationService {
     @Override
     public boolean meetingPostValidator(String[] topics, Part uploadedImage, HttpServletRequest req) {
         String errorMessage = null;
+
+        Set<String> topicSet = new HashSet<>(Arrays.asList(topics));
+        if (topicSet.size() != topics.length) {
+            errorMessage = "Topic's name must be unique";
+        }
 
         for (String topic : topics) {
             if (Objects.isNull(topic) || topic.length() < 1 || topic.length() > 32) {

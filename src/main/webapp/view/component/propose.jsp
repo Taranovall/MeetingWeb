@@ -11,19 +11,22 @@
 <%-- user cannot see this button --%>
 <c:if test="${sessionScope.user.getRole().name() != 'USER' && sessionScope.user.getRole() != null}">
     <div class="text-center">
-        <button type="button" class="btn btn-outline-dark mt-2" data-toggle="modal"
-                data-target="#TopicProposing">
-                <%-- This way see button's content speaker --%>
-            <c:if test="${sessionScope.user.getRole().name() == 'SPEAKER'}">
-                Propose a topic
-            </c:if>
-                <%-- This way see button's content moderator --%>
-            <c:if test="${sessionScope.user.getRole().name() == 'MODERATOR'}">
-                Proposed topics
-            </c:if>
-        </button>
-        <%-- this button only for moderator to mark present users --%>
-        <c:if test="${sessionScope.user.getRole().name() == 'MODERATOR'}">
+        <%-- visible only if meeting hasn't started --%>
+        <c:if test="${!meeting.isStarted()}">
+            <button type="button" class="btn btn-outline-dark mt-2" data-toggle="modal"
+                    data-target="#TopicProposing">
+                    <%-- This way see button's content speaker --%>
+                <c:if test="${sessionScope.user.getRole().name() == 'SPEAKER'}">
+                    Propose a topic
+                </c:if>
+                    <%-- This way see button's content moderator --%>
+                <c:if test="${sessionScope.user.getRole().name() == 'MODERATOR'}">
+                    Proposed topics
+                </c:if>
+            </button>
+        </c:if>
+            <%-- this button only for moderator to mark present users --%>
+        <c:if test="${sessionScope.user.getRole().name() == 'MODERATOR' && meeting.isStarted()}">
             <button type="button" class="btn btn-outline-dark mt-2" data-toggle="modal"
                     data-target="#markUsers">
                 Mark present users
@@ -42,8 +45,9 @@
                     </div>
                     </c:if>
                         <%---------------------- This way see modal content moderator---------------------%>
+                    <c:if test="${sessionScope.user.getRole().name() == 'MODERATOR'}">
                     <c:choose>
-                        <c:when test="${sessionScope.user.getRole().name() == 'MODERATOR' && proposedTopics.size() != 0}">
+                        <c:when test="${proposedTopics.size() != 0}">
                             <div class="modal-body">
                                 <div class="row">
                                     <table class="table table-hover mb-0">
@@ -100,11 +104,11 @@
                         </c:when>
                         <c:otherwise>
                             <p class="text-center mt-2">
-                            There's no proposed topics
+                                There's no proposed topics
                             </p>
                         </c:otherwise>
-
                     </c:choose>
+                    </c:if>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close
                         </button>

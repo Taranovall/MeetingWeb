@@ -70,11 +70,12 @@
             <jsp:include page="../component/propose.jsp"></jsp:include>
             <%-- only for moderator --%>
             <jsp:include page="../component/markPresentUsers.jsp"></jsp:include>
-            <%-- attendance percentage --%>
-            <c:if test="${sessionScope.user.getRole().name() == 'MODERATOR' && meeting.getPercentageAttendance() != 0}">
+            <%-- attendance percentage visible only for moderator if meeting is already started--%>
+            <c:if test="${sessionScope.user.getRole().name() == 'MODERATOR' && meeting.getPercentageAttendance() != 0 && meeting.isStarted()}">
                 <div class="percentage text-center">Percentage attendance
                     <div class="progress">
-                        <div class="progress-bar" role="progressbar" style="width: ${meeting.getPercentageAttendance()}%;"
+                        <div class="progress-bar" role="progressbar"
+                             style="width: ${meeting.getPercentageAttendance()}%;"
                              aria-valuenow="${meeting.getPercentageAttendance()}"
                              aria-valuemin="0" aria-valuemax="100">${meeting.getPercentageAttendance()}%
                         </div>
@@ -170,11 +171,19 @@
                                                     </div>
                                                 </c:when>
                                                 <c:otherwise>
+                                                    <%-- if meeting is started button is disabled --%>
                                                     <form action="apply-application" method="post">
-                                                        <button name="application" class="become-speaker"
-                                                                value="${freeTopic.getId()}" type="submit">Become
-                                                            speaker
-                                                        </button>
+                                                        <c:if test="${!meeting.isStarted()}">
+                                                            <button name="application" class="become-speaker"
+                                                                    value="${freeTopic.getId()}" type="submit">Become
+                                                                speaker
+                                                            </button>
+                                                        </c:if>
+                                                        <c:if test="${meeting.isStarted()}">
+                                                            <button disabled class="become-speaker">Become
+                                                                speaker
+                                                            </button>
+                                                        </c:if>
                                                     </form>
                                                 </c:otherwise>
                                             </c:choose>
@@ -203,6 +212,7 @@
                                                         </c:if>
                                                     </c:forEach>
                                                 </select>
+                                                <c:if test="${!meeting.isStarted()}">
                                                 <button name="application" class="yes"
                                                         value="${freeTopic.getId()}" type="submit">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16"
@@ -211,6 +221,16 @@
                                                         <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
                                                     </svg>
                                                 </button>
+                                                </c:if>
+                                                <c:if test="${meeting.isStarted()}">
+                                                    <button disabled class="yes">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                                             height="16" fill="currentColor"
+                                                             class="bi bi-check" viewBox="0 0 16 16">
+                                                            <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                                                        </svg>
+                                                    </button>
+                                                </c:if>
                                             </form>
                                         </c:when>
                                         <c:otherwise>
@@ -219,7 +239,7 @@
                                     </c:choose>
                                 </c:if>
                                     <%------------------------ THIS WAY USER SEES ROWS WITHOUT SPEAKER ------------------------%>
-                                <c:if test="${sessionScope.user.getRole().name() == 'USER'}">
+                                <c:if test="${sessionScope.user.getRole().name() == 'USER' || sessionScope.user.getRole() == null}">
                                     <span>Doesn't have speaker yet</span>
                                 </c:if>
                             </td>
