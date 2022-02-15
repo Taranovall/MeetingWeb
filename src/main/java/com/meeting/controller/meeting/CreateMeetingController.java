@@ -19,7 +19,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import static com.meeting.util.Constant.*;
+import static com.meeting.util.Constant.PATH_TO_CREATE_MEETING_FIRST_PAGE_JSP;
+import static com.meeting.util.Constant.PATH_TO_CREATE_MEETING_SECOND_PAGE_JSP;
 
 @WebServlet(name = "createMeeting", urlPatterns = "/moderator/create-meeting")
 @MultipartConfig(
@@ -93,8 +94,8 @@ public class CreateMeetingController extends HttpServlet {
                 session.removeAttribute("firstPageURL");
                 session.removeAttribute("speakers");
                 resp.sendRedirect("/");
-            } catch (DataBaseException e) {
-                e.printStackTrace();
+            }  catch (DataBaseException e) {
+                resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
             }
         } else {
             req.getRequestDispatcher(PATH_TO_CREATE_MEETING_SECOND_PAGE_JSP).forward(req, resp);

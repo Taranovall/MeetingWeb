@@ -2,6 +2,7 @@ package com.meeting.controller;
 
 import com.meeting.entitiy.Meeting;
 import com.meeting.exception.DataBaseException;
+import com.meeting.exception.UserNotFoundException;
 import com.meeting.service.MeetingService;
 import com.meeting.service.impl.MeetingServiceImpl;
 import org.apache.logging.log4j.LogManager;
@@ -43,10 +44,10 @@ public class MainPageController extends HttpServlet {
         if (meetingList == null) {
             try {
                     meetingList = meetingService.getAllMeetings();
-                } catch (DataBaseException e) {
-                    e.printStackTrace();
-                }
-            //removes redundant attributes if user removes parameters
+                } catch (DataBaseException | UserNotFoundException e) {
+                resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+            }
+
             if (!isUserHasUsedForm) {
                 session.removeAttribute("option");
                 session.removeAttribute(SORT_METHOD_ATTRIBUTE_NAME);

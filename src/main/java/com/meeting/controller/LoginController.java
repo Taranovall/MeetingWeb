@@ -1,6 +1,7 @@
 package com.meeting.controller;
 
 import com.meeting.entitiy.User;
+import com.meeting.exception.UserNotFoundException;
 import com.meeting.service.ValidationService;
 import com.meeting.service.impl.ValidationServiceImpl;
 import org.apache.logging.log4j.LogManager;
@@ -33,7 +34,12 @@ public class LoginController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        User user = validationService.authValidator(req);
+        User user = null;
+        try {
+            user = validationService.authValidator(req);
+        }  catch (UserNotFoundException e) {
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+        }
         String redirectTo = (String) req.getSession().getAttribute("lastPageURI");
 
         req.getSession().setAttribute("user", user);

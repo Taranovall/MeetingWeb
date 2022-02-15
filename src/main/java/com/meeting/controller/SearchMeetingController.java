@@ -2,6 +2,7 @@ package com.meeting.controller;
 
 import com.meeting.entitiy.Meeting;
 import com.meeting.exception.DataBaseException;
+import com.meeting.exception.UserNotFoundException;
 import com.meeting.service.MeetingService;
 import com.meeting.service.ValidationService;
 import com.meeting.service.impl.MeetingServiceImpl;
@@ -42,8 +43,8 @@ public class SearchMeetingController extends HttpServlet {
         List<Meeting> meetingList = null;
         try {
             meetingList = meetingService.getAllMeetings();
-        } catch (DataBaseException e) {
-            e.printStackTrace();
+        } catch (DataBaseException | UserNotFoundException e) {
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
         if (query != null) {
             boolean isValid = validationService.searchValidator(query, req.getSession());

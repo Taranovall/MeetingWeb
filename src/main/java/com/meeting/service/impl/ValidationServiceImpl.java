@@ -2,6 +2,7 @@ package com.meeting.service.impl;
 
 import com.meeting.entitiy.Meeting;
 import com.meeting.entitiy.User;
+import com.meeting.exception.UserNotFoundException;
 import com.meeting.service.UserService;
 import com.meeting.service.ValidationService;
 
@@ -45,7 +46,7 @@ public class ValidationServiceImpl implements ValidationService {
     }
 
     @Override
-    public User authValidator(HttpServletRequest req) {
+    public User authValidator(HttpServletRequest req) throws UserNotFoundException {
         final String login = req.getParameter("login");
         final String password = req.getParameter("password");
         User userDB = userService.getUserByLogin(login);

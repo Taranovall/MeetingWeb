@@ -2,6 +2,7 @@ package com.meeting.controller.meeting.application;
 
 import com.meeting.entitiy.Role;
 import com.meeting.entitiy.User;
+import com.meeting.exception.DataBaseException;
 import com.meeting.service.SpeakerService;
 import com.meeting.service.ValidationService;
 import com.meeting.service.impl.SpeakerServiceImpl;
@@ -34,10 +35,14 @@ public class AcceptApplicationController extends HttpServlet {
             User userSession = (User) req.getSession().getAttribute("user");
 
             if (topicId == null || !userSession.getRole().equals(Role.MODERATOR)) resp.sendRedirect(lastURI);
-
-            speakerService.acceptApplication(Long.parseLong(topicId), Long.parseLong(speakerId));
+            try {
+                speakerService.acceptApplication(Long.parseLong(topicId), Long.parseLong(speakerId));
+            } catch (DataBaseException e) {
+                resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+            }
         }
 
         resp.sendRedirect(lastURI);
+
     }
 }

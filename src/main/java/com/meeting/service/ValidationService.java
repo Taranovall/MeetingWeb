@@ -2,6 +2,7 @@ package com.meeting.service;
 
 import com.meeting.entitiy.Meeting;
 import com.meeting.entitiy.User;
+import com.meeting.exception.UserNotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -11,7 +12,7 @@ public interface ValidationService {
 
     User registrationValidator(HttpServletRequest req);
 
-    User authValidator(HttpServletRequest req);
+    User authValidator(HttpServletRequest req) throws UserNotFoundException;
 
     /**
      * @return true only if query is valid

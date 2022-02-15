@@ -5,7 +5,6 @@ import com.meeting.dao.SpeakerDao;
 import com.meeting.dao.TopicDao;
 import com.meeting.dao.UserDao;
 import com.meeting.entitiy.*;
-import com.meeting.exception.DataBaseException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -28,7 +27,7 @@ public class SpeakerDaoImpl implements SpeakerDao {
     }
 
     @Override
-    public Optional<Speaker> getById(Long id, Connection c) throws SQLException, DataBaseException {
+    public Optional<Speaker> getById(Long id, Connection c) throws SQLException {
         Optional<User> user = userDao.getById(id, c);
         if (!user.isPresent() || !userDao.getUserRole(id, c).equals(Role.SPEAKER)) {
             return Optional.empty();
@@ -75,7 +74,7 @@ public class SpeakerDaoImpl implements SpeakerDao {
     }
 
     @Override
-    public Optional<Speaker> getSpeakerByTopicId(Long topicId, Connection c) throws SQLException, DataBaseException {
+    public Optional<Speaker> getSpeakerByTopicId(Long topicId, Connection c) throws SQLException {
         Optional<Speaker> speakerOptional = Optional.empty();
         PreparedStatement p = c.prepareStatement(GET_SPEAKER_BY_TOPIC_ID);
         p.setLong(1, topicId);
@@ -126,7 +125,7 @@ public class SpeakerDaoImpl implements SpeakerDao {
     }
 
     @Override
-    public Set<Speaker> getAllSpeakerApplicationsByTopicId(Long topicId, Connection c) throws SQLException, DataBaseException {
+    public Set<Speaker> getAllSpeakerApplicationsByTopicId(Long topicId, Connection c) throws SQLException {
         Set<Speaker> speakers = new HashSet<>();
         Optional<Speaker> optionalSpeaker = Optional.empty();
         PreparedStatement p = c.prepareStatement(GET_ALL_SPEAKER_APPLICATIONS_BY_TOPIC_ID_SQL);
@@ -144,7 +143,7 @@ public class SpeakerDaoImpl implements SpeakerDao {
      * Gets from data base the user's response
      * to the invitation to become the speaker of the topic
      */
-    private Map<Meeting, Map<Topic, State>> getResponsesToInvitations(Long speakerId, Connection c) throws SQLException, DataBaseException {
+    private Map<Meeting, Map<Topic, State>> getResponsesToInvitations(Long speakerId, Connection c) throws SQLException {
         PreparedStatement p = c.prepareStatement(GET_SPEAKER_RESPONSE_TO_THE_OFFER);
 
         Map<Meeting, Map<Topic, State>> result = new HashMap<>();
@@ -177,7 +176,7 @@ public class SpeakerDaoImpl implements SpeakerDao {
     }
 
 
-    private Map<Topic, State> extractResponse(Long topicId, Boolean invitation, Connection c) throws SQLException, DataBaseException {
+    private Map<Topic, State> extractResponse(Long topicId, Boolean invitation, Connection c) throws SQLException {
         Map<Topic, State> responseMap = new HashMap<>();
 
         Optional<Topic> optionalTopic = topicDao.getById(topicId, c);
@@ -186,7 +185,7 @@ public class SpeakerDaoImpl implements SpeakerDao {
             Topic topic = optionalTopic.get();
 
             if (invitation == null) {
-                    responseMap.put(topic, State.NOT_DEFINED);
+                responseMap.put(topic, State.NOT_DEFINED);
             } else {
 
                 if (invitation) responseMap.put(topic, State.ACCEPTED);

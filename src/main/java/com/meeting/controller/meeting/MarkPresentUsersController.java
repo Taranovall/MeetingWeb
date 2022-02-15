@@ -28,8 +28,8 @@ public class MarkPresentUsersController extends HttpServlet {
         req.getParameterMap();
         try {
             meetingService.markPresentUsers(presentUsers, meetingId);
-        } catch (DataBaseException e) {
-            e.printStackTrace();
+        }  catch (DataBaseException e) {
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
         resp.sendRedirect(lastURI);
     }

@@ -1,16 +1,17 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: aleksandrtaranov
-  Date: 14.02.2022
-  Time: 22:04
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<!doctype html>
+<html lang="ru">
 <head>
-    <title>Error</title>
+    <title>HTTP Status 500 – Internal Server Error</title>
+    <link rel="stylesheet" type="text/css" href="/style/errorPage.css">
 </head>
 <body>
-
+<h1>HTTP Status 500 – Internal Server Error</h1>
+<hr class="line"/>
+<p><b>Type</b> ${requestScope.type}</p>
+<p><b>Message</b> ${requestScope.message}</p>
+<p><b>Description</b> The server encountered an unexpected condition that prevented it from fulfilling the request.</p>
+<hr class="line"/>
 </body>
 </html>

@@ -32,8 +32,8 @@ public class ParticipateController extends HttpServlet {
         try {
             userService.participate(userSession.getId(), meetingId);
             userSession.getMeetingIdsSetUserTakesPart().add(meetingId);
-        } catch (DataBaseException e) {
-            e.printStackTrace();
+        }  catch (DataBaseException e) {
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
 
         resp.sendRedirect(lastURI);

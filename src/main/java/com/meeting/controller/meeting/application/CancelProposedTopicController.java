@@ -1,5 +1,6 @@
 package com.meeting.controller.meeting.application;
 
+import com.meeting.exception.DataBaseException;
 import com.meeting.service.MeetingService;
 import com.meeting.service.impl.MeetingServiceImpl;
 
@@ -27,7 +28,11 @@ public class CancelProposedTopicController extends HttpServlet {
         Long topicId = Long.valueOf(req.getParameter("application"));
         Long speakerId = Long.valueOf(req.getParameter("speakerId"));
 
-        meetingService.cancelProposedTopic(topicId, speakerId);
+        try {
+            meetingService.cancelProposedTopic(topicId, speakerId);
+        } catch (DataBaseException e) {
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+        }
 
         resp.sendRedirect(lastURI);
     }

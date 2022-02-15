@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
             userDao.save(user, c);
             c.commit();
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error("Cannot sign up user", e);
             rollback(c);
             throw new DataBaseException("Cannot sign up user", e);
         } finally {
@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUserByLogin(String login) {
+    public User getUserByLogin(String login) throws UserNotFoundException {
         User user = null;
         try (Connection c = getInstance().getConnection()) {
             c.setAutoCommit(true);
@@ -58,23 +58,27 @@ public class UserServiceImpl implements UserService {
                 String message = ResourceBundle.getBundle("message", locale).getString("user.notfound");
                 throw new UserNotFoundException(MessageFormat.format(message, login));
             }
-        } catch (SQLException | UserNotFoundException e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            log.error("Cannot get user by login: {}",login, e);
+            throw new UserNotFoundException("Cannot get user by login: " + login, e);
         }
         return user;
     }
 
     @Override
-    public User getUserById(Long id) {
+    public User getUserById(Long id) throws UserNotFoundException {
         User user = null;
         try (Connection c = ConnectionPool.getInstance().getConnection()) {
             c.setAutoCommit(true);
             Optional<User> userOptional = userDao.getById(id, c);
             if (userOptional.isPresent()) {
                 user = userOptional.get();
+            } else {
+                throw new SQLException();
             }
-        } catch (SQLException | DataBaseException e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            log.error("Cannot get user by ID: {}", id, e);
+        throw new UserNotFoundException("Cannot get user by ID: " + id, e);
         }
         return user;
     }
@@ -87,7 +91,6 @@ public class UserServiceImpl implements UserService {
             userDao.participate(userId, meetingId, c);
             c.commit();
         } catch (SQLException e) {
-            e.printStackTrace();
             rollback(c);
             log.error("User {} cannot participate", userId, e);
             throw new DataBaseException("User cannot participate", e);

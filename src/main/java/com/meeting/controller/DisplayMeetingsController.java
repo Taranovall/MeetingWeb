@@ -2,6 +2,7 @@ package com.meeting.controller;
 
 import com.meeting.entitiy.Meeting;
 import com.meeting.exception.DataBaseException;
+import com.meeting.exception.UserNotFoundException;
 import com.meeting.service.MeetingService;
 import com.meeting.service.impl.MeetingServiceImpl;
 import com.meeting.util.DisplayedMeetingUtil;
@@ -35,8 +36,8 @@ public class DisplayMeetingsController extends HttpServlet {
         try {
             meetingList = meetingService.getAllMeetings();
             meetingList = DisplayedMeetingUtil.displayMeetings(meetingList, displayOption);
-        } catch (DataBaseException e) {
-            e.printStackTrace();
+        }  catch (DataBaseException | UserNotFoundException e) {
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
 
         session.setAttribute(MEETING_ATTRIBUTE_NAME, meetingList);

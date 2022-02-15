@@ -17,6 +17,7 @@ public class ImageController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String imageFileName = req.getPathInfo();
+
         InputStream is = getFileFromResourceAsStream(imageFileName);
 
         ServletContext cntx = req.getServletContext();
@@ -59,7 +60,8 @@ public class ImageController extends HttpServlet {
 
         // the stream holding the file content
         if (inputStream == null) {
-            throw new IllegalArgumentException("file not found! " + imgName);
+            String message = String.format("File '%s' not found!", imgName.substring(1));
+            throw new IllegalArgumentException(message);
         } else {
             return inputStream;
         }

@@ -46,8 +46,8 @@ public class EditMeetingController extends HttpServlet {
         if (validationService.meetingMainInfoValidator(meeting, req)) {
             try {
                 meetingService.updateInformation(meeting);
-            } catch (DataBaseException e) {
-                e.printStackTrace();
+            }  catch (DataBaseException e) {
+                resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
             }
         }
         resp.sendRedirect(lastURI);

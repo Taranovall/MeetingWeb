@@ -1,6 +1,7 @@
 package com.meeting.controller.meeting.application;
 
 import com.meeting.entitiy.User;
+import com.meeting.exception.DataBaseException;
 import com.meeting.service.SpeakerService;
 import com.meeting.service.impl.SpeakerServiceImpl;
 
@@ -30,7 +31,11 @@ public class ApplyApplicationController extends HttpServlet {
 
         if (topicId == null) resp.sendRedirect(lastURI);
 
-        speakerService.sendApplication(Long.parseLong(topicId), userSession.getId());
+        try {
+            speakerService.sendApplication(Long.parseLong(topicId), userSession.getId());
+        } catch (DataBaseException e) {
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+        }
 
         List<String> applicationList = (List<String>) req.getSession().getAttribute("sentApplicationList");
         if (applicationList == null) {

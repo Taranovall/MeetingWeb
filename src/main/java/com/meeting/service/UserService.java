@@ -2,6 +2,7 @@ package com.meeting.service;
 
 import com.meeting.entitiy.User;
 import com.meeting.exception.DataBaseException;
+import com.meeting.exception.UserNotFoundException;
 
 public interface UserService {
 
@@ -12,9 +13,9 @@ public interface UserService {
      */
     void signUpUser(User user) throws DataBaseException;
 
-    User getUserByLogin(String login);
+    User getUserByLogin(String login) throws UserNotFoundException;
 
-    User getUserById(Long id);
+    User getUserById(Long id) throws UserNotFoundException;
 
     /**
      * puts userId and meetingId into table meeting_participants

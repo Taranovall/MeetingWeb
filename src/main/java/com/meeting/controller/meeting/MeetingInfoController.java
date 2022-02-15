@@ -1,7 +1,10 @@
 package com.meeting.controller.meeting;
 
-import com.meeting.entitiy.*;
+import com.meeting.entitiy.Meeting;
+import com.meeting.entitiy.Role;
+import com.meeting.entitiy.User;
 import com.meeting.exception.DataBaseException;
+import com.meeting.exception.UserNotFoundException;
 import com.meeting.service.MeetingService;
 import com.meeting.service.SpeakerService;
 import com.meeting.service.impl.MeetingServiceImpl;
@@ -14,7 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
 
 import static com.meeting.util.Constant.PATH_TO_MEETING_INFO_PAGE;
 
@@ -75,8 +79,8 @@ public class MeetingInfoController extends HttpServlet {
                 }
             }
             req.getRequestDispatcher(PATH_TO_MEETING_INFO_PAGE).forward(req, resp);
-        } catch (DataBaseException e) {
-            e.printStackTrace();
+        }  catch (DataBaseException | UserNotFoundException e) {
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 }

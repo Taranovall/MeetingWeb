@@ -48,8 +48,8 @@ public class RegistrationController extends HttpServlet {
                 req.getSession().setAttribute("user", user);
                 resp.sendRedirect("/");
             } catch (DataBaseException e) {
-                e.printStackTrace();
                 log.error("Sign up error: {}", e.getMessage());
+                resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
             }
         }
     }

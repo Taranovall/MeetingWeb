@@ -32,8 +32,8 @@ public class StopParticipatingController extends HttpServlet {
         try {
             userService.stopParticipating(userSession.getId(), meetingId);
             userSession.getMeetingIdsSetUserTakesPart().remove(meetingId);
-        } catch (DataBaseException e) {
-            e.printStackTrace();
+        }  catch (DataBaseException e) {
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
 
         resp.sendRedirect(lastURI);

@@ -11,6 +11,7 @@ import com.meeting.entitiy.Speaker;
 import com.meeting.entitiy.Topic;
 import com.meeting.entitiy.User;
 import com.meeting.exception.DataBaseException;
+import com.meeting.exception.UserNotFoundException;
 import com.meeting.service.MeetingService;
 import com.meeting.service.SpeakerService;
 import com.meeting.service.TopicService;
@@ -91,7 +92,7 @@ public class MeetingServiceImpl implements MeetingService {
     }
 
     @Override
-    public Meeting getMeetingById(Long id) throws DataBaseException {
+    public Meeting getMeetingById(Long id) throws DataBaseException, UserNotFoundException {
         Meeting meeting = null;
         try (Connection c = ConnectionPool.getInstance().getConnection()) {
             Optional<Meeting> optionalMeeting = meetingDao.getById(id, c);
@@ -99,14 +100,14 @@ public class MeetingServiceImpl implements MeetingService {
             meeting = optionalMeeting.get();
             extractMeetingInformation(meeting);
         } catch (SQLException e) {
-            e.printStackTrace();
             log.error("Meeting with ID = {} doesn't exist: ", id, e);
+            throw new DataBaseException("Meeting with ID " + id + " doesn't exist", e);
         }
         return meeting;
     }
 
     @Override
-    public boolean proposeTopic(Long meetingId, Long userSessionId, String topicName) {
+    public boolean proposeTopic(Long meetingId, Long userSessionId, String topicName) throws DataBaseException {
         Connection c = null;
         Topic topic = new Topic();
         try {
@@ -116,9 +117,9 @@ public class MeetingServiceImpl implements MeetingService {
             meetingDao.proposeTopic(meetingId, userSessionId, topic.getId(), c);
             c.commit();
         } catch (SQLException e) {
-            e.printStackTrace();
-            rollback(c);
             log.error("Cannot propose topic: ", e);
+            rollback(c);
+            throw new DataBaseException("Cannot propose topic", e);
         } finally {
             close(c);
         }
@@ -126,16 +127,16 @@ public class MeetingServiceImpl implements MeetingService {
     }
 
     @Override
-    public boolean acceptProposedTopic(Long topicId, Long speakerId, Long meetingId) {
+    public boolean acceptProposedTopic(Long topicId, Long speakerId, Long meetingId) throws DataBaseException {
         Connection c = null;
         try {
             c = ConnectionPool.getInstance().getConnection();
             meetingDao.acceptProposedTopics(topicId, speakerId, meetingId, c);
             c.commit();
         } catch (SQLException e) {
-            e.printStackTrace();
-            rollback(c);
             log.error("Cannot accept proposed topic: ", e);
+            rollback(c);
+            throw new DataBaseException("Cannot accept proposed topic", e);
         } finally {
             close(c);
         }
@@ -143,16 +144,16 @@ public class MeetingServiceImpl implements MeetingService {
     }
 
     @Override
-    public boolean cancelProposedTopic(Long topicId, Long speakerId) {
+    public boolean cancelProposedTopic(Long topicId, Long speakerId) throws DataBaseException {
         Connection c = null;
         try {
             c = ConnectionPool.getInstance().getConnection();
             meetingDao.cancelProposedTopic(topicId, speakerId, c);
             c.commit();
         } catch (SQLException e) {
-            e.printStackTrace();
-            rollback(c);
             log.error("Cannot cancel proposed topic", e);
+            rollback(c);
+            throw new DataBaseException("Cannot cancel proposed topics", e);
         } finally {
             close(c);
         }
@@ -160,14 +161,13 @@ public class MeetingServiceImpl implements MeetingService {
     }
 
     @Override
-    public List<Meeting> getAllMeetings() throws DataBaseException {
+    public List<Meeting> getAllMeetings() throws DataBaseException, UserNotFoundException {
         List<Meeting> meetings = null;
         try (Connection c = getInstance().getConnection()) {
             c.setAutoCommit(true);
             meetings = meetingDao.getAll(c);
             for (Meeting meeting : meetings) extractMeetingInformation(meeting);
         } catch (SQLException e) {
-            e.printStackTrace();
             log.error("Cannot get all meetings", e);
             throw new DataBaseException("Cannot get all meetings", e);
         }
@@ -175,7 +175,7 @@ public class MeetingServiceImpl implements MeetingService {
     }
 
     @Override
-    public Set<Meeting> getMeetingsSpeakerIsInvolvedIn(Long speakerId) {
+    public Set<Meeting> getMeetingsSpeakerIsInvolvedIn(Long speakerId) throws DataBaseException, UserNotFoundException {
         Set<Meeting> meetings = new HashSet<>();
         Connection c = null;
         try {
@@ -185,9 +185,10 @@ public class MeetingServiceImpl implements MeetingService {
                 meetings.add(getMeetingById(id));
             }
             c.commit();
-        } catch (SQLException | DataBaseException e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            log.error("Cannot get meetings is which speaker with ID = {} is involved", speakerId, e);
             rollback(c);
+            throw new DataBaseException("Cannot get meetings is which speaker is involved", e);
         } finally {
             close(c);
         }
@@ -195,7 +196,7 @@ public class MeetingServiceImpl implements MeetingService {
     }
 
     @Override
-    public Map<Speaker, Set<Topic>> getAcceptedTopicsMapByMeetingId(Long meetingId) {
+    public Map<Speaker, Set<Topic>> getAcceptedTopicsMapByMeetingId(Long meetingId) throws DataBaseException {
         Map<Speaker, Set<Topic>> acceptedTopicsBySpeaker = new HashMap<>();
         try (Connection c = ConnectionPool.getInstance().getConnection()) {
             c.setAutoCommit(true);
@@ -217,13 +218,14 @@ public class MeetingServiceImpl implements MeetingService {
                 topicSet.add(topic);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error("Cannot get accepted topics by meeting id {}", meetingId, e);
+            throw new DataBaseException("Cannot get accepted topics by meeting id " + meetingId, e);
         }
         return acceptedTopicsBySpeaker;
     }
 
     @Override
-    public Map<Topic, Set<Speaker>> getSentApplicationMapByMeetingId(Long meetingId) {
+    public Map<Topic, Set<Speaker>> getSentApplicationMapByMeetingId(Long meetingId) throws DataBaseException {
         Map<Topic, Set<Speaker>> sentApplicationMap = new HashMap<>();
         try (Connection c = ConnectionPool.getInstance().getConnection()) {
             c.setAutoCommit(true);
@@ -232,28 +234,39 @@ public class MeetingServiceImpl implements MeetingService {
             for (Map.Entry<Long, Set<Long>> entry : sentApplicationMapWithIDs.entrySet()) {
                 Topic topic = topicService.getById(entry.getKey());
                 Set<Speaker> speakerSet = new HashSet<>();
-                entry.getValue().forEach(speakerId -> speakerSet.add(speakerService.getSpeakerById(speakerId)));
+                for (Long speakerId : entry.getValue()) {
+                    speakerSet.add(speakerService.getSpeakerById(speakerId));
+                }
+                //entry.getValue().forEach(speakerId -> speakerSet.add(speakerService.getSpeakerById(speakerId)));
                 sentApplicationMap.put(topic, speakerSet);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error("Cannot get sent applications by meeting ID {}", meetingId, e);
+            throw new DataBaseException("Cannot get sent applications by meeting ID ", e);
         }
         return sentApplicationMap;
     }
 
     @Override
-    public Map<Topic, Speaker> getProposedTopicsBySpeakerByMeetingId(Long meetingId) {
+    public Map<Topic, Speaker> getProposedTopicsBySpeakerByMeetingId(Long meetingId) throws DataBaseException {
         Map<Topic, Speaker> proposedTopicsBySpeaker = new HashMap<>();
         try (Connection c = ConnectionPool.getInstance().getConnection()) {
             //topic Id - key, speaker id - value
             Map<Long, Long> proposedTopicsMap = meetingDao.getProposedTopicsBySpeakerByMeetingId(meetingId, c);
-            proposedTopicsMap.entrySet().forEach(entry -> {
+            for (Map.Entry<Long, Long> entry : proposedTopicsMap.entrySet()) {
+                Topic topic = topicService.getById(entry.getKey());
+                Speaker speaker = speakerService.getSpeakerById(entry.getValue());
+                proposedTopicsBySpeaker.put(topic, speaker);
+            }
+            /* proposedTopicsMap.entrySet().forEach(entry -> {
                 Topic topic = topicService.getById(entry.getKey());
                 Speaker speaker = speakerService.getSpeakerById(entry.getValue());
                 proposedTopicsBySpeaker.put(topic, speaker);
             });
+           */
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error("Cannot get proposed topics by speaker for meeting with ID: {}", meetingId, e);
+            throw new DataBaseException("Cannot get proposed topics by speaker for meeting with ID: " + meetingId, e);
         }
         return proposedTopicsBySpeaker;
     }
@@ -275,13 +288,17 @@ public class MeetingServiceImpl implements MeetingService {
     }
 
     @Override
-    public List<User> getParticipantsByMeetingId(Long meetingId) {
+    public List<User> getParticipantsByMeetingId(Long meetingId) throws DataBaseException, UserNotFoundException {
         List<User> participants = new LinkedList<>();
         try (Connection c = ConnectionPool.getInstance().getConnection()) {
             List<Long> listWithParticipantIds = meetingDao.getParticipantsIdByMeetingId(meetingId, c);
-            listWithParticipantIds.forEach(id -> participants.add(userService.getUserById(id)));
+            for (Long id : listWithParticipantIds) {
+                participants.add(userService.getUserById(id));
+            }
+            //listWithParticipantIds.forEach(id -> participants.add(userService.getUserById(id)));
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error("Cannot get participants of this meeting with ID {} by his ID", meetingId, e);
+            throw new DataBaseException("Cannot get participants of this meeting with ID" + meetingId + " by his ID", e);
         }
         return participants;
     }
@@ -294,8 +311,8 @@ public class MeetingServiceImpl implements MeetingService {
             meetingDao.markPresentUsers(presentUsers, meetingId, c);
             c.commit();
         } catch (SQLException e) {
-            rollback(c);
             log.error("Cannot mark present users", e);
+            rollback(c);
             throw new DataBaseException("Cannot mark present users", e);
         } finally {
             close(c);
@@ -308,7 +325,6 @@ public class MeetingServiceImpl implements MeetingService {
         try (Connection c = ConnectionPool.getInstance().getConnection()) {
             presentUserIds.addAll(meetingDao.getPresentUserIds(meetingId, c));
         } catch (SQLException e) {
-            e.printStackTrace();
             log.error("Cannot get present users", e);
             throw new DataBaseException("Cannot get present users", e);
         }
@@ -368,13 +384,18 @@ public class MeetingServiceImpl implements MeetingService {
                             if (speakers[i].equals("none")) {
                                 return new Speaker(speakers[i]);
                             } else {
-                                User user = userService.getUserByLogin(speakers[i]);
+                                User user = null;
+                                try {
+                                    user = userService.getUserByLogin(speakers[i]);
+                                } catch (UserNotFoundException e) {
+                                    log.error("Cannot get user by login: {}", speakers[i], e);
+                                }
                                 return new Speaker(user.getId(), user.getLogin());
                             }
                         }));
     }
 
-    private void extractMeetingInformation(Meeting meeting) throws SQLException, DataBaseException {
+    private void extractMeetingInformation(Meeting meeting) throws DataBaseException, UserNotFoundException {
         Set<Topic> freeTopics = topicService.getAllFreeTopicsByMeetingId(meeting.getId());
         Map<Speaker, Set<Topic>> topicsWithSpeakers = getAcceptedTopicsMapByMeetingId(meeting.getId());
         Map<Topic, Set<Speaker>> sentApplicationMap = getSentApplicationMapByMeetingId(meeting.getId());
