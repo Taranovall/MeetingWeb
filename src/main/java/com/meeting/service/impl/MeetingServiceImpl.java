@@ -6,11 +6,13 @@ import com.meeting.dao.TopicDao;
 import com.meeting.dao.impl.MeetingDaoImpl;
 import com.meeting.dao.impl.SpeakerDaoImpl;
 import com.meeting.dao.impl.TopicDaoImpl;
+import com.meeting.email.SendEmail;
 import com.meeting.entitiy.Meeting;
 import com.meeting.entitiy.Speaker;
 import com.meeting.entitiy.Topic;
 import com.meeting.entitiy.User;
 import com.meeting.exception.DataBaseException;
+import com.meeting.exception.EmailException;
 import com.meeting.exception.UserNotFoundException;
 import com.meeting.service.MeetingService;
 import com.meeting.service.SpeakerService;
@@ -272,11 +274,33 @@ public class MeetingServiceImpl implements MeetingService {
     }
 
     @Override
-    public void updateInformation(Meeting meeting) throws DataBaseException {
+    public void updateInformation(Meeting meeting, Meeting meetingBeforeUpdating) throws DataBaseException, EmailException, UserNotFoundException {
+        if (meeting.equals(meetingBeforeUpdating)) return;
         Connection c = null;
         try {
             c = ConnectionPool.getInstance().getConnection();
             meetingDao.updateInformation(meeting, c);
+
+            List<String> listWithEmailOfParticipants = new LinkedList<>();
+            //list with participants of this meeting with role 'user'
+            List<User> userList = getParticipantsByMeetingId(meeting.getId());
+            //set with participants of this meeting with role 'speaker'
+            Set<Long> speakerIds = meetingDao.getSpeakerIdsByMeetingId(meeting.getId(), c);
+            for (Long speakerId : speakerIds) {
+                userList.add(userService.getUserById(speakerId));
+            }
+            userList.stream().filter(user -> Objects.nonNull(user.getEmail())).map(email -> listWithEmailOfParticipants.add(email.getEmail())).count();
+
+            // create and fill array with emails
+            String[] emailsArray = new String[listWithEmailOfParticipants.size()];
+            listWithEmailOfParticipants.toArray(emailsArray);
+
+            String topic = String.format("Changes in meeting '%s'", meeting.getName());
+            String emailMessage = creatingEmailMessage(meeting, meetingBeforeUpdating);
+
+            SendEmail sendEmail = new SendEmail(emailsArray, topic);
+            sendEmail.sendMessage(emailMessage);
+
             c.commit();
         } catch (SQLException e) {
             log.error("Cannot update information:", e);
@@ -286,6 +310,47 @@ public class MeetingServiceImpl implements MeetingService {
             close(c);
         }
     }
+
+    private String creatingEmailMessage(Meeting meeting, Meeting meetingBeforeUpdating) {
+        StringBuffer sb = new StringBuffer();
+        sb.append("Meeting '").append(meeting.getName()).append("' has some changes:").append("\n");
+
+        if (!meeting.getTimeStart().equals(meetingBeforeUpdating.getTimeStart())) {
+            sb.append("\t").append("-")
+                    .append("Start time has been changed from ")
+                    .append(meetingBeforeUpdating.getTimeStart()).append(" to ")
+                    .append(meeting.getTimeStart()).append(";")
+                    .append("\n");
+        }
+
+        if (!meeting.getTimeEnd().equals(meetingBeforeUpdating.getTimeEnd())) {
+            sb.append("\t").append("-")
+                    .append("End time has been changed from ")
+                    .append(meetingBeforeUpdating.getTimeEnd()).append(" to ")
+                    .append(meeting.getTimeEnd()).append(";")
+                    .append("\n");
+        }
+
+        if (!meeting.getDate().equals(meetingBeforeUpdating.getDate())) {
+            sb.append("\t").append("-")
+                    .append("Date of the meeting has been changed from ")
+                    .append(meetingBeforeUpdating.getDate()).append(" to ")
+                    .append(meeting.getDate()).append(";")
+                    .append("\n");
+        }
+
+        if (!meeting.getDate().equals(meetingBeforeUpdating.getDate())) {
+            sb.append("\t").append("-")
+                    .append("Meeting's place has been changed from ")
+                    .append(meetingBeforeUpdating.getPlace()).append(" to ")
+                    .append(meeting.getPlace()).append(";")
+                    .append("\n");
+        }
+
+        sb.append("Good luck!");
+        return sb.toString();
+    }
+
 
     @Override
     public List<User> getParticipantsByMeetingId(Long meetingId) throws DataBaseException, UserNotFoundException {
@@ -369,6 +434,21 @@ public class MeetingServiceImpl implements MeetingService {
     @Override
     public boolean isMeetingPassed(Meeting meeting) {
         return isMeetingStarted(meeting) && !isMeetingGoingOnNow(meeting);
+    }
+
+    @Override
+    public Set<Speaker> getSpeakersByMeetingId(Long meetingId) throws DataBaseException {
+        Set<Speaker> speakers = new HashSet<>();
+        try (Connection c = ConnectionPool.getInstance().getConnection()) {
+            Set<Long> speakerIds = meetingDao.getSpeakerIdsByMeetingId(meetingId, c);
+            for (Long id : speakerIds) {
+                speakers.add(speakerService.getSpeakerById(id));
+            }
+        } catch (SQLException e) {
+            log.error("Cannot get speaker by meeting ID {}", meetingId, e);
+            throw new DataBaseException("Cannot get speaker by meeting ID " + meetingId, e);
+        }
+        return speakers;
     }
 
     /**

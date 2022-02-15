@@ -19,7 +19,7 @@
             <div class="img">
                 <img src="${meeting.getPhotoPath()}" class="img-thumbnail"/>
                 <%--------------- EDIT BUTTON ---------------%>
-                <c:if test="${sessionScope.user.getRole().name() == 'MODERATOR'}">
+                <c:if test="${sessionScope.user.getRole().name() == 'MODERATOR' && !meeting.isStarted()}">
                     <button type="button" class="edit-button" data-toggle="modal"
                             data-target="#editInfo">Edit
                     </button>

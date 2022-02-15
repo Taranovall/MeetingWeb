@@ -11,6 +11,7 @@ public class User implements Serializable {
     private String login;
     private String password;
     private String registrationDate;
+    private String email;
     private Role role;
     private List<Long> meetingIdsSetUserTakesPart = new LinkedList<>();
 
@@ -34,6 +35,14 @@ public class User implements Serializable {
         this.id = id;
         this.login = login;
         this.role = role;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public List<Long> getMeetingIdsSetUserTakesPart() {

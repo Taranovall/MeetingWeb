@@ -51,4 +51,5 @@ public interface SpeakerService {
      * @return list with applications that user received
      */
     List<String> getReceivedApplications(Long speakerId) throws DataBaseException;
+
 }

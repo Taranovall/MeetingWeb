@@ -45,4 +45,10 @@ public interface UserDao extends Dao<User> {
      * @param meetingId
      */
     void stopParticipating(Long userId, Long meetingId, Connection c) throws SQLException;
+
+    /**
+     *
+     * Sets email for user by his ID
+     */
+    void setEmail(Long userId, String email, Connection c) throws SQLException;
 }

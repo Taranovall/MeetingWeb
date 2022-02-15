@@ -15,7 +15,9 @@ create table users
     id                bigserial           not null primary key,
     login             varchar(256) unique not null,
     password          varchar(256)        not null,
-    registration_date varchar(256)        not null
+    registration_date varchar(256)        not null,
+    email             varchar(256),
+    UNIQUE (email,login)
 );
 
 create table roles
@@ -26,14 +28,14 @@ create table roles
 
 create table meetings
 (
-    id         serial       not null primary key,
-    name       varchar(256) not null,
-    date       varchar(256) not null,
-    time_start       varchar(256) not null,
-    time_end       varchar(256) not null,
-    place      varchar(256) not null,
-    photo_path varchar(256) not null,
-    is_started bool,
+    id              serial       not null primary key,
+    name            varchar(256) not null,
+    date            varchar(256) not null,
+    time_start      varchar(256) not null,
+    time_end        varchar(256) not null,
+    place           varchar(256) not null,
+    photo_path      varchar(256) not null,
+    is_started      bool,
     is_going_on_now bool
 );
 
@@ -76,9 +78,9 @@ create table meeting_participants
 
 create table proposed_topics
 (
-    proposed_by_speaker int references users(id) on delete cascade,
-    meeting_id int references meetings (id) on delete cascade,
-    topic_id   int references topics (id) on delete cascade
+    proposed_by_speaker int references users (id) on delete cascade,
+    meeting_id          int references meetings (id) on delete cascade,
+    topic_id            int references topics (id) on delete cascade
 );
 
 

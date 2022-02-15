@@ -38,4 +38,9 @@ public interface ValidationService {
      * @return true only if speaker has been chosen
      */
     boolean chooseSpeakerValidator(String speakerId, HttpServletRequest req);
+
+    /**
+     *
+     */
+    boolean emailValidator(String email, HttpServletRequest req);
 }

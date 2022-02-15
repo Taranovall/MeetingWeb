@@ -5,6 +5,7 @@ import com.meeting.entitiy.Speaker;
 import com.meeting.entitiy.Topic;
 import com.meeting.entitiy.User;
 import com.meeting.exception.DataBaseException;
+import com.meeting.exception.EmailException;
 import com.meeting.exception.UserNotFoundException;
 
 import java.io.File;
@@ -69,7 +70,7 @@ public interface MeetingService {
     /**
      * Updates meeting's name, start time, end time, place, date
      */
-    void updateInformation(Meeting meeting) throws DataBaseException;
+    void updateInformation(Meeting meeting, Meeting meetingBeforeUpdating) throws DataBaseException, EmailException, UserNotFoundException;
 
 
     List<User> getParticipantsByMeetingId(Long meetingId) throws DataBaseException, UserNotFoundException;
@@ -111,4 +112,6 @@ public interface MeetingService {
      * @return true if meeting is passed
      */
     boolean isMeetingPassed(Meeting meeting);
+
+    Set<Speaker> getSpeakersByMeetingId(Long meetingId) throws DataBaseException;
 }

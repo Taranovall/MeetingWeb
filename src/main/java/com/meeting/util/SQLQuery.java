@@ -22,11 +22,7 @@ public class SQLQuery {
     public static final String MARK_PRESENT_USERS_SQL = "UPDATE meeting_participants SET is_present = true WHERE meeting_id = ? AND user_id = ?";
     public static final String GET_PRESENT_USERS_SQL = "SELECT user_id FROM meeting_participants WHERE is_present is true AND meeting_id = ?";
     public static final String GET_ATTENDED_PARTICIPANTS_SQL = "SELECT count(*) FROM meeting_participants WHERE is_present is true AND meeting_id = ?";
-
-
-
-
-
+    public static final String SET_EMAIL_FOR_USER_SQL = "UPDATE users SET email = ? WHERE id = ?";
 
     //Topic requests
     public static final String CREATE_TOPIC_SQL = "INSERT INTO topics (name) VALUES (?)";
@@ -42,8 +38,6 @@ public class SQLQuery {
     public static final String ACCEPT_PROPOSED_TOPIC_SQL = "INSERT INTO speaker_topics (speaker_id, topic_id, invitation, invited_by) VALUES (?, ?, true, ?)";
     public static final String REMOVE_PROPOSED_TOPIC_SQL = "DELETE FROM proposed_topics WHERE proposed_by_speaker = ? AND topic_id = ?";
 
-
-
     //Meeting requests
     public static final String CREATE_MEETING_SQL = "INSERT INTO meetings (name, date, time_start, time_end, place, photo_path) VALUES (?, ?, ?, ?, ?, ?)";
     public static final String GET_ALL_MEETINGS_SQL = "SELECT * FROM meetings";
@@ -51,9 +45,6 @@ public class SQLQuery {
     public static final String GET_ALL_MEETINGS_ID_WHERE_SPEAKER_INVOLVES_IN = "SELECT DISTINCT meeting_id FROM meeting_topics mt, speaker_topics st WHERE mt.topic_id = st.topic_id AND st.invitation is true AND speaker_id = ?";
     public static final String GET_PROPOSED_TOPICS_BY_MEETING_ID = "SELECT proposed_by_speaker, topic_id FROM proposed_topics WHERE meeting_id = ?";
     public static final String UPDATE_MEETING_INFORMATION_SQL = "UPDATE meetings SET time_start=?, time_end=?, date=?, place=? WHERE id = ?";
-    public static final String SET_MEETING_IS_STARTED_VALUE_SQL = "UPDATE meetings SET is_started = ? WHERE meeting_id = ?";
-
-
 
     //Speaker requests
     public static final String INVITE_SPEAKER_TO_MEETING_SQL = "INSERT INTO speaker_topics (speaker_id, topic_id, invited_by) VALUES (?, ?, ?)";
@@ -65,4 +56,5 @@ public class SQLQuery {
     public static final String ACCEPT_INVITATION_SQL = "UPDATE speaker_topics SET invitation = true WHERE  speaker_id = ? AND topic_id = ?";
     public static final String REMOVE_REDUNDANT_APPLICATIONS_AFTER_ACCEPTING_ONE_SQL = "DELETE FROM speaker_topics WHERE invitation is null AND speaker_id != ? AND topic_id = ?";
     public static final String GET_ALL_SPEAKER_APPLICATIONS_BY_TOPIC_ID_SQL = "SELECT speaker_id FROM speaker_topics WHERE speaker_id = invited_by AND topic_id = ?";
+    public static final String GET_ALL_SPEAKER_BY_MEETING_ID_SQL = "SELECT st.speaker_id FROM speaker_topics st, meeting_topics mt WHERE st.invitation is true AND st.topic_id = mt.topic_id AND meeting_id = ?";
 }

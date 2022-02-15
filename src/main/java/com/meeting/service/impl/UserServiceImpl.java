@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService {
                 throw new UserNotFoundException(MessageFormat.format(message, login));
             }
         } catch (SQLException e) {
-            log.error("Cannot get user by login: {}",login, e);
+            log.error("Cannot get user by login: {}", login, e);
             throw new UserNotFoundException("Cannot get user by login: " + login, e);
         }
         return user;
@@ -78,7 +78,7 @@ public class UserServiceImpl implements UserService {
             }
         } catch (SQLException e) {
             log.error("Cannot get user by ID: {}", id, e);
-        throw new UserNotFoundException("Cannot get user by ID: " + id, e);
+            throw new UserNotFoundException("Cannot get user by ID: " + id, e);
         }
         return user;
     }
@@ -114,5 +114,24 @@ public class UserServiceImpl implements UserService {
         } finally {
             close(c);
         }
+    }
+
+    @Override
+    public boolean setEmail(Long userId, String email) throws DataBaseException {
+        Connection c = null;
+        try {
+            c = ConnectionPool.getInstance().getConnection();
+            userDao.setEmail(userId, email, c);
+            c.commit();
+            log.info("Email '{}' for user with ID {} was set successful", email, userId);
+        } catch (SQLException e) {
+            log.error("Cannot set email '{}' for user with ID {}", email, userId, e);
+            String message = String.format("Cannot set email '%s' for user with ID %s", email, userId);
+            rollback(c);
+            throw new DataBaseException(message, e);
+        } finally {
+            close(c);
+        }
+        return true;
     }
 }

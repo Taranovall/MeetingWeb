@@ -93,4 +93,6 @@ public interface MeetingDao extends Dao<Meeting> {
      * @return percentage of users' attendance
      */
     double getAttendancePercentageByMeetingId(Long meetingId, Connection c) throws SQLException;
+
+    Set<Long> getSpeakerIdsByMeetingId(Long meetingId, Connection c) throws SQLException;
 }

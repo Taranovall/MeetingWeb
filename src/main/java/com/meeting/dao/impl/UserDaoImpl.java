@@ -122,12 +122,20 @@ public class UserDaoImpl implements UserDao {
             userMeetingIds.add(meetingId);
         }
         return userMeetingIds;
-     }
+    }
 
     @Override
     public void stopParticipating(Long userId, Long meetingId, Connection c) throws SQLException {
         PreparedStatement p = c.prepareStatement(SQLQuery.USER_STOP_PARTICIPATING_SQL);
         p.setLong(1, meetingId);
+        p.setLong(2, userId);
+        p.executeUpdate();
+    }
+
+    @Override
+    public void setEmail(Long userId, String email, Connection c) throws SQLException {
+        PreparedStatement p = c.prepareStatement(SQLQuery.SET_EMAIL_FOR_USER_SQL);
+        p.setString(1, email);
         p.setLong(2, userId);
         p.executeUpdate();
     }
@@ -150,10 +158,12 @@ public class UserDaoImpl implements UserDao {
         String login = rs.getString("login");
         String password = rs.getString("password");
         String registrationDate = rs.getString("registration_date");
+        String email = rs.getString("email");
         User user = new User(id, login, password);
         user.setRegistrationDate(registrationDate);
         user.setRole(getUserRole(user.getId(), c));
         user.setMeetingIdsSetUserTakesPart(getMeetingIdsUserTakesPart(user.getId(), c));
+        if (!rs.wasNull()) user.setEmail(email);
         return user;
     }
 }

@@ -26,4 +26,12 @@ public interface UserService {
      * removes userId and meetingId from table meeting_participants
      */
     void stopParticipating(Long userId, Long meetingId) throws DataBaseException;
+
+    /**
+     * Sets email for user by his ID
+     * @param userId
+     * @param email
+     * @return true if the function was successful
+     */
+    boolean setEmail(Long userId, String email) throws DataBaseException;
 }

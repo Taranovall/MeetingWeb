@@ -58,6 +58,13 @@ public class Meeting implements Serializable {
         this.participants = new LinkedList<>();
     }
 
+    public Meeting(Meeting meeting) {
+        this.timeStart = meeting.getTimeStart();
+        this.timeEnd = meeting.getTimeEnd();
+        this.date = meeting.getDate();
+        this.place = meeting.getPlace();
+    }
+
     public Long getId() {
         return id;
     }

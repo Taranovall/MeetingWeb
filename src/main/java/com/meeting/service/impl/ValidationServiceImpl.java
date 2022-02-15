@@ -203,4 +203,14 @@ public class ValidationServiceImpl implements ValidationService {
         }
         return true;
     }
+
+    @Override
+    public boolean emailValidator(String email, HttpServletRequest req) {
+        String regex = "^[A-Za-z0-9+_-]+@(.+)$";
+        if (!email.matches(regex)) {
+            req.getSession().setAttribute("error", "Invalid email");
+            return false;
+        }
+        return true;
+    }
 }

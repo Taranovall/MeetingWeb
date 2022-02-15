@@ -242,6 +242,18 @@ public class MeetingDaoImpl implements MeetingDao {
         return Double.parseDouble(formattedValue);
     }
 
+    @Override
+    public Set<Long> getSpeakerIdsByMeetingId(Long meetingId, Connection c) throws SQLException {
+        PreparedStatement p = c.prepareStatement(GET_ALL_SPEAKER_BY_MEETING_ID_SQL);
+        p.setLong(1, meetingId);
+        Set<Long> speakerIds = new HashSet<>();
+        ResultSet rs = p.executeQuery();
+        while (rs.next()) {
+            speakerIds.add(rs.getLong("speaker_id"));
+        }
+        return speakerIds;
+    }
+
     /**
      * Extracts meeting from result set
      */
