@@ -11,7 +11,7 @@
 <%-- Button visible only for authorized and not authorized users --%>
 <c:if test="${sessionScope.user.getRole().name() == 'USER' || sessionScope.user.getRole() == null}">
     <div class="text-center">
-        <c:if test="${sessionScope.user.getRole().name() == 'USER'}">
+        <c:if test="${sessionScope.user.getRole().name() == 'USER' && !meeting.isStarted()}">
             <c:choose>
                 <c:when test="${!participating}">
                     <form action="participate" method="post">
