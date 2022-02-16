@@ -169,7 +169,7 @@ public class ValidationServiceImpl implements ValidationService {
         }
 
         for (String topic : topics) {
-            if (Objects.isNull(topic) || topic.length() < 1 || topic.length() > 32) {
+            if (Objects.isNull(topic) || topic.length() < 1 || topic.length() > 96) {
                 errorMessage = "Invalid topic name";
                 break;
             }

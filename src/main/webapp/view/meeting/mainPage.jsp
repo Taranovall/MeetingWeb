@@ -20,7 +20,7 @@
         All results by query: ${query}
     </c:if>
     <div class="row">
-        <c:forEach items="${requestScope.meetings}" var="m">
+        <c:forEach items="${sessionScope.meetings}" var="m">
             <div class="col-xs-12 col-sm-6 col-md-3">
                 <a class="card meeting" href="/meeting/${m.getId()}">
                     <div class="imageWrap image">

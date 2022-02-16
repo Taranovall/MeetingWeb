@@ -290,16 +290,17 @@ public class MeetingServiceImpl implements MeetingService {
                 userList.add(userService.getUserById(speakerId));
             }
             userList.stream().filter(user -> Objects.nonNull(user.getEmail())).map(email -> listWithEmailOfParticipants.add(email.getEmail())).count();
+            if (listWithEmailOfParticipants.size() > 0) {
+                // create and fill array with emails
+                String[] emailsArray = new String[listWithEmailOfParticipants.size()];
+                listWithEmailOfParticipants.toArray(emailsArray);
 
-            // create and fill array with emails
-            String[] emailsArray = new String[listWithEmailOfParticipants.size()];
-            listWithEmailOfParticipants.toArray(emailsArray);
+                String topic = String.format("Changes in meeting '%s'", meeting.getName());
+                String emailMessage = creatingEmailMessage(meeting, meetingBeforeUpdating);
 
-            String topic = String.format("Changes in meeting '%s'", meeting.getName());
-            String emailMessage = creatingEmailMessage(meeting, meetingBeforeUpdating);
-
-            SendEmail sendEmail = new SendEmail(emailsArray, topic);
-            sendEmail.sendMessage(emailMessage);
+                SendEmail sendEmail = new SendEmail(emailsArray, topic);
+                sendEmail.sendMessage(emailMessage);
+            }
 
             c.commit();
         } catch (SQLException e) {

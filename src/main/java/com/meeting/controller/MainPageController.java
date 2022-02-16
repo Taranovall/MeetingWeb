@@ -65,7 +65,7 @@ public class MainPageController extends HttpServlet {
         req.setAttribute("pageNumber", pageNumber);
         req.setAttribute("maxPageCount", maxPageCount);
 
-        req.setAttribute(MEETING_ATTRIBUTE_NAME, displayMeetings);
+        session.setAttribute(MEETING_ATTRIBUTE_NAME, displayMeetings);
         session.removeAttribute(IS_FORM_HAS_BEEN_USED_ATTRIBUTE_NAME);
         session.setAttribute("lastPageURI", req.getRequestURI());
         req.getRequestDispatcher(PATH_TO_MAIN_PAGE_JSP).forward(req, resp);

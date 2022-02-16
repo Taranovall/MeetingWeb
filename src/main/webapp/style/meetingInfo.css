@@ -16,6 +16,10 @@ table {
     margin: 0;
 }
 
+.img .img-thumbnail {
+    min-width: 100%;
+}
+
 .become-speaker:hover {
     background: antiquewhite;
     cursor: pointer;
