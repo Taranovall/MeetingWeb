@@ -67,6 +67,12 @@ public class User implements Serializable {
         this.password = password;
     }
 
+    public User(String email, String login, Long id) {
+        this.id = id;
+        this.login = login;
+        this.email = email;
+    }
+
     public User(Long id, String login) {
         this.id = id;
         this.login = login;
@@ -128,5 +134,18 @@ public class User implements Serializable {
         result = 31 * result + (password != null ? password.hashCode() : 0);
         result = 31 * result + (role != null ? role.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", login='" + login + '\'' +
+                ", password='" + password + '\'' +
+                ", registrationDate='" + registrationDate + '\'' +
+                ", email='" + email + '\'' +
+                ", role=" + role +
+                ", meetingIdsSetUserTakesPart=" + meetingIdsSetUserTakesPart +
+                '}';
     }
 }

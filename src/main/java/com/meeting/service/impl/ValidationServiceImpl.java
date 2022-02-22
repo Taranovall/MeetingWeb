@@ -20,7 +20,7 @@ import static com.meeting.util.Constant.QUERY_IS_NOT_VALID_ATTRIBUTE_NAME;
 
 public class ValidationServiceImpl implements ValidationService {
 
-    final UserService userService;
+    private UserService userService;
 
     public ValidationServiceImpl() {
         userService = new UserServiceImpl();
@@ -187,7 +187,7 @@ public class ValidationServiceImpl implements ValidationService {
 
     @Override
     public boolean proposingTopicsValidator(String topicName, HttpServletRequest req) {
-        String regex = "^.{4,32}$";
+        String regex = "^.{1,96}$";
         if (!topicName.matches(regex)) {
             req.getSession().setAttribute("error", "Invalid topic name");
             return false;
@@ -212,5 +212,9 @@ public class ValidationServiceImpl implements ValidationService {
             return false;
         }
         return true;
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
     }
 }

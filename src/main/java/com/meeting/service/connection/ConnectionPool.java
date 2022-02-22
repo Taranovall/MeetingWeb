@@ -1,6 +1,9 @@
 package com.meeting.service.connection;
 
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -10,7 +13,9 @@ import java.sql.SQLException;
 
 public class ConnectionPool {
 
-    public ConnectionPool() {
+    private static final Logger log = LogManager.getLogger(ConnectionPool.class);
+
+    private ConnectionPool() {
     }
 
     private static ConnectionPool instance = null;
@@ -31,7 +36,7 @@ public class ConnectionPool {
             c = ds.getConnection();
             c.setAutoCommit(false);
         } catch (SQLException | NamingException e) {
-            e.printStackTrace();
+            log.error("Cannot get connection to data base", e);
         }
         return c;
     }
@@ -42,8 +47,7 @@ public class ConnectionPool {
                 c.rollback();
             }
         } catch (SQLException e) {
-            // just write to log
-            e.printStackTrace();
+            log.error("Cannot rollback connection");
         }
     }
 
@@ -53,8 +57,7 @@ public class ConnectionPool {
                 c.close();
             }
         } catch (SQLException e) {
-            // just write to log
-            e.printStackTrace();
+            log.error("Cannot close connection");
         }
     }
 }

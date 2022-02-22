@@ -12,13 +12,14 @@ import org.apache.logging.log4j.Logger;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 public class TopicServiceImpl implements TopicService {
 
     private static final Logger log = LogManager.getLogger(TopicServiceImpl.class);
 
-    private final TopicDao topicDao;
+    private TopicDao topicDao;
 
     public TopicServiceImpl() {
         this.topicDao = new TopicDaoImpl();
@@ -29,7 +30,12 @@ public class TopicServiceImpl implements TopicService {
         Topic topic = null;
         try (Connection c = ConnectionPool.getInstance().getConnection()) {
             c.setAutoCommit(true);
-            topic = topicDao.getById(id, c).get();
+            Optional<Topic> optionalTopic = topicDao.getById(id, c);
+            if (optionalTopic.isPresent()) {
+                topic = optionalTopic.get();
+            } else {
+                throw new SQLException();
+            }
         } catch (SQLException e) {
             log.error("Cannot get topic by his ID: {}", id, e);
             throw new DataBaseException("Cannot get topic by his ID: " + id, e);
@@ -48,5 +54,9 @@ public class TopicServiceImpl implements TopicService {
             throw new DataBaseException("Cannot get all free topics by meeting ID: " + meetingId, e);
         }
         return topics;
+    }
+
+    public void setTopicDao(TopicDao topicDao) {
+        this.topicDao = topicDao;
     }
 }

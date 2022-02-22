@@ -195,6 +195,28 @@ public class Meeting implements Serializable {
     }
 
     @Override
+    public String toString() {
+        return "Meeting{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", date='" + date + '\'' +
+                ", timeStart='" + timeStart + '\'' +
+                ", timeEnd='" + timeEnd + '\'' +
+                ", place='" + place + '\'' +
+                ", participants=" + participants +
+                ", freeTopics=" + freeTopics +
+                ", photoPath='" + photoPath + '\'' +
+                ", percentageAttendance=" + percentageAttendance +
+                ", speakerTopics=" + speakerTopics +
+                ", sentApplicationsMap=" + sentApplicationsMap +
+                ", proposedTopicsMap=" + proposedTopicsMap +
+                ", isStarted=" + isStarted +
+                ", isGoingOnNow=" + isGoingOnNow +
+                ", isPassed=" + isPassed +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

@@ -64,12 +64,6 @@ public class MeetingDaoImpl implements MeetingDao {
         }
     }
 
-
-    @Override
-    public void delete(Meeting meeting, Connection c) {
-
-    }
-
     @Override
     public Map<Long, Long> getTopicSpeakerIdMapByMeetingId(Long meetingId, Connection c) throws SQLException {
         PreparedStatement p = c.prepareStatement(GET_ALL_ACCEPTED_TOPICS_BY_MEETING_ID);
@@ -221,7 +215,7 @@ public class MeetingDaoImpl implements MeetingDao {
         List<Long> userIds = new LinkedList<>();
         ResultSet rs = p.executeQuery();
         while (rs.next()) {
-            userIds.add(rs.getLong(1));
+            userIds.add(rs.getLong("user_id"));
         }
         return userIds;
     }

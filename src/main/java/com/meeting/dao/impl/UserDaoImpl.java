@@ -46,7 +46,7 @@ public class UserDaoImpl implements UserDao {
         PreparedStatement p = c.prepareStatement(GET_USER_ROLE_BY_ID_SQL);
         p.setLong(1, id);
         ResultSet rs = p.executeQuery();
-        while (rs.next()) {
+        if (rs.next()) {
             role = Role.getRoleByString(rs.getString("name"));
         }
         return role;
@@ -113,12 +113,12 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public List<Long> getMeetingIdsUserTakesPart(Long userId, Connection c) throws SQLException {
-        PreparedStatement p = c.prepareStatement(SQLQuery.GET_MEETING_IDS_IN_WHICH_USER_TAKES_PARK_SQL);
+        PreparedStatement p = c.prepareStatement(SQLQuery.GET_MEETING_IDS_IN_WHICH_USER_TAKES_PART_SQL);
         p.setLong(1, userId);
         List<Long> userMeetingIds = new LinkedList<>();
         ResultSet rs = p.executeQuery();
         while (rs.next()) {
-            Long meetingId = rs.getLong(1);
+            Long meetingId = rs.getLong("meeting_id");
             userMeetingIds.add(meetingId);
         }
         return userMeetingIds;
@@ -138,11 +138,6 @@ public class UserDaoImpl implements UserDao {
         p.setString(1, email);
         p.setLong(2, userId);
         p.executeUpdate();
-    }
-
-    @Override
-    public void delete(User user, Connection c) {
-
     }
 
     @Override

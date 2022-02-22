@@ -13,6 +13,4 @@ public interface Dao<T> {
 
     void save(T t, Connection c) throws SQLException;
 
-    void delete(T t, Connection c);
-
 }

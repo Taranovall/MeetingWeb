@@ -37,13 +37,13 @@ public class MeetingServiceImpl implements MeetingService {
 
     private static final Logger log = LogManager.getLogger(MeetingServiceImpl.class);
 
-    private final TopicDao topicDao;
-    private final MeetingDao meetingDao;
+    private TopicDao topicDao;
+    private MeetingDao meetingDao;
     private final SpeakerDao speakerDao;
 
-    private final UserService userService;
-    private final TopicService topicService;
-    private final SpeakerService speakerService;
+    private UserService userService;
+    private TopicService topicService;
+    private SpeakerService speakerService;
 
     public MeetingServiceImpl() {
         this.topicDao = new TopicDaoImpl();
@@ -65,7 +65,7 @@ public class MeetingServiceImpl implements MeetingService {
         try {
             c = ConnectionPool.getInstance().getConnection();
             c.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
-            boolean isRenamed = image.renameTo(new File(imagePath));
+            image.renameTo(new File(imagePath));
             meeting.setPhotoPath("/image/" + image.getName());
             meetingDao.save(meeting, c);
 
@@ -90,6 +90,8 @@ public class MeetingServiceImpl implements MeetingService {
             image.delete();
             log.error("Cannot create meeting: ", e);
             throw new DataBaseException("Cannot create meeting", e);
+        } finally {
+            close(c);
         }
     }
 
@@ -98,7 +100,7 @@ public class MeetingServiceImpl implements MeetingService {
         Meeting meeting = null;
         try (Connection c = ConnectionPool.getInstance().getConnection()) {
             Optional<Meeting> optionalMeeting = meetingDao.getById(id, c);
-            if (!optionalMeeting.isPresent()) throw new DataBaseException("Meeting doesn't exist");
+            if (!optionalMeeting.isPresent()) throw new SQLException();
             meeting = optionalMeeting.get();
             extractMeetingInformation(meeting);
         } catch (SQLException e) {
@@ -188,9 +190,9 @@ public class MeetingServiceImpl implements MeetingService {
             }
             c.commit();
         } catch (SQLException e) {
-            log.error("Cannot get meetings is which speaker with ID = {} is involved", speakerId, e);
+            log.error("Cannot get meetings in which speaker with ID = {} is involved", speakerId, e);
             rollback(c);
-            throw new DataBaseException("Cannot get meetings is which speaker is involved", e);
+            throw new DataBaseException("Cannot get meetings in which speaker is involved", e);
         } finally {
             close(c);
         }
@@ -493,5 +495,25 @@ public class MeetingServiceImpl implements MeetingService {
         meeting.setStarted(isMeetingStarted(meeting));
         meeting.setGoingOnNow(isMeetingGoingOnNow(meeting));
         meeting.setPassed(isMeetingPassed(meeting));
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
+    public void setTopicDao(TopicDao topicDao) {
+        this.topicDao = topicDao;
+    }
+
+    public void setMeetingDao(MeetingDao meetingDao) {
+        this.meetingDao = meetingDao;
+    }
+
+    public void setTopicService(TopicService topicService) {
+        this.topicService = topicService;
+    }
+
+    public void setSpeakerService(SpeakerService speakerService) {
+        this.speakerService = speakerService;
     }
 }

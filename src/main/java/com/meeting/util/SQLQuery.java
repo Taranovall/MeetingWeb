@@ -15,7 +15,7 @@ public class SQLQuery {
             "AND u.id=?";
     public static final String GET_ALL_USERS_BY_ROLE_SQL = "SELECT * FROM roles r, users u, user_roles ur WHERE r.id=ur.role_id AND u.id=ur.user_id AND r.name ILIKE ?";
     public static final String USER_PARTICIPATE_SQL = "INSERT INTO meeting_participants (meeting_id, user_id) VALUES (?, ?)";
-    public static final String GET_MEETING_IDS_IN_WHICH_USER_TAKES_PARK_SQL = "SELECT meeting_id FROM meeting_participants WHERE user_id = ?";
+    public static final String GET_MEETING_IDS_IN_WHICH_USER_TAKES_PART_SQL = "SELECT meeting_id FROM meeting_participants WHERE user_id = ?";
     public static final String USER_STOP_PARTICIPATING_SQL = "DELETE FROM meeting_participants WHERE meeting_id = ? AND user_id = ?";
     public static final String GET_ALL_PARTICIPANTS_BY_MEETING_ID_SQL = "SELECT user_id FROM meeting_participants WHERE meeting_id = ?";
     public static final String SET_PRESENCE_FALSE_SQL = "UPDATE meeting_participants SET is_present = false WHERE meeting_id = ?";

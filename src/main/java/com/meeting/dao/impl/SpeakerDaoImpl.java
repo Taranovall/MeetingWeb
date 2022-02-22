@@ -16,9 +16,9 @@ import static com.meeting.util.SQLQuery.*;
 
 public class SpeakerDaoImpl implements SpeakerDao {
 
-    private final UserDao userDao;
-    private final MeetingDao meetingDao;
-    private final TopicDao topicDao;
+    private UserDao userDao;
+    private MeetingDao meetingDao;
+    private TopicDao topicDao;
 
     public SpeakerDaoImpl() {
         this.userDao = new UserDaoImpl();
@@ -53,11 +53,6 @@ public class SpeakerDaoImpl implements SpeakerDao {
 
     @Override
     public void save(Speaker speaker, Connection c) throws SQLException {
-
-    }
-
-    @Override
-    public void delete(Speaker speaker, Connection c) {
 
     }
 
@@ -193,5 +188,29 @@ public class SpeakerDaoImpl implements SpeakerDao {
             }
         }
         return responseMap;
+    }
+
+    public void setUserDao(UserDao userDao) {
+        this.userDao = userDao;
+    }
+
+    public UserDao getUserDao() {
+        return userDao;
+    }
+
+    public MeetingDao getMeetingDao() {
+        return meetingDao;
+    }
+
+    public void setMeetingDao(MeetingDao meetingDao) {
+        this.meetingDao = meetingDao;
+    }
+
+    public TopicDao getTopicDao() {
+        return topicDao;
+    }
+
+    public void setTopicDao(TopicDao topicDao) {
+        this.topicDao = topicDao;
     }
 }

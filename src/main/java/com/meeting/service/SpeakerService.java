@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface SpeakerService {
 
-    List<Speaker> getAllSpeakers();
+    List<Speaker> getAllSpeakers() throws DataBaseException;
 
     Speaker getSpeakerById(Long id) throws DataBaseException;
     /**

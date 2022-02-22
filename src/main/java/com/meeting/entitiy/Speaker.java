@@ -43,4 +43,11 @@ public class Speaker extends User {
         result = 31 * result + (speakerTopics != null ? speakerTopics.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "Speaker{" +
+                "speakerTopics=" + speakerTopics +
+                "} " + super.toString();
+    }
 }

@@ -61,11 +61,6 @@ public class TopicDaoImpl implements TopicDao {
     }
 
     @Override
-    public void delete(Topic topic, Connection c) {
-
-    }
-
-    @Override
     public void addTopicsToMeeting(Long meetingId, Set<Topic> topics, Connection c) throws SQLException {
         PreparedStatement p = c.prepareStatement(LINK_TOPIC_WITH_MEETING_SQL);
         p.setLong(1, meetingId);

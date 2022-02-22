@@ -56,7 +56,12 @@ public class CreateMeetingController extends HttpServlet {
             // check if parameters are valid
             if (validationService.meetingMainInfoValidator(meeting, req)) {
                 HttpSession session = req.getSession();
-                List<Speaker> speakerList = speakerService.getAllSpeakers();
+                List<Speaker> speakerList = null;
+                try {
+                    speakerList = speakerService.getAllSpeakers();
+                } catch (DataBaseException e) {
+                    resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+                }
                 session.setAttribute("speakers", speakerList);
                 session.setAttribute("meeting", meeting);
                 session.setAttribute("countOfTopics", req.getParameter("countOfTopics"));

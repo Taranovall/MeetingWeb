@@ -12,10 +12,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.text.MessageFormat;
-import java.util.Locale;
 import java.util.Optional;
-import java.util.ResourceBundle;
 
 import static com.meeting.service.connection.ConnectionPool.*;
 
@@ -23,7 +20,7 @@ public class UserServiceImpl implements UserService {
 
     private static final Logger log = LogManager.getLogger(UserServiceImpl.class);
 
-    private final UserDao userDao;
+    private UserDao userDao;
 
     public UserServiceImpl() {
         this.userDao = new UserDaoImpl();
@@ -54,9 +51,11 @@ public class UserServiceImpl implements UserService {
             if (userOptional.isPresent()) {
                 user = userOptional.get();
             } else {
-                Locale locale = new Locale("en");
+                /*Locale locale = new Locale("en");
                 String message = ResourceBundle.getBundle("message", locale).getString("user.notfound");
                 throw new UserNotFoundException(MessageFormat.format(message, login));
+                 */
+                throw new SQLException();
             }
         } catch (SQLException e) {
             log.error("Cannot get user by login: {}", login, e);
@@ -133,5 +132,9 @@ public class UserServiceImpl implements UserService {
             close(c);
         }
         return true;
+    }
+
+    public void setUserDao(UserDao userDao) {
+        this.userDao = userDao;
     }
 }

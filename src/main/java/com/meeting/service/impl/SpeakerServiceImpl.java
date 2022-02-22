@@ -13,6 +13,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static com.meeting.service.connection.ConnectionPool.*;
 import static com.meeting.util.SQLQuery.GET_RECEIVED_APPLICATIONS_BY_SPEAKER_ID_SQL;
@@ -22,20 +23,21 @@ public class SpeakerServiceImpl implements SpeakerService {
 
     private static final Logger log = LogManager.getLogger(SpeakerServiceImpl.class);
 
-    private final SpeakerDao speakerDao;
+    private SpeakerDao speakerDao;
 
     public SpeakerServiceImpl() {
         this.speakerDao = new SpeakerDaoImpl();
     }
 
     @Override
-    public List<Speaker> getAllSpeakers() {
+    public List<Speaker> getAllSpeakers() throws DataBaseException {
         List<Speaker> speakers = null;
         try (Connection c = getInstance().getConnection()) {
             c.setAutoCommit(true);
             speakers = speakerDao.getAll(c);
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error("Cannot get all speakers");
+            throw new DataBaseException("Cannot get all speakers", e);
         }
         return speakers;
     }
@@ -45,7 +47,12 @@ public class SpeakerServiceImpl implements SpeakerService {
         Speaker speaker = null;
         try (Connection c = ConnectionPool.getInstance().getConnection()) {
             c.setAutoCommit(true);
-            speaker = speakerDao.getById(id, c).get();
+            Optional<Speaker> speakerOptional = speakerDao.getById(id, c);
+            if (speakerOptional.isPresent()) {
+                speaker = speakerOptional.get();
+            } else {
+                throw new SQLException();
+            }
         } catch (SQLException e) {
             log.error("Cannot get speaker by ID: {}", id, e);
             throw new DataBaseException("Cannot get speaker by ID: " + id, e);
@@ -115,9 +122,7 @@ public class SpeakerServiceImpl implements SpeakerService {
     @Override
     public boolean cancelInvitation(Long topicId, Long userSessionId) throws DataBaseException {
         Connection c = null;
-        Speaker speaker;
         try {
-            speaker = getSpeakerById(userSessionId);
             c = ConnectionPool.getInstance().getConnection();
             speakerDao.rollbackInvite(userSessionId, topicId, c);
             c.commit();
@@ -163,5 +168,9 @@ public class SpeakerServiceImpl implements SpeakerService {
             close(c);
         }
         return true;
+    }
+
+    public void setSpeakerDao(SpeakerDao speakerDao) {
+        this.speakerDao = speakerDao;
     }
 }
