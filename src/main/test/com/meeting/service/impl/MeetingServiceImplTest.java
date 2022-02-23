@@ -130,6 +130,8 @@ class MeetingServiceImplTest {
         when(rs.next())
                 .thenReturn(true)
                 .thenReturn(true)
+                .thenReturn(true)
+                .thenReturn(true)
                 .thenReturn(false);
         when(rs.getLong("id")).thenReturn(2L);
         when(rs.getString("name")).thenReturn("InvestPro Кипр Никосия 2022");
@@ -153,9 +155,14 @@ class MeetingServiceImplTest {
                 .thenReturn(new Topic(9L, Utils.generateStringWithRandomChars(9)))
                 .thenReturn(new Topic(13L, Utils.generateStringWithRandomChars(9)));
 
-        Map<Long, Set<Long>> applicationMap = new HashMap<>();
-        applicationMap.put(25L, new HashSet<>(Arrays.asList(8L, 15L)));
-        when(meetingDao.getSentApplicationsByMeetingId(2L, c)).thenReturn(applicationMap);
+        when(meetingDao.getSentApplicationsByMeetingId(2L, c)).thenCallRealMethod();
+        when(rs.getLong("topic_id")).thenReturn(25L);
+        when(rs.getLong("speaker_id"))
+                .thenReturn(8L)
+                .thenReturn(15L);
+        //Map<Long, Set<Long>> applicationMap = new HashMap<>();
+        // applicationMap.put(25L, new HashSet<>(Arrays.asList(8L, 15L)));
+        //when(meetingDao.getSentApplicationsByMeetingId(2L, c)).thenReturn(applicationMap);
 
         Map<Long, Long> proposedTopics = new HashMap<>();
         proposedTopics.put(99L, 12L);
@@ -298,7 +305,7 @@ class MeetingServiceImplTest {
 
     @Test
     void shouldUpdateMeetingInformation() throws SQLException, UserNotFoundException, EmailException, DataBaseException {
-        MeetingDao meetingDao = mock(MeetingDao.class);
+        MeetingDao meetingDao = mock(MeetingDaoImpl.class);
         UserService userService = mock(UserService.class);
         meetingService.setMeetingDao(meetingDao);
         meetingService.setUserService(userService);
@@ -323,6 +330,9 @@ class MeetingServiceImplTest {
 
         when(c.prepareStatement(anyString())).thenReturn(p);
         when(p.executeQuery()).thenReturn(rs);
+        doCallRealMethod().when(meetingDao).updateInformation(any(), eq(c));
+        when(c.prepareStatement(UPDATE_MEETING_INFORMATION_SQL)).thenReturn(p);
+        when(p.executeUpdate()).thenReturn(1);
 
         Meeting oldMeeting = createFirstMeeting();
         Meeting newMeeting = createSecondMeeting();
@@ -465,7 +475,7 @@ class MeetingServiceImplTest {
         MeetingDao meetingDao = mock(MeetingDao.class);
         meetingService.setMeetingDao(meetingDao);
 
-        when(meetingDao.getPresentUserIds(anyLong(),eq(c))).thenThrow(SQLException.class);
+        when(meetingDao.getPresentUserIds(anyLong(), eq(c))).thenThrow(SQLException.class);
 
         DataBaseException thrown = assertThrows(DataBaseException.class, () -> meetingService.getPresentUserIds(92L));
 
@@ -475,9 +485,7 @@ class MeetingServiceImplTest {
         assertEquals(expected, actual);
     }
 
-
-
-        private Meeting createFirstMeeting() {
+    private Meeting createFirstMeeting() {
         Meeting meeting = new Meeting();
         meeting.setId(9L);
         meeting.setName(Utils.generateStringWithRandomChars(16));

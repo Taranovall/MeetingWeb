@@ -10,10 +10,14 @@ import java.util.Set;
 
 public interface MeetingDao extends Dao<Meeting> {
 
+    List<Meeting> getAll(Connection c) throws SQLException;
+
     /**
      * @return set with meeting's id in which speaker are involved in by his ID
      */
     Set<Long> getAllMeetingsIdSpeakerInvolvesIn(Long speakerId, Connection c) throws SQLException;
+
+    void save(Meeting meeting, Connection c) throws SQLException;
 
     /**
      * @param meetingId

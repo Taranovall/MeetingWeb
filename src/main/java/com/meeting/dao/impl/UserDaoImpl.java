@@ -28,19 +28,6 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public List<User> getAll(Connection c) throws SQLException {
-        List<User> users = new LinkedList<>();
-        PreparedStatement p = c.prepareStatement(GET_ALL_USERS_SQL);
-        ResultSet rs = p.executeQuery();
-        while (rs.next()) {
-            User user = extractUser(rs, c);
-            user.setRole(getUserRole(user.getId(), c));
-            users.add(user);
-        }
-        return users;
-    }
-
-    @Override
     public Role getUserRole(long id, Connection c) throws SQLException {
         Role role = null;
         PreparedStatement p = c.prepareStatement(GET_USER_ROLE_BY_ID_SQL);

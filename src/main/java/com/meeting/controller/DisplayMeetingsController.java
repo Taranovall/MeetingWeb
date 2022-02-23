@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 import static com.meeting.util.Constant.IS_FORM_HAS_BEEN_USED_ATTRIBUTE_NAME;
 import static com.meeting.util.Constant.MEETING_ATTRIBUTE_NAME;
@@ -32,6 +33,7 @@ public class DisplayMeetingsController extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
         String displayOption = req.getParameter("radioButton");
+        if (Objects.nonNull(displayOption)) {
         List<Meeting> meetingList = null;
         try {
             meetingList = meetingService.getAllMeetings();
@@ -42,6 +44,9 @@ public class DisplayMeetingsController extends HttpServlet {
 
         session.setAttribute(MEETING_ATTRIBUTE_NAME, meetingList);
         session.setAttribute(IS_FORM_HAS_BEEN_USED_ATTRIBUTE_NAME, displayOption);
+        } else {
+            session.setAttribute("error", "You didn't choose any option");
+        }
         resp.sendRedirect("/");
     }
 }

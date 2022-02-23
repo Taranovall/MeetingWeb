@@ -27,11 +27,6 @@ public class TopicDaoImpl implements TopicDao {
     }
 
     @Override
-    public List<Topic> getAll(Connection c) throws SQLException {
-        return null;
-    }
-
-    @Override
     public Set<Topic> getAllFreeTopicsByMeetingId(Long meetingId, Connection c) throws SQLException {
         Set<Topic> topics = new HashSet<>();
         PreparedStatement p = c.prepareStatement(GET_ALL_FREE_TOPICS_BY_MEETING_ID);
@@ -69,18 +64,6 @@ public class TopicDaoImpl implements TopicDao {
             p.setLong(2, topic.getId());
             p.executeUpdate();
         }
-    }
-
-    @Override
-    public Set<Topic> getTopicsByMeetingId(Long meetingId, Connection c) throws SQLException {
-        Set<Topic> topics = new HashSet<>();
-        PreparedStatement p = c.prepareStatement(GET_ALL_TOPICS_BY_MEETING_ID_SQL);
-        p.setLong(1, meetingId);
-        ResultSet rs = p.executeQuery();
-        while (rs.next()) {
-            topics.add(extractTopic(rs));
-        }
-        return topics;
     }
 
     @Override

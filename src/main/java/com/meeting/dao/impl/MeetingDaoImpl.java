@@ -2,7 +2,6 @@ package com.meeting.dao.impl;
 
 import com.meeting.dao.MeetingDao;
 import com.meeting.entitiy.Meeting;
-import com.meeting.util.SQLQuery;
 
 import java.sql.*;
 import java.util.*;
@@ -14,7 +13,7 @@ public class MeetingDaoImpl implements MeetingDao {
     @Override
     public Optional<Meeting> getById(Long id, Connection c) throws SQLException {
         Optional<Meeting> optionalMeeting = Optional.empty();
-        PreparedStatement p = c.prepareStatement(SQLQuery.GET_MEETING_BY_ID);
+        PreparedStatement p = c.prepareStatement(GET_MEETING_BY_ID);
         p.setLong(1, id);
         ResultSet rs = p.executeQuery();
         if (rs.next()) {
@@ -168,7 +167,7 @@ public class MeetingDaoImpl implements MeetingDao {
 
     @Override
     public void updateInformation(Meeting meeting, Connection c) throws SQLException {
-        PreparedStatement p = c.prepareStatement(SQLQuery.UPDATE_MEETING_INFORMATION_SQL);
+        PreparedStatement p = c.prepareStatement(UPDATE_MEETING_INFORMATION_SQL);
         int k = 1;
         p.setString(k++, meeting.getTimeStart());
         p.setString(k++, meeting.getTimeEnd());
@@ -180,7 +179,7 @@ public class MeetingDaoImpl implements MeetingDao {
 
     @Override
     public List<Long> getParticipantsIdByMeetingId(Long meetingId, Connection c) throws SQLException {
-        PreparedStatement p = c.prepareStatement(SQLQuery.GET_ALL_PARTICIPANTS_BY_MEETING_ID_SQL);
+        PreparedStatement p = c.prepareStatement(GET_ALL_PARTICIPANTS_BY_MEETING_ID_SQL);
         p.setLong(1, meetingId);
         List<Long> participantsList = new LinkedList<>();
         ResultSet rs = p.executeQuery();
@@ -194,11 +193,11 @@ public class MeetingDaoImpl implements MeetingDao {
     @Override
     public void markPresentUsers(String[] presentUsers, Long meetingId, Connection c) throws SQLException {
         //set is present in table meeting participants in case if user was presence but left meeting
-        PreparedStatement p = c.prepareStatement(SQLQuery.SET_PRESENCE_FALSE_SQL);
+        PreparedStatement p = c.prepareStatement(SET_PRESENCE_FALSE_SQL);
         p.setLong(1, meetingId);
         p.executeUpdate();
         if (presentUsers != null) {
-            p = c.prepareStatement(SQLQuery.MARK_PRESENT_USERS_SQL);
+            p = c.prepareStatement(MARK_PRESENT_USERS_SQL);
             p.setLong(1, meetingId);
             for (String id : presentUsers) {
                 long convertedId = Long.parseLong(id);
@@ -210,7 +209,7 @@ public class MeetingDaoImpl implements MeetingDao {
 
     @Override
     public List<Long> getPresentUserIds(Long meetingId, Connection c) throws SQLException {
-        PreparedStatement p = c.prepareStatement(SQLQuery.GET_PRESENT_USERS_SQL);
+        PreparedStatement p = c.prepareStatement(GET_PRESENT_USERS_SQL);
         p.setLong(1, meetingId);
         List<Long> userIds = new LinkedList<>();
         ResultSet rs = p.executeQuery();
@@ -224,7 +223,7 @@ public class MeetingDaoImpl implements MeetingDao {
     public double getAttendancePercentageByMeetingId(Long meetingId, Connection c) throws SQLException {
         int attendedParticipants = 0;
         int participantsCount = getParticipantsIdByMeetingId(meetingId, c).size();
-        PreparedStatement p = c.prepareStatement(SQLQuery.GET_ATTENDED_PARTICIPANTS_SQL);
+        PreparedStatement p = c.prepareStatement(GET_ATTENDED_PARTICIPANTS_SQL);
         p.setLong(1, meetingId);
         ResultSet rs = p.executeQuery();
         while (rs.next()) {

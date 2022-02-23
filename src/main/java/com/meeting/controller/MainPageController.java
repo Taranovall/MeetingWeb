@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.meeting.util.Constant.*;
@@ -34,6 +35,12 @@ public class MainPageController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
         List<Meeting> meetingList = null;
+
+        if (Objects.nonNull(session.getAttribute("error"))) {
+            req.setAttribute("error", session.getAttribute("error"));
+            session.removeAttribute("error");
+        }
+
         // it can be true only if user has made search query or choose any sort method
         boolean isUserHasUsedForm = session.getAttribute(IS_FORM_HAS_BEEN_USED_ATTRIBUTE_NAME) != null;
         if (isUserHasUsedForm || req.getParameter("page") != null) {
@@ -43,8 +50,8 @@ public class MainPageController extends HttpServlet {
         // can be null if user open page for the first time or without parameters
         if (meetingList == null) {
             try {
-                    meetingList = meetingService.getAllMeetings();
-                } catch (DataBaseException | UserNotFoundException e) {
+                meetingList = meetingService.getAllMeetings();
+            } catch (DataBaseException | UserNotFoundException e) {
                 resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
             }
 

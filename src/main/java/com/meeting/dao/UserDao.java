@@ -23,6 +23,8 @@ public interface UserDao extends Dao<User> {
      */
     void updateUserRole(Long id, Connection c) throws SQLException;
 
+    void save(User user, Connection c) throws SQLException;
+
     Optional<User> getUserByLogin(String login, Connection c) throws SQLException;
 
     List<User> getAllUserByRole(String role, Connection c) throws SQLException;

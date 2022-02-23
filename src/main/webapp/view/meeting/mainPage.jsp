@@ -17,7 +17,14 @@
 <jsp:include page="../component/navbar.jsp"></jsp:include>
 <div id="meetingList">
     <c:if test="${query != null}">
-        All results by query: ${query}
+        <div class="alert alert-info text-center mt-2 mb-0" role="alert">
+            All results by query: ${query}
+        </div>
+    </c:if>
+    <c:if test="${error != null}">
+        <div class="alert alert-danger text-center mt-2 mb-0" role="alert">
+                ${error}
+        </div>
     </c:if>
     <div class="row">
         <c:forEach items="${sessionScope.meetings}" var="m">

@@ -52,11 +52,6 @@ public class SpeakerDaoImpl implements SpeakerDao {
     }
 
     @Override
-    public void save(Speaker speaker, Connection c) throws SQLException {
-
-    }
-
-    @Override
     public List<String> getApplicationBySpeakerId(Long speakerId, String SQLQuery, Connection c) throws SQLException {
         List<String> applicationList = new ArrayList<>();
         PreparedStatement p = c.prepareStatement(SQLQuery);
@@ -66,19 +61,6 @@ public class SpeakerDaoImpl implements SpeakerDao {
             applicationList.add(String.valueOf(rs.getLong("topic_id")));
         }
         return applicationList;
-    }
-
-    @Override
-    public Optional<Speaker> getSpeakerByTopicId(Long topicId, Connection c) throws SQLException {
-        Optional<Speaker> speakerOptional = Optional.empty();
-        PreparedStatement p = c.prepareStatement(GET_SPEAKER_BY_TOPIC_ID);
-        p.setLong(1, topicId);
-        ResultSet rs = p.executeQuery();
-        if (rs.next()) {
-            Long speakerId = rs.getLong("speaker_id");
-            speakerOptional = getById(speakerId, c);
-        }
-        return speakerOptional;
     }
 
     @Override
@@ -117,21 +99,6 @@ public class SpeakerDaoImpl implements SpeakerDao {
         p.setLong(1, topicId);
         p.executeUpdate();
         return true;
-    }
-
-    @Override
-    public Set<Speaker> getAllSpeakerApplicationsByTopicId(Long topicId, Connection c) throws SQLException {
-        Set<Speaker> speakers = new HashSet<>();
-        Optional<Speaker> optionalSpeaker = Optional.empty();
-        PreparedStatement p = c.prepareStatement(GET_ALL_SPEAKER_APPLICATIONS_BY_TOPIC_ID_SQL);
-        p.setLong(1, topicId);
-        ResultSet rs = p.executeQuery();
-        while (rs.next()) {
-            Long speakerId = rs.getLong("speaker_id");
-            optionalSpeaker = getById(speakerId, c);
-            optionalSpeaker.ifPresent(speakers::add);
-        }
-        return speakers;
     }
 
     /**
@@ -194,20 +161,8 @@ public class SpeakerDaoImpl implements SpeakerDao {
         this.userDao = userDao;
     }
 
-    public UserDao getUserDao() {
-        return userDao;
-    }
-
-    public MeetingDao getMeetingDao() {
-        return meetingDao;
-    }
-
     public void setMeetingDao(MeetingDao meetingDao) {
         this.meetingDao = meetingDao;
-    }
-
-    public TopicDao getTopicDao() {
-        return topicDao;
     }
 
     public void setTopicDao(TopicDao topicDao) {
