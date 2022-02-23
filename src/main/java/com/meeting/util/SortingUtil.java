@@ -47,7 +47,7 @@ public class SortingUtil {
         List<Meeting> listBeforeSorting = new LinkedList<>(meetingList);
 
         meetingList.sort((o1, o2) -> {
-            if (o1 == o2) {
+            if (o1.getFreeTopics().size() == o2.getFreeTopics().size()) {
                 return o1.getName().compareTo(o2.getName());
             } else {
                 return o2.getFreeTopics().size() - o1.getFreeTopics().size();

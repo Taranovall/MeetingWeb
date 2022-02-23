@@ -37,6 +37,10 @@ public class Meeting implements Serializable {
         this.participants = new LinkedList<>();
     }
 
+    public Meeting(String name) {
+        this.name = name;
+    }
+
     public Meeting(String name, String date, String timeStart, String timeEnd, String place) {
         this.name = name;
         this.date = date;

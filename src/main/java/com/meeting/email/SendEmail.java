@@ -18,17 +18,21 @@ public class SendEmail {
     protected static String SMTP_AUTH_USER = "meetingwebmailsender@gmail.com";
     protected static String SMTP_AUTH_PWD = "g1872qwe3";
     protected static String EMAIL_FROM = "MeetingWebSender@gmail.com";
+    protected static String MAIL_SMTP_SSL_PROTOCOLS = "TLSv1.2";
+    protected static boolean MAIL_SMTP_AUTH = true;
+    protected static boolean MAIL_SMTP_STARTTLS_ENABLE = true;
 
     public SendEmail(final String[] emailTo, final String topic) throws EmailException {
-        // Configuring SMTP SSL
-        Properties properties = new Properties();
-        properties.put("mail.smtp.auth", true);
-        properties.put("mail.smtp.starttls.enable", "true");
-        properties.put("mail.smtp.host", SMTP_SERVER);
-        properties.put("mail.smtp.port", SMTP_PORT);
-        properties.put("mail.smtp.ssl.trust", SMTP_SERVER);
-        properties.put("mail.smtp.ssl.protocols", "TLSv1.2");
         try {
+            // Configuring SMTP SSL
+            Properties properties = new Properties();
+            properties.put("mail.smtp.auth", MAIL_SMTP_AUTH);
+            properties.put("mail.smtp.starttls.enable", MAIL_SMTP_STARTTLS_ENABLE);
+            properties.put("mail.smtp.host", SMTP_SERVER);
+            properties.put("mail.smtp.port", SMTP_PORT);
+            properties.put("mail.smtp.ssl.trust", SMTP_SERVER);
+            properties.put("mail.smtp.ssl.protocols", MAIL_SMTP_SSL_PROTOCOLS);
+
             Authenticator auth = new EmailAuthenticator(SMTP_AUTH_USER,
                     SMTP_AUTH_PWD);
             Session session = Session.getDefaultInstance(properties, auth);
@@ -40,7 +44,7 @@ public class SendEmail {
             message.setFrom(email_from);
             message.setRecipients(Message.RecipientType.TO, email_to);
             message.setSubject(topic);
-        } catch (MessagingException e) {
+        } catch (MessagingException | NullPointerException e) {
             log.error("Cannot initialize constructor", e);
             throw new EmailException("Cannot initialize constructor", e);
         }
@@ -83,5 +87,9 @@ public class SendEmail {
             internetAddresses[i] = new InternetAddress(emailTo[i]);
         }
         return internetAddresses;
+    }
+
+    public void setMessage(Message message) {
+        this.message = message;
     }
 }
