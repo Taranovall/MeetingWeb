@@ -23,7 +23,7 @@ import static com.meeting.util.Constant.MEETING_ATTRIBUTE_NAME;
 @WebServlet(name = "showMeetings", urlPatterns = "/show-meetings")
 public class DisplayMeetingsController extends HttpServlet {
 
-    private final MeetingService meetingService;
+    private MeetingService meetingService;
 
     public DisplayMeetingsController() {
         this.meetingService = new MeetingServiceImpl();
@@ -48,5 +48,9 @@ public class DisplayMeetingsController extends HttpServlet {
             session.setAttribute("error", "You didn't choose any option");
         }
         resp.sendRedirect("/");
+    }
+
+    public void setMeetingService(MeetingService meetingService) {
+        this.meetingService = meetingService;
     }
 }

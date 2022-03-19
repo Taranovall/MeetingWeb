@@ -21,7 +21,7 @@ import static java.util.Objects.nonNull;
 public class LoginController extends HttpServlet {
     private static final Logger log = LogManager.getLogger(LoginController.class);
 
-    private final ValidationService validationService;
+    private ValidationService validationService;
 
     public LoginController() {
         this.validationService = new ValidationServiceImpl();
@@ -37,16 +37,15 @@ public class LoginController extends HttpServlet {
         User user = null;
         try {
             user = validationService.authValidator(req);
-        }  catch (UserNotFoundException e) {
-            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+        } catch (UserNotFoundException e) {
+            e.printStackTrace();
         }
         String redirectTo = (String) req.getSession().getAttribute("lastPageURI");
-
-        req.getSession().setAttribute("user", user);
 
         if (nonNull(req.getAttribute("message"))) {
             doGet(req, resp);
         } else {
+            req.getSession().setAttribute("user", user);
             if (redirectTo != null) {
                 resp.sendRedirect(redirectTo);
             } else {
@@ -54,5 +53,9 @@ public class LoginController extends HttpServlet {
             }
             log.info("{}[{}] just signed in", user.getLogin(), user.getId());
         }
+    }
+
+    public void setValidationService(ValidationService validationService) {
+        this.validationService = validationService;
     }
 }

@@ -27,9 +27,9 @@ import static com.meeting.util.Constant.PATH_TO_PERSONAL_ACCOUNT_JSP;
 @WebServlet(name = "personalAccount", urlPatterns = "/account/*")
 public class PersonalAccountController extends HttpServlet {
 
-    private final UserService userService;
-    private final SpeakerService speakerService;
-    private final MeetingService meetingService;
+    private UserService userService;
+    private SpeakerService speakerService;
+    private MeetingService meetingService;
 
     public PersonalAccountController() {
         this.userService = new UserServiceImpl();
@@ -62,5 +62,17 @@ public class PersonalAccountController extends HttpServlet {
         } catch (DataBaseException | UserNotFoundException e) {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
+    public void setSpeakerService(SpeakerService speakerService) {
+        this.speakerService = speakerService;
+    }
+
+    public void setMeetingService(MeetingService meetingService) {
+        this.meetingService = meetingService;
     }
 }

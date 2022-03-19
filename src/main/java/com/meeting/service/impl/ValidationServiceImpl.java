@@ -5,6 +5,8 @@ import com.meeting.entitiy.User;
 import com.meeting.exception.UserNotFoundException;
 import com.meeting.service.UserService;
 import com.meeting.service.ValidationService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -19,6 +21,9 @@ import java.util.Set;
 import static com.meeting.util.Constant.QUERY_IS_NOT_VALID_ATTRIBUTE_NAME;
 
 public class ValidationServiceImpl implements ValidationService {
+
+    private static final Logger log = LogManager.getLogger(ValidationServiceImpl.class);
+
 
     private UserService userService;
 
@@ -46,10 +51,15 @@ public class ValidationServiceImpl implements ValidationService {
     }
 
     @Override
-    public User authValidator(HttpServletRequest req) throws UserNotFoundException {
+    public User authValidator(HttpServletRequest req) {
         final String login = req.getParameter("login");
         final String password = req.getParameter("password");
-        User userDB = userService.getUserByLogin(login);
+        User userDB = null;
+        try {
+            userDB = userService.getUserByLogin(login);
+        } catch (UserNotFoundException e) {
+            log.info("Someone tried to log into account which doesn't exist");
+        }
 
         if (userDB == null) {
             req.setAttribute("message", "Пользователя с данным логином не существует");

@@ -84,6 +84,7 @@ public class MeetingServiceImpl implements MeetingService {
                 topicDao.createFreeTopic(meeting, topic, c);
             }
             c.commit();
+            log.info("Meeting {} just created", meeting.getName());
         } catch (SQLException e) {
             e.printStackTrace();
             rollback(c);

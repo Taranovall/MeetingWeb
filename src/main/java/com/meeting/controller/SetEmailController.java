@@ -18,8 +18,8 @@ import java.io.IOException;
 @WebServlet(name = "setEmail", urlPatterns = "/account/set-email")
 public class SetEmailController extends HttpServlet {
 
-    private final UserService userService;
-    private final ValidationService validationService;
+    private UserService userService;
+    private ValidationService validationService;
 
     public SetEmailController() {
         this.userService = new UserServiceImpl();
@@ -29,7 +29,7 @@ public class SetEmailController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
-        // if user has any error attribute is moved from session to request
+        // if user has any error, attribute is moved from session to request
         if (session.getAttribute("error") != null) {
             req.setAttribute("error", session.getAttribute("error"));
             session.removeAttribute("error");
@@ -42,12 +42,19 @@ public class SetEmailController extends HttpServlet {
             try {
                 userService.setEmail(user.getId(), email);
                 user.setEmail(email);
-                session.setAttribute("user", user
-                );
+                session.setAttribute("user", user);
                 resp.sendRedirect(redirectTo);
             } catch (DataBaseException e) {
                 resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
             }
         }
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
+    public void setValidationService(ValidationService validationService) {
+        this.validationService = validationService;
     }
 }

@@ -25,7 +25,7 @@ import static com.meeting.util.Constant.*;
 public class MainPageController extends HttpServlet {
 
     private static final Logger log = LogManager.getLogger(MainPageController.class);
-    private final MeetingService meetingService;
+    private MeetingService meetingService;
 
     public MainPageController() {
         this.meetingService = new MeetingServiceImpl();
@@ -96,5 +96,9 @@ public class MainPageController extends HttpServlet {
             session.setAttribute(SORT_METHOD_ATTRIBUTE_NAME, currentSortingMethod);
         }
 
+    }
+
+    public void setMeetingService(MeetingService meetingService) {
+        this.meetingService = meetingService;
     }
 }

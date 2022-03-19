@@ -27,8 +27,8 @@ import static com.meeting.util.Constant.MEETING_ATTRIBUTE_NAME;
 public class SearchMeetingController extends HttpServlet {
 
     private static final Logger log = LogManager.getLogger(SearchMeetingController.class);
-    private final MeetingService meetingService;
-    private final ValidationService validationService;
+    private MeetingService meetingService;
+    private ValidationService validationService;
 
     public SearchMeetingController() {
         this.meetingService = new MeetingServiceImpl();
@@ -59,5 +59,13 @@ public class SearchMeetingController extends HttpServlet {
 
         session.setAttribute(IS_FORM_HAS_BEEN_USED_ATTRIBUTE_NAME, true);
         resp.sendRedirect("/");
+    }
+
+    public void setMeetingService(MeetingService meetingService) {
+        this.meetingService = meetingService;
+    }
+
+    public void setValidationService(ValidationService validationService) {
+        this.validationService = validationService;
     }
 }

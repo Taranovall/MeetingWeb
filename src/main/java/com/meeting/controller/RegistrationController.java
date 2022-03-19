@@ -22,8 +22,8 @@ import static com.meeting.util.Constant.PATH_TO_REGISTRATION_JSP;
 public class RegistrationController extends HttpServlet {
 
     private static final Logger log = LogManager.getLogger(RegistrationController.class);
-    private final UserService userService;
-    private final ValidationService validationService;
+    private UserService userService;
+    private ValidationService validationService;
 
     public RegistrationController() {
         this.userService = new UserServiceImpl();
@@ -52,5 +52,13 @@ public class RegistrationController extends HttpServlet {
                 resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
             }
         }
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
+    public void setValidationService(ValidationService validationService) {
+        this.validationService = validationService;
     }
 }
