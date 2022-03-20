@@ -24,19 +24,6 @@ public class User implements Serializable {
         this.login = login;
     }
 
-    public User(Long id, String login, String password, Role role) {
-        this.id = id;
-        this.login = login;
-        this.password = password;
-        this.role = role;
-    }
-
-    public User(Long id, String login, Role role) {
-        this.id = id;
-        this.login = login;
-        this.role = role;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -51,10 +38,6 @@ public class User implements Serializable {
 
     public void setMeetingIdsSetUserTakesPart(List<Long> meetingIdsSetUserTakesPart) {
         this.meetingIdsSetUserTakesPart = meetingIdsSetUserTakesPart;
-    }
-
-    public String getRegistrationDate() {
-        return registrationDate;
     }
 
     public void setRegistrationDate(String registrationDate) {

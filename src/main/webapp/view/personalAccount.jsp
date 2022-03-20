@@ -26,7 +26,7 @@
                     <li class="list-group-item"><small>Role: ${requestScope.user.getRole().toString()}</small>
                     </li>
                     <li class="list-group-item"><small>Registration
-                        date: ${requestScope.user.getRegistrationDate()}</small></li>
+                        date: ${requestScope.user.registrationDate}</small></li>
                     <c:if test="${requestScope.user.getEmail() != null}">
                         <li class="list-group-item"><small>Email: ${requestScope.user.getEmail()}</small></li>
                     </c:if>

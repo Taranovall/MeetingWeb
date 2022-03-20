@@ -80,13 +80,13 @@ class SpeakerServiceImplTest {
 
         when(rs.next())
                 .thenReturn(true)
-                .thenReturn(false)
-                .thenReturn(false)
                 .thenReturn(true)
                 .thenReturn(false)
-                .thenReturn(false)
+                .thenReturn(true)
                 .thenReturn(true)
                 .thenReturn(false)
+                .thenReturn(true)
+                .thenReturn(true)
                 .thenReturn(false);
         when(rs.getLong("id"))
                 .thenReturn(speakerList.get(0).getId())
@@ -99,6 +99,7 @@ class SpeakerServiceImplTest {
 
         when(c.prepareStatement(GET_ALL_USERS_BY_ROLE_SQL)).thenReturn(p);
         when(p.executeQuery()).thenReturn(rs);
+        when(rs.getString("name")).thenReturn("Speaker");
 
         when(c.prepareStatement(GET_USER_ROLE_BY_ID_SQL)).thenReturn(p);
         when(c.prepareStatement(GET_MEETING_IDS_IN_WHICH_USER_TAKES_PART_SQL)).thenReturn(p);
