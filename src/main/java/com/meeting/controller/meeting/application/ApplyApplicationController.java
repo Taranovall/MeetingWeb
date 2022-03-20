@@ -17,7 +17,7 @@ import java.util.List;
 @WebServlet(name = "applyApplication", urlPatterns = "/speaker/meeting/apply-application")
 public class ApplyApplicationController extends HttpServlet {
 
-    private final SpeakerService speakerService;
+    private SpeakerService speakerService;
 
     public ApplyApplicationController() {
         this.speakerService = new SpeakerServiceImpl();
@@ -44,5 +44,9 @@ public class ApplyApplicationController extends HttpServlet {
         applicationList.add(topicId);
         req.getSession().setAttribute("sentApplicationList", applicationList);
         resp.sendRedirect(lastURI);
+    }
+
+    public void setSpeakerService(SpeakerService speakerService) {
+        this.speakerService = speakerService;
     }
 }

@@ -16,7 +16,7 @@ import java.io.IOException;
 @WebServlet(name = "stop-participating", urlPatterns = "/meeting/stop-participating")
 public class StopParticipatingController extends HttpServlet {
 
-    private final UserService userService;
+    private UserService userService;
 
     public StopParticipatingController() {
         this.userService = new UserServiceImpl();
@@ -37,5 +37,9 @@ public class StopParticipatingController extends HttpServlet {
         }
 
         resp.sendRedirect(lastURI);
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
     }
 }

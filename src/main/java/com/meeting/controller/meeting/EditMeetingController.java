@@ -20,7 +20,7 @@ import java.io.IOException;
 @WebServlet(name = "editMeeting", urlPatterns = "/moderator/meeting/edit-meeting")
 public class EditMeetingController extends HttpServlet {
 
-    private final MeetingService meetingService;
+    private MeetingService meetingService;
     private final ValidationService validationService;
 
     public EditMeetingController() {
@@ -55,5 +55,9 @@ public class EditMeetingController extends HttpServlet {
             }
         }
         resp.sendRedirect(lastURI);
+    }
+
+    public void setMeetingService(MeetingService meetingService) {
+        this.meetingService = meetingService;
     }
 }

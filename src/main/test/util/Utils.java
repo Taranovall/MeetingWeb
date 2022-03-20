@@ -8,8 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-import static com.meeting.entitiy.Role.SPEAKER;
-import static com.meeting.entitiy.Role.USER;
+import static com.meeting.entitiy.Role.*;
 
 public class Utils {
 
@@ -47,6 +46,12 @@ public class Utils {
         User user = new User(228L, "very talkative speaker", "1");
         user.setRegistrationDate("13.02.2022");
         user.setRole(SPEAKER);
+        return user;
+    }
+
+    public static User createUserWithRoleModerator() {
+        User user = createUser();
+        user.setRole(MODERATOR);
         return user;
     }
 

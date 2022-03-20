@@ -15,7 +15,7 @@ import java.io.IOException;
 @WebServlet(name = "cancelProposedTopic", urlPatterns = "/moderator/meeting/cancel-proposition")
 public class CancelProposedTopicController extends HttpServlet {
 
-    private final MeetingService meetingService;
+    private MeetingService meetingService;
 
     public CancelProposedTopicController() {
         this.meetingService = new MeetingServiceImpl();
@@ -33,7 +33,10 @@ public class CancelProposedTopicController extends HttpServlet {
         } catch (DataBaseException e) {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
-
         resp.sendRedirect(lastURI);
+    }
+
+    public void setMeetingService(MeetingService meetingService) {
+        this.meetingService = meetingService;
     }
 }

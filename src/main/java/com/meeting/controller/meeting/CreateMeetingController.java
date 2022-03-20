@@ -30,9 +30,9 @@ import static com.meeting.util.Constant.PATH_TO_CREATE_MEETING_SECOND_PAGE_JSP;
 )
 public class CreateMeetingController extends HttpServlet {
 
-    private final MeetingService meetingService;
-    private final SpeakerService speakerService;
-    private final ValidationService validationService;
+    private MeetingService meetingService;
+    private SpeakerService speakerService;
+    private ValidationService validationService;
 
     public CreateMeetingController() {
         this.meetingService = new MeetingServiceImpl();
@@ -86,11 +86,9 @@ public class CreateMeetingController extends HttpServlet {
         Part uploadedImage = req.getPart("photo");
 
         if (validationService.meetingPostValidator(topics, uploadedImage, req)) {
-
             // creates temp file and write image in it
             File image = new File(uploadedImage.getSubmittedFileName());
             uploadedImage.write(image.getAbsolutePath());
-
             User userFromSession = (User) req.getSession().getAttribute("user");
             try {
                 meetingService.createMeeting(userFromSession, meeting, topics, speakers, image);
@@ -99,12 +97,24 @@ public class CreateMeetingController extends HttpServlet {
                 session.removeAttribute("firstPageURL");
                 session.removeAttribute("speakers");
                 resp.sendRedirect("/");
-            }  catch (DataBaseException e) {
+            } catch (DataBaseException e) {
                 resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
             }
         } else {
             req.getRequestDispatcher(PATH_TO_CREATE_MEETING_SECOND_PAGE_JSP).forward(req, resp);
         }
+    }
+
+    public void setMeetingService(MeetingService meetingService) {
+        this.meetingService = meetingService;
+    }
+
+    public void setSpeakerService(SpeakerService speakerService) {
+        this.speakerService = speakerService;
+    }
+
+    public void setValidationService(ValidationService validationService) {
+        this.validationService = validationService;
     }
 }
 

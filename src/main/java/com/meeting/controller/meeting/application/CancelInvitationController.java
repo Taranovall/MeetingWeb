@@ -15,7 +15,7 @@ import java.io.IOException;
 @WebServlet(name = "cancelInvitation", urlPatterns = "/speaker/meeting/cancel-invitation")
 public class CancelInvitationController extends HttpServlet {
 
-    private final SpeakerService speakerService;
+    private SpeakerService speakerService;
 
     public CancelInvitationController() {
         this.speakerService = new SpeakerServiceImpl();
@@ -33,7 +33,10 @@ public class CancelInvitationController extends HttpServlet {
         } catch (DataBaseException e) {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
-
         resp.sendRedirect(lastURI);
+    }
+
+    public void setSpeakerService(SpeakerService speakerService) {
+        this.speakerService = speakerService;
     }
 }

@@ -16,7 +16,7 @@ import java.io.IOException;
 @WebServlet(name = "participate", urlPatterns = "/meeting/participate")
 public class ParticipateController extends HttpServlet {
 
-    private final UserService userService;
+    private UserService userService;
 
     public ParticipateController() {
         this.userService = new UserServiceImpl();
@@ -35,7 +35,10 @@ public class ParticipateController extends HttpServlet {
         }  catch (DataBaseException e) {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
-
         resp.sendRedirect(lastURI);
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
     }
 }

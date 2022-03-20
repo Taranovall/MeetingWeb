@@ -17,8 +17,8 @@ import java.io.IOException;
 
 @WebServlet(name = "acceptApplication", urlPatterns = "/moderator/meeting/accept-application")
 public class AcceptApplicationController extends HttpServlet {
-    private final SpeakerService speakerService;
-    private final ValidationService validationService;
+    private SpeakerService speakerService;
+    private ValidationService validationService;
 
     public AcceptApplicationController() {
         this.speakerService = new SpeakerServiceImpl();
@@ -41,8 +41,14 @@ public class AcceptApplicationController extends HttpServlet {
                 resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
             }
         }
-
         resp.sendRedirect(lastURI);
+    }
 
+    public void setSpeakerService(SpeakerService speakerService) {
+        this.speakerService = speakerService;
+    }
+
+    public void setValidationService(ValidationService validationService) {
+        this.validationService = validationService;
     }
 }

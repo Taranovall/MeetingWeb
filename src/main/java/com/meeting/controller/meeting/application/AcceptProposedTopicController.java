@@ -15,7 +15,7 @@ import java.io.IOException;
 @WebServlet(name = "acceptProposedTopic", urlPatterns = "/moderator/meeting/accept-proposition")
 public class AcceptProposedTopicController extends HttpServlet {
 
-    private final MeetingService meetingService;
+    private MeetingService meetingService;
 
     public AcceptProposedTopicController() {
         this.meetingService = new MeetingServiceImpl();
@@ -34,7 +34,10 @@ public class AcceptProposedTopicController extends HttpServlet {
         } catch (DataBaseException e) {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
-
         resp.sendRedirect(lastURI);
+    }
+
+    public void setMeetingService(MeetingService meetingService) {
+        this.meetingService = meetingService;
     }
 }

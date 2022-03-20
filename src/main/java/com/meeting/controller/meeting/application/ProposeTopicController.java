@@ -18,8 +18,8 @@ import java.io.IOException;
 @WebServlet(name = "proposeTopic", urlPatterns = "/speaker/meeting/propose-topic")
 public class ProposeTopicController extends HttpServlet {
 
-    private final MeetingService meetingService;
-    private final ValidationService validationService;
+    private MeetingService meetingService;
+    private ValidationService validationService;
 
     public ProposeTopicController() {
         this.meetingService = new MeetingServiceImpl();
@@ -42,7 +42,14 @@ public class ProposeTopicController extends HttpServlet {
                 resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
             }
         }
-
         resp.sendRedirect(lastURI);
+    }
+
+    public void setMeetingService(MeetingService meetingService) {
+        this.meetingService = meetingService;
+    }
+
+    public void setValidationService(ValidationService validationService) {
+        this.validationService = validationService;
     }
 }

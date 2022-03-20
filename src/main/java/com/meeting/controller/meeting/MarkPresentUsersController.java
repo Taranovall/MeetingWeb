@@ -14,7 +14,7 @@ import java.io.IOException;
 @WebServlet(name = "markUsers", urlPatterns = "/moderator/meeting/mark-present-users/*")
 public class MarkPresentUsersController extends HttpServlet {
 
-    private final MeetingService meetingService;
+    private MeetingService meetingService;
 
     public MarkPresentUsersController() {
         this.meetingService = new MeetingServiceImpl();
@@ -25,12 +25,15 @@ public class MarkPresentUsersController extends HttpServlet {
         String lastURI = (String) req.getSession().getAttribute("lastPageURI");
         String[] presentUsers = req.getParameterValues("presentUserId");
         Long meetingId = Long.valueOf(req.getPathInfo().split("/")[1]);
-        req.getParameterMap();
         try {
             meetingService.markPresentUsers(presentUsers, meetingId);
         }  catch (DataBaseException e) {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
         resp.sendRedirect(lastURI);
+    }
+
+    public void setMeetingService(MeetingService meetingService) {
+        this.meetingService = meetingService;
     }
 }

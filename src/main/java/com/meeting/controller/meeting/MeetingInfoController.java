@@ -25,8 +25,8 @@ import static com.meeting.util.Constant.PATH_TO_MEETING_INFO_PAGE;
 @WebServlet(name = "meetingInformation", urlPatterns = "/meeting/*")
 public class MeetingInfoController extends HttpServlet {
 
-    private final MeetingService meetingService;
-    private final SpeakerService speakerService;
+    private MeetingService meetingService;
+    private SpeakerService speakerService;
 
     public MeetingInfoController() {
         this.meetingService = new MeetingServiceImpl();
@@ -82,5 +82,13 @@ public class MeetingInfoController extends HttpServlet {
         }  catch (DataBaseException | UserNotFoundException e) {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
+    }
+
+    public void setMeetingService(MeetingService meetingService) {
+        this.meetingService = meetingService;
+    }
+
+    public void setSpeakerService(SpeakerService speakerService) {
+        this.speakerService = speakerService;
     }
 }

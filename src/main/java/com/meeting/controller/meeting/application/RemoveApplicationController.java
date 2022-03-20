@@ -16,7 +16,7 @@ import java.util.List;
 @WebServlet(name = "removeApplication", urlPatterns = "/speaker/meeting/remove-application")
 public class RemoveApplicationController extends HttpServlet {
 
-    private final SpeakerService speakerService;
+    private SpeakerService speakerService;
 
     public RemoveApplicationController() {
         this.speakerService = new SpeakerServiceImpl();
@@ -40,5 +40,9 @@ public class RemoveApplicationController extends HttpServlet {
         applicationList.remove(topicId);
         req.getSession().setAttribute("sentApplicationList", applicationList);
         resp.sendRedirect(lastURI);
+    }
+
+    public void setSpeakerService(SpeakerService speakerService) {
+        this.speakerService = speakerService;
     }
 }
