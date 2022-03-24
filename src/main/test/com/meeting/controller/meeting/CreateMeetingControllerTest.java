@@ -111,6 +111,7 @@ class CreateMeetingControllerTest {
         when(req.getRequestURI()).thenReturn("/moderator/create-meeting");
         when(req.getParameter("countOfTopics")).thenReturn("5");
         when(req.getRequestDispatcher(PATH_TO_CREATE_MEETING_FIRST_PAGE_JSP)).thenReturn(requestDispatcher);
+        when(session.getAttribute("language")).thenReturn("en");
 
         createMeetingController.doGet(req, resp);
 
@@ -153,6 +154,7 @@ class CreateMeetingControllerTest {
         when(uploadedImage.getSize()).thenReturn(1337L);
         when(session.getAttribute("user")).thenReturn(createUser());
         when(req.getRequestDispatcher(PATH_TO_CREATE_MEETING_SECOND_PAGE_JSP)).thenReturn(requestDispatcher);
+        when(session.getAttribute("language")).thenReturn("en");
 
         createMeetingController.doPost(req, resp);
 

@@ -62,7 +62,7 @@ class ImageControllerTest {
     @Test
     void shouldDisplayImage() {
         try {
-            String imgName = "/Image001.jpg";
+            String imgName = "/Image001.png";
             ServletOutputStream out = mock(ServletOutputStream.class);
             ServletContext cntx = mock(ServletContext.class);
 

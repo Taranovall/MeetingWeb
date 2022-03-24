@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
 <head>
     <title>${requestScope.user.getLogin()}</title>
@@ -19,16 +20,15 @@
             <img src="https://via.placeholder.com/200x400" class="img-thumbnail col"/>
             <div class="info col">
                 <ul class="info list-group">
-                    <li class="list-group-item"><small>Login: ${requestScope.user.getLogin()}</small>
+                    <li class="list-group-item"><small><fmt:message key="profile.login"/>: ${requestScope.user.getLogin()}</small>
                     </li>
-                    <li class="list-group-item"><small>User ID: ${requestScope.user.getId()}</small>
+                    <li class="list-group-item"><small><fmt:message key="profile.user_id"/>: ${requestScope.user.getId()}</small>
                     </li>
-                    <li class="list-group-item"><small>Role: ${requestScope.user.getRole().toString()}</small>
+                    <li class="list-group-item"><small><fmt:message key="profile.role"/>: ${requestScope.user.getRole().toString()}</small>
                     </li>
-                    <li class="list-group-item"><small>Registration
-                        date: ${requestScope.user.registrationDate}</small></li>
+                    <li class="list-group-item"><small><fmt:message key="profile.registration_date"/>: ${requestScope.user.getRegistrationDate()}</small></li>
                     <c:if test="${requestScope.user.getEmail() != null}">
-                        <li class="list-group-item"><small>Email: ${requestScope.user.getEmail()}</small></li>
+                        <li class="list-group-item"><small><fmt:message key="profile.email"/>: ${requestScope.user.getEmail()}</small></li>
                     </c:if>
                 </ul>
             </div>
@@ -37,14 +37,17 @@
 
             <nav>
                 <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                    <%-- this nav item visible only if user has role speaker --%>
+                    <c:if test="${requestScope.user.getRole().name() == 'SPEAKER'}">
                     <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-involved"
-                       role="tab" aria-controls="nav-home" aria-selected="true">Involved in</a>
+                       role="tab" aria-controls="nav-home" aria-selected="true"><fmt:message key="profile.meetings"/></a>
+                    </c:if>
                     <%-- those nav items visible only if user opens his own account --%>
                     <c:if test="${UserOwnAccount}">
                         <a class="nav-item nav-link" data-toggle="tab" href="#nav-notifications"
-                           role="tab" aria-controls="nav-notifications-tab" aria-selected="false">Notifications</a>
+                           role="tab" aria-controls="nav-notifications-tab" aria-selected="false"><fmt:message key="profile.notifications"/></a>
                         <a class="nav-item nav-link" data-toggle="tab" href="#nav-edit" role="tab"
-                           aria-controls="nav-edit-tab" aria-selected="false">Edit</a>
+                           aria-controls="nav-edit-tab" aria-selected="false"><fmt:message key="profile.settings"/></a>
                     </c:if>
                 </div>
             </nav>
@@ -59,13 +62,13 @@
                                 </div>
                                 <div class="col-sm-9">
                                     <div class="align-middle">
-                                        <p class="mb-0 text-center"><small>Name: ${m.getName()}</small></p>
-                                        <p class="mb-0 text-center"><small>Date: ${m.getDate()}</small>
+                                        <p class="mb-0 text-center"><small><fmt:message key="meeting.name"/>: ${m.getName()}</small></p>
+                                        <p class="mb-0 text-center"><small><fmt:message key="meeting.date"/>: ${m.getDate()}</small>
                                         </p>
-                                        <p class="mb-0 text-center"><small>Time: ${m.getTimeStart()}
+                                        <p class="mb-0 text-center"><small><fmt:message key="meeting.time"/>: ${m.getTimeStart()}
                                             - ${m.getTimeEnd()}</small>
                                         </p>
-                                        <p class="mb-0 text-center"><small>Place: ${m.getPlace()}</small></p>
+                                        <p class="mb-0 text-center"><small><fmt:message key="meeting.place"/>: ${m.getPlace()}</small></p>
                                     </div>
                                 </div>
                             </a>
@@ -85,7 +88,7 @@
                                     <input type="email" class="form-control" id="input-mail" placeholder="Email"
                                            name="email">
                                 </div>
-                                <button type="submit" class="btn btn-primary mb-2">Confirm email</button>
+                                <button type="submit" class="btn btn-primary mb-2"><fmt:message key="profile.confirm_email"/></button>
                             </form>
                         </c:if>
                         <c:if test="${sessionScope.user.getEmail() != null}">

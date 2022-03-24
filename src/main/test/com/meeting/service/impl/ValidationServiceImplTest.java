@@ -35,6 +35,7 @@ public class ValidationServiceImplTest {
     void setUp() {
         closeable = MockitoAnnotations.openMocks(this);
         when(req.getSession()).thenReturn(session);
+        when(session.getAttribute("language")).thenReturn("en");
     }
 
     @AfterEach
@@ -120,17 +121,18 @@ public class ValidationServiceImplTest {
     @Test
     public void searchValidator() {
         String query = "";
-        validationService.searchValidator(query, session);
+        validationService.searchValidator(query, req);
+        when(req.getSession()).thenReturn(session);
 
         verify(session, times(1)).setAttribute(QUERY_IS_NOT_VALID_ATTRIBUTE_NAME, "Query cannot be empty");
 
         query = "Query in which more than 32 characters PPPPPP QQQ PPPPPP SSSSS PPPPP";
-        validationService.searchValidator(query, session);
+        validationService.searchValidator(query, req);
 
         verify(session, times(1)).setAttribute(QUERY_IS_NOT_VALID_ATTRIBUTE_NAME, "Query cannot be longer than 32 characters");
 
         query = "Valid query";
-        boolean actual = validationService.searchValidator(query, session);
+        boolean actual = validationService.searchValidator(query, req);
 
         assertTrue(actual);
     }

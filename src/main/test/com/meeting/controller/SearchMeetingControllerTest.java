@@ -70,10 +70,10 @@ class SearchMeetingControllerTest {
         searchMeetingController.setMeetingService(meetingService);
         searchMeetingController.setValidationService(validationService);
 
-        when(req.getParameter("query")).thenReturn("Meet");
         when(req.getSession()).thenReturn(session);
+        when(req.getParameter("query")).thenReturn("Meet");
         when(meetingService.getAllMeetings()).thenReturn(meetings);
-        when(validationService.searchValidator(anyString(),eq(session))).thenReturn(true);
+        when(validationService.searchValidator(anyString(),eq(req))).thenReturn(true);
 
         searchMeetingController.doPost(req, resp);
 

@@ -19,8 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import static com.meeting.util.Constant.PATH_TO_CREATE_MEETING_FIRST_PAGE_JSP;
-import static com.meeting.util.Constant.PATH_TO_CREATE_MEETING_SECOND_PAGE_JSP;
+import static com.meeting.util.Constant.*;
 
 @WebServlet(name = "createMeeting", urlPatterns = "/moderator/create-meeting")
 @MultipartConfig(
@@ -30,6 +29,7 @@ import static com.meeting.util.Constant.PATH_TO_CREATE_MEETING_SECOND_PAGE_JSP;
 )
 public class CreateMeetingController extends HttpServlet {
 
+    public static final String MEETING = "meeting";
     private MeetingService meetingService;
     private SpeakerService speakerService;
     private ValidationService validationService;
@@ -42,6 +42,8 @@ public class CreateMeetingController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession();
+        session.setAttribute(LAST_PAGE_URI, req.getRequestURI());
         if (req.getParameterMap().size() == 0) {
             req.getRequestDispatcher(PATH_TO_CREATE_MEETING_FIRST_PAGE_JSP).forward(req, resp);
         } else {
@@ -55,17 +57,17 @@ public class CreateMeetingController extends HttpServlet {
             Meeting meeting = new Meeting(name, date, startTime, endTime, place);
             // check if parameters are valid
             if (validationService.meetingMainInfoValidator(meeting, req)) {
-                HttpSession session = req.getSession();
                 List<Speaker> speakerList = null;
                 try {
                     speakerList = speakerService.getAllSpeakers();
                 } catch (DataBaseException e) {
                     resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
                 }
-                session.setAttribute("speakers", speakerList);
-                session.setAttribute("meeting", meeting);
-                session.setAttribute("countOfTopics", req.getParameter("countOfTopics"));
-                session.setAttribute("firstPageURL", req.getRequestURI());
+                session.setAttribute(SPEAKERS, speakerList);
+                session.setAttribute(MEETING, meeting);
+                session.setAttribute(COUNT_OF_TOPICS, req.getParameter(COUNT_OF_TOPICS));
+                session.setAttribute(FIRST_PAGE_URL, req.getRequestURI());
+                session.removeAttribute(ERROR);
                 req.getRequestDispatcher(PATH_TO_CREATE_MEETING_SECOND_PAGE_JSP).forward(req, resp);
             } else {
                 req.getRequestDispatcher(PATH_TO_CREATE_MEETING_FIRST_PAGE_JSP).forward(req, resp);
@@ -77,11 +79,12 @@ public class CreateMeetingController extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         // removes error attribute in case if user got any error before successful input
         HttpSession session = req.getSession();
-        session.removeAttribute("error");
+        session.setAttribute(LAST_PAGE_URI, req.getRequestURI());
+        session.removeAttribute(ERROR);
         String[] topics = req.getParameterValues("topicName");
         String[] speakers = req.getParameterValues("speakerName");
 
-        Meeting meeting = (Meeting) req.getSession().getAttribute("meeting");
+        Meeting meeting = (Meeting) req.getSession().getAttribute(MEETING);
 
         Part uploadedImage = req.getPart("photo");
 
@@ -93,9 +96,9 @@ public class CreateMeetingController extends HttpServlet {
             try {
                 meetingService.createMeeting(userFromSession, meeting, topics, speakers, image);
                 // removes because it already doesn't need
-                session.removeAttribute("countOfTopics");
-                session.removeAttribute("firstPageURL");
-                session.removeAttribute("speakers");
+                session.removeAttribute(COUNT_OF_TOPICS);
+                session.removeAttribute(FIRST_PAGE_URL);
+                session.removeAttribute(SPEAKERS);
                 resp.sendRedirect("/");
             } catch (DataBaseException e) {
                 resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());

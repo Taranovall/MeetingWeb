@@ -17,6 +17,8 @@ import org.mockito.MockedStatic;
 import org.mockito.MockitoAnnotations;
 import util.Utils;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.sql.*;
@@ -102,11 +104,16 @@ class MeetingServiceImplTest {
         Meeting meeting = createFirstMeeting();
         String[] topics = {"Topic1", "Topic2"};
         String[] speakers = {"SpeakerWithoutName", "none"};
+
+        HttpServletRequest req = mock(HttpServletRequest.class);
+        HttpSession session = mock(HttpSession.class);
         TopicDao topicDao = mock(TopicDao.class);
         UserService userService = mock(UserService.class);
         MeetingDao meetingDao = mock(MeetingDao.class);
 
         when(userService.getUserByLogin("SpeakerWithoutName")).thenReturn(new User(7L, "SpeakerWithoutName"));
+        when(req.getSession()).thenReturn(session);
+        when(session.getAttribute("language")).thenReturn("en");
         doThrow(SQLException.class).when(topicDao).addTopicsToMeeting(anyLong(), any(), eq(c));
 
         meetingService.setTopicDao(topicDao);

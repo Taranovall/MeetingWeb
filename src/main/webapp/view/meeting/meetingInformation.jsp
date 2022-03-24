@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
 <head>
     <title>${meeting.getName()}</title>
@@ -21,7 +22,7 @@
                 <%--------------- EDIT BUTTON ---------------%>
                 <c:if test="${sessionScope.user.getRole().name() == 'MODERATOR' && !meeting.isStarted()}">
                     <button type="button" class="edit-button" data-toggle="modal"
-                            data-target="#editInfo">Edit
+                            data-target="#editInfo"><fmt:message key="meeting.edit"/>
                     </button>
                 </c:if>
             </div>
@@ -57,13 +58,13 @@
             </div>
             <%--------------- /EDIT BUTTON CONTENT ---------------%>
             <ul class="list-group pt-2">
-                <li class="list-group-item"><small>Name: ${meeting.getName()}</small>
+                <li class="list-group-item"><small><fmt:message key="meeting.name"/>: ${meeting.getName()}</small>
                 </li>
-                <li class="list-group-item"><small>Date: ${meeting.getDate()}</small>
+                <li class="list-group-item"><small><fmt:message key="meeting.date"/>: ${meeting.getDate()}</small>
                 </li>
-                <li class="list-group-item"><small>Time: ${meeting.getTimeStart()} - ${meeting.getTimeEnd()}</small>
+                <li class="list-group-item"><small><fmt:message key="meeting.time"/>: ${meeting.getTimeStart()} - ${meeting.getTimeEnd()}</small>
                 </li>
-                <li class="list-group-item"><small>Place: ${meeting.getPlace()}</small>
+                <li class="list-group-item"><small><fmt:message key="meeting.place"/>: ${meeting.getPlace()}</small>
                 </li>
             </ul>
             <%--for speaker and moderator--%>
@@ -72,7 +73,7 @@
             <jsp:include page="../component/markPresentUsers.jsp"></jsp:include>
             <%-- attendance percentage visible only for moderator if meeting is already started--%>
             <c:if test="${sessionScope.user.getRole().name() == 'MODERATOR' && meeting.getPercentageAttendance() != 0 && meeting.isStarted()}">
-                <div class="percentage text-center">Percentage attendance
+                <div class="percentage text-center"><fmt:message key="meeting.attendance"/>
                     <div class="progress">
                         <div class="progress-bar" role="progressbar"
                              style="width: ${meeting.getPercentageAttendance()}%;"
@@ -95,19 +96,19 @@
                           d="M5.216 14A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216z"/>
                     <path d="M4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/>
                 </svg>
-                <span class="mr-2">Participants: ${meeting.getParticipants().size()}</span>
+                <span class="mr-2"><fmt:message key="meeting.participants"/>: ${meeting.getParticipants().size()}</span>
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                      class="bi bi-megaphone-fill" viewBox="0 0 16 16">
                     <path d="M13 2.5a1.5 1.5 0 0 1 3 0v11a1.5 1.5 0 0 1-3 0v-11zm-1 .724c-2.067.95-4.539 1.481-7 1.656v6.237a25.222 25.222 0 0 1 1.088.085c2.053.204 4.038.668 5.912 1.56V3.224zm-8 7.841V4.934c-.68.027-1.399.043-2.008.053A2.02 2.02 0 0 0 0 7v2c0 1.106.896 1.996 1.994 2.009a68.14 68.14 0 0 1 .496.008 64 64 0 0 1 1.51.048zm1.39 1.081c.285.021.569.047.85.078l.253 1.69a1 1 0 0 1-.983 1.187h-.548a1 1 0 0 1-.916-.599l-1.314-2.48a65.81 65.81 0 0 1 1.692.064c.327.017.65.037.966.06z"/>
                 </svg>
-                <span>Speakers: ${meeting.getSpeakerTopics().size()}</span>
+                <span><fmt:message key="meeting.speakers"/>: ${meeting.getSpeakerTopics().size()}</span>
             </div>
             <table class="table table-hover text-center">
                 <thead>
                 <tr>
                     <th>#</th>
-                    <th>Topic</th>
-                    <th>Speaker</th>
+                    <th><fmt:message key="meeting.topic"/></th>
+                    <th><fmt:message key="meeting.speaker"/></th>
                 </tr>
                 </thead>
                 <c:if test="${meeting.getSpeakerTopics().size() > 0}">
@@ -136,8 +137,7 @@
                                         <c:when test="${sentApplicationList != null && sentApplicationList.indexOf(freeTopic.getId().toString()) != -1}">
                                             <form action="/speaker/meeting/remove-application" method="post">
                                                 <button name="application" class="become-speaker"
-                                                        value="${freeTopic.getId()}" type="submit">Application
-                                                    Submitted
+                                                        value="${freeTopic.getId()}" type="submit"><fmt:message key="speaker.application_submitted"/>
                                                 </button>
                                             </form>
                                         </c:when>
@@ -145,8 +145,7 @@
                                             <c:choose>
                                                 <c:when test="${receivedApplicationList != null && receivedApplicationList.indexOf(freeTopic.getId().toString()) != -1}">
                                                     <div class="row response">
-                                                        <div class="become-speaker justify-content-center">You've
-                                                            been invited to be a speaker
+                                                        <div class="become-speaker justify-content-center"><fmt:message key="speaker.invite"/>
                                                         </div>
                                                         <form action="/speaker/meeting/accept-invitation" method="post">
                                                             <button class="yes" name="application"
@@ -175,13 +174,11 @@
                                                     <form action="/speaker/meeting/apply-application" method="post">
                                                         <c:if test="${!meeting.isStarted()}">
                                                             <button name="application" class="become-speaker"
-                                                                    value="${freeTopic.getId()}" type="submit">Become
-                                                                speaker
+                                                                    value="${freeTopic.getId()}" type="submit"><fmt:message key="speaker.send_application"/>
                                                             </button>
                                                         </c:if>
                                                         <c:if test="${meeting.isStarted()}">
-                                                            <button disabled class="become-speaker">Become
-                                                                speaker
+                                                            <button disabled class="become-speaker"><fmt:message key="speaker.send_application"/>
                                                             </button>
                                                         </c:if>
                                                     </form>
@@ -198,8 +195,7 @@
                                                   class="accept-application row">
                                                 <select class="custom-select" id="inputGroupSelect"
                                                         name="speakerId">
-                                                    <option selected value="none" }>Choose speaker for this
-                                                        topic
+                                                    <option selected value="none" }><fmt:message key="moderator.choose_speaker"/>
                                                     </option>
                                                     <c:forEach items="${sentApplicationsBySpeaker}"
                                                                var="sentApplicationMap">
@@ -234,13 +230,13 @@
                                             </form>
                                         </c:when>
                                         <c:otherwise>
-                                            <span>Doesn't have application yet</span>
+                                            <span><fmt:message key="moderator.topic_without_application"/></span>
                                         </c:otherwise>
                                     </c:choose>
                                 </c:if>
                                     <%------------------------ THIS WAY USER SEES ROWS WITHOUT SPEAKER ------------------------%>
                                 <c:if test="${sessionScope.user.getRole().name() == 'USER' || sessionScope.user.getRole() == null}">
-                                    <span>Doesn't have speaker yet</span>
+                                    <span><fmt:message key="user.topic_without_spaker"/></span>
                                 </c:if>
                             </td>
                         </tr>

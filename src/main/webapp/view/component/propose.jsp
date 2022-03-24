@@ -7,6 +7,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
 <%-- user cannot see this button --%>
 <c:if test="${sessionScope.user.getRole().name() != 'USER' && sessionScope.user.getRole() != null}">
@@ -17,11 +18,11 @@
                     data-target="#TopicProposing">
                     <%-- This way see button's content speaker --%>
                 <c:if test="${sessionScope.user.getRole().name() == 'SPEAKER'}">
-                    Propose a topic
+                    <fmt:message key="speaker.propose_topic"/>
                 </c:if>
                     <%-- This way see button's content moderator --%>
                 <c:if test="${sessionScope.user.getRole().name() == 'MODERATOR'}">
-                    Proposed topics
+                    <fmt:message key="moderator.proposed_topics"/>
                 </c:if>
             </button>
         </c:if>
@@ -29,7 +30,7 @@
         <c:if test="${sessionScope.user.getRole().name() == 'MODERATOR' && meeting.isStarted()}">
             <button type="button" class="btn btn-outline-dark mt-2" data-toggle="modal"
                     data-target="#markUsers">
-                Mark present users
+                <fmt:message key="moderator.mark_present_users"/>
             </button>
         </c:if>
     </div>
@@ -53,8 +54,8 @@
                                     <table class="table table-hover mb-0">
                                         <thead>
                                         <tr>
-                                            <th scope="col">Speaker</th>
-                                            <th scope="col">Topic</th>
+                                            <th scope="col"><fmt:message key="meeting.speaker"/></th>
+                                            <th scope="col"><fmt:message key="meeting.topic"/></th>
                                             <th></th>
                                         </tr>
                                         </thead>
@@ -104,17 +105,17 @@
                         </c:when>
                         <c:otherwise>
                             <p class="text-center mt-2">
-                                There's no proposed topics
+                                <fmt:message key="meeting.no_proposed_topics"/>
                             </p>
                         </c:otherwise>
                     </c:choose>
                     </c:if>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal"><fmt:message key="close"/>
                         </button>
                             <%-- Button for speaker to submit the form --%>
                         <c:if test="${sessionScope.user.getRole().name() == 'SPEAKER'}">
-                        <button class="btn btn-outline-dark" type="submit">Submit</button>
+                        <button class="btn btn-outline-dark" type="submit"><fmt:message key="submit"/></button>
                 </form>
                 </c:if>
             </div>
