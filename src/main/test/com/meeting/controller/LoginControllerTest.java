@@ -17,7 +17,9 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 import static org.mockito.Mockito.*;
-import static util.Utils.createUser;
+import static util.Constant.LAST_PAGE_URI_ATTRIBUTE_NAME;
+import static util.Constant.USER;
+import static util.Util.createUser;
 
 class LoginControllerTest {
 
@@ -58,13 +60,13 @@ class LoginControllerTest {
         User user = createUser();
         when(req.getSession()).thenReturn(session);
         when(validationService.authValidator(req)).thenReturn(user);
-        when(req.getSession().getAttribute("lastPageURI")).thenReturn("/");
+        when(req.getSession().getAttribute(LAST_PAGE_URI_ATTRIBUTE_NAME)).thenReturn("/");
 
         loginController.setValidationService(validationService);
 
         loginController.doPost(req, resp);
 
-        verify(session, times(1)).setAttribute("user", user);
+        verify(session, times(1)).setAttribute(USER, user);
     }
 
     @Test
@@ -72,13 +74,13 @@ class LoginControllerTest {
         User user = createUser();
         when(req.getSession()).thenReturn(session);
         when(validationService.authValidator(req)).thenReturn(user);
-        when(req.getSession().getAttribute("lastPageURI")).thenReturn(null);
+        when(req.getSession().getAttribute(LAST_PAGE_URI_ATTRIBUTE_NAME)).thenReturn(null);
 
         loginController.setValidationService(validationService);
 
         loginController.doPost(req, resp);
 
-        verify(session, times(1)).setAttribute("user", user);
+        verify(session, times(1)).setAttribute(USER, user);
     }
 
     @Test
@@ -90,7 +92,7 @@ class LoginControllerTest {
         when(req.getSession()).thenReturn(session);
         when(validationService.authValidator(req)).thenReturn(user);
         when(req.getAttribute("message")).thenReturn(errorMsg);
-        when(req.getSession().getAttribute("lastPageURI")).thenReturn(null);
+        when(req.getSession().getAttribute(LAST_PAGE_URI_ATTRIBUTE_NAME)).thenReturn(null);
         when(req.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
         doNothing().when(requestDispatcher).forward(req,resp);
 

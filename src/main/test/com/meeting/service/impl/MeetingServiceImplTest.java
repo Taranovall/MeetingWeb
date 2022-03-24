@@ -3,7 +3,10 @@ package com.meeting.service.impl;
 import com.meeting.dao.MeetingDao;
 import com.meeting.dao.TopicDao;
 import com.meeting.dao.impl.MeetingDaoImpl;
-import com.meeting.entitiy.*;
+import com.meeting.entitiy.Meeting;
+import com.meeting.entitiy.Speaker;
+import com.meeting.entitiy.Topic;
+import com.meeting.entitiy.User;
 import com.meeting.exception.DataBaseException;
 import com.meeting.exception.EmailException;
 import com.meeting.exception.UserNotFoundException;
@@ -11,23 +14,83 @@ import com.meeting.service.SpeakerService;
 import com.meeting.service.TopicService;
 import com.meeting.service.UserService;
 import com.meeting.service.connection.ConnectionPool;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.MockitoAnnotations;
-import util.Utils;
+import util.Util;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.File;
-import java.io.IOException;
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
-import static com.meeting.util.SQLQuery.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static com.meeting.util.SQLQuery.CREATE_TOPIC_SQL;
+import static com.meeting.util.SQLQuery.GET_ALL_SPEAKER_BY_MEETING_ID_SQL;
+import static com.meeting.util.SQLQuery.GET_PRESENT_USERS_SQL;
+import static com.meeting.util.SQLQuery.PROPOSE_TOPIC_SQL;
+import static com.meeting.util.SQLQuery.REMOVE_PROPOSED_TOPIC_SQL;
+import static com.meeting.util.SQLQuery.UPDATE_MEETING_INFORMATION_SQL;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static util.Constant.LANGUAGE_ATTR_NAME;
+import static util.Util.createSpeaker;
+import static util.Util.createUser;
 
 class MeetingServiceImplTest {
 
+    private static final String SPEAKER_LOGIN = "SpeakerWithoutName";
+    private static final String NO_SPEAKER = "none";
+    private static final String[] TOPICS = {"Topic1", "Topic2"};
+    private static final String RESULT_SET_ID = "id";
+    private static final String RESULT_SET_NAME = "name";
+    private static final String RESULT_SET_DATE = "date";
+    private static final String RESULT_SET_TIME_START = "time_start";
+    private static final String RESULT_SET_TIME_END = "time_end";
+    private static final String RESULT_SET_PLACE = "place";
+    private static final String RESULT_SET_PHOTO_PATH = "photo_path";
+    private static final String RESULT_SET_SPEAKER_ID = "speaker_id";
+    private static final String RESULT_SET_TOPIC_ID = "topic_id";
+    private static final String CYPRUS_NAME = "InvestPro Кипр Никосия 2022";
+    private static final String CYPRYS_DATE = "2022-06-20";
+    private static final String CYPRUS_TIME_START = "15:30";
+    private static final String CYPRUS_TIME_END = "16:30";
+    private static final String CYPRUS_PLACE = "Hilton Nicosia";
+    private static final String CYPRUS_PHOTO_PATH = "/image/123qq.jpeg";
+    private static final String KYIV_NAME = "Invest Pro Украина Киев 2022";
+    private static final String KYIV_DATE = "2022-09-20";
+    private static final String KYIV_TIME_START = "19:40";
+    private static final String KYIV_TIME_END = "22:31";
+    private static final String KYIV_PLACE = "Hilton Kyiv";
+    private static final String KYIV_PHOTO_PATH = "/image/123Kyiv.jpeg";
     @Mock
     private ResultSet rs;
     @Mock
@@ -74,14 +137,13 @@ class MeetingServiceImplTest {
     }
 
     @Test
-    void shouldCreateMeetingAndMakeCommit() throws IOException, DataBaseException, SQLException, UserNotFoundException {
+    void shouldCreateMeetingAndMakeCommit() throws DataBaseException, SQLException, UserNotFoundException {
         UserService userService = mock(UserService.class);
         meetingService.setUserService(userService);
-        when(userService.getUserByLogin("SpeakerWithoutName")).thenReturn(new User(7L, "SpeakerWithoutName"));
+        when(userService.getUserByLogin(SPEAKER_LOGIN)).thenReturn(new User(7L, SPEAKER_LOGIN));
         User user = createUser();
         Meeting meeting = createFirstMeeting();
-        String[] topics = {"Topic1", "Topic2"};
-        String[] speakers = {"SpeakerWithoutName", "none"};
+        String[] speakers = {SPEAKER_LOGIN, NO_SPEAKER};
 
         File image = new File("img.jpeg");
 
@@ -91,22 +153,26 @@ class MeetingServiceImplTest {
         when(p.executeUpdate()).thenReturn(1);
         when(p.getGeneratedKeys()).thenReturn(rs);
 
-        meetingService.createMeeting(user, meeting, topics, speakers, image);
+        meetingService.createMeeting(user, meeting, TOPICS, speakers, image);
 
         verify(c, times(1)).commit();
     }
 
     @Test
-    void shouldThrowDataBaseExceptionWithMessage_CannotCreateMeeting() throws SQLException, DataBaseException, UserNotFoundException {
+    void shouldThrowDataBaseExceptionWithMessage_CannotCreateMeeting() throws SQLException, UserNotFoundException {
         User user = createUser();
         Meeting meeting = createFirstMeeting();
-        String[] topics = {"Topic1", "Topic2"};
-        String[] speakers = {"SpeakerWithoutName", "none"};
+        String[] speakers = {SPEAKER_LOGIN, NO_SPEAKER};
+
+        HttpServletRequest req = mock(HttpServletRequest.class);
+        HttpSession session = mock(HttpSession.class);
         TopicDao topicDao = mock(TopicDao.class);
         UserService userService = mock(UserService.class);
         MeetingDao meetingDao = mock(MeetingDao.class);
 
-        when(userService.getUserByLogin("SpeakerWithoutName")).thenReturn(new User(7L, "SpeakerWithoutName"));
+        when(userService.getUserByLogin(SPEAKER_LOGIN)).thenReturn(new User(7L, SPEAKER_LOGIN));
+        when(req.getSession()).thenReturn(session);
+        when(session.getAttribute(LANGUAGE_ATTR_NAME)).thenReturn("en");
         doThrow(SQLException.class).when(topicDao).addTopicsToMeeting(anyLong(), any(), eq(c));
 
         meetingService.setTopicDao(topicDao);
@@ -114,7 +180,7 @@ class MeetingServiceImplTest {
         meetingService.setMeetingDao(meetingDao);
 
         File image = new File("img.png");
-        DataBaseException thrown = assertThrows(DataBaseException.class, () -> meetingService.createMeeting(user, meeting, topics, speakers, image));
+        DataBaseException thrown = assertThrows(DataBaseException.class, () -> meetingService.createMeeting(user, meeting, TOPICS, speakers, image));
 
         String expected = "Cannot create meeting";
         String actual = thrown.getMessage();
@@ -133,15 +199,15 @@ class MeetingServiceImplTest {
                 .thenReturn(true)
                 .thenReturn(true)
                 .thenReturn(false);
-        when(rs.getLong("id")).thenReturn(2L);
-        when(rs.getString("name")).thenReturn("InvestPro Кипр Никосия 2022");
-        when(rs.getString("date")).thenReturn("2022-06-20");
-        when(rs.getString("time_start")).thenReturn("15:30");
-        when(rs.getString("time_end")).thenReturn("16:30");
-        when(rs.getString("place")).thenReturn("Hilton Nicosia");
-        when(rs.getString("photo_path")).thenReturn("/image/123qq.jpeg");
-        when(rs.getLong("speaker_id")).thenReturn(7L);
-        when(rs.getLong("topic_id")).thenReturn(9L);
+        when(rs.getLong(RESULT_SET_ID)).thenReturn(2L);
+        when(rs.getString(RESULT_SET_NAME)).thenReturn(CYPRUS_NAME);
+        when(rs.getString(RESULT_SET_DATE)).thenReturn(CYPRYS_DATE);
+        when(rs.getString(RESULT_SET_TIME_START)).thenReturn(CYPRUS_TIME_START);
+        when(rs.getString(RESULT_SET_TIME_END)).thenReturn(CYPRUS_TIME_END);
+        when(rs.getString(RESULT_SET_PLACE)).thenReturn(CYPRUS_PLACE);
+        when(rs.getString(RESULT_SET_PHOTO_PATH)).thenReturn(CYPRUS_PHOTO_PATH);
+        when(rs.getLong(RESULT_SET_SPEAKER_ID)).thenReturn(7L);
+        when(rs.getLong(RESULT_SET_TOPIC_ID)).thenReturn(9L);
         when(c.prepareStatement(anyString())).thenReturn(p);
         when(p.executeQuery()).thenReturn(rs);
 
@@ -149,21 +215,17 @@ class MeetingServiceImplTest {
         meetingService.setSpeakerService(speakerService);
         meetingService.setMeetingDao(meetingDao);
         when(meetingDao.getById(anyLong(), eq(c))).thenCallRealMethod();
-        when(topicService.getAllFreeTopicsByMeetingId(2L)).thenReturn(new HashSet<>(Collections.singletonList(new Topic(1L, Utils.generateStringWithRandomChars(10)))));
+        when(topicService.getAllFreeTopicsByMeetingId(2L)).thenReturn(new HashSet<>(Collections.singletonList(new Topic(1L, Util.generateStringWithRandomChars(10)))));
         when(speakerService.getSpeakerById(37L)).thenReturn(new Speaker(7L, "Speaker"));
         when(topicService.getById(anyLong()))
-                .thenReturn(new Topic(9L, Utils.generateStringWithRandomChars(9)))
-                .thenReturn(new Topic(13L, Utils.generateStringWithRandomChars(9)));
+                .thenReturn(new Topic(9L, Util.generateStringWithRandomChars(9)))
+                .thenReturn(new Topic(13L, Util.generateStringWithRandomChars(9)));
 
         when(meetingDao.getSentApplicationsByMeetingId(2L, c)).thenCallRealMethod();
-        when(rs.getLong("topic_id")).thenReturn(25L);
-        when(rs.getLong("speaker_id"))
+        when(rs.getLong(RESULT_SET_TOPIC_ID)).thenReturn(25L);
+        when(rs.getLong(RESULT_SET_SPEAKER_ID))
                 .thenReturn(8L)
                 .thenReturn(15L);
-        //Map<Long, Set<Long>> applicationMap = new HashMap<>();
-        // applicationMap.put(25L, new HashSet<>(Arrays.asList(8L, 15L)));
-        //when(meetingDao.getSentApplicationsByMeetingId(2L, c)).thenReturn(applicationMap);
-
         Map<Long, Long> proposedTopics = new HashMap<>();
         proposedTopics.put(99L, 12L);
         proposedTopics.put(98L, 13L);
@@ -211,7 +273,7 @@ class MeetingServiceImplTest {
         meetingService.setTopicDao(topicDao);
         doThrow(SQLException.class).when(topicDao).save(any(), eq(c));
 
-        DataBaseException thrown = assertThrows(DataBaseException.class, () -> meetingService.proposeTopic(4L, 10L, Utils.generateStringWithRandomChars(15)));
+        DataBaseException thrown = assertThrows(DataBaseException.class, () -> meetingService.proposeTopic(4L, 10L, Util.generateStringWithRandomChars(15)));
 
         String expected = "Cannot propose topic";
         String actual = thrown.getMessage();
@@ -272,13 +334,13 @@ class MeetingServiceImplTest {
                 .thenReturn(true)
                 .thenReturn(false);
 
-        when(rs.getLong("id")).thenReturn(2L).thenReturn(7L);
-        when(rs.getString("name")).thenReturn("InvestPro Кипр Никосия 2022").thenReturn("Invest Pro Украина Киев 2022");
-        when(rs.getString("date")).thenReturn("2022-06-20").thenReturn("2022-09-20");
-        when(rs.getString("time_start")).thenReturn("15:30").thenReturn("19:40");
-        when(rs.getString("time_end")).thenReturn("16:30").thenReturn("22:31");
-        when(rs.getString("place")).thenReturn("Hilton Nicosia").thenReturn("Hilton Kyiv");
-        when(rs.getString("photo_path")).thenReturn("/image/123qq.jpeg").thenReturn("/image/123Kyiv.jpeg");
+        when(rs.getLong(RESULT_SET_ID)).thenReturn(2L).thenReturn(7L);
+        when(rs.getString(RESULT_SET_NAME)).thenReturn(CYPRUS_NAME).thenReturn(KYIV_NAME);
+        when(rs.getString(RESULT_SET_DATE)).thenReturn(CYPRYS_DATE).thenReturn(KYIV_DATE);
+        when(rs.getString(RESULT_SET_TIME_START)).thenReturn(CYPRUS_TIME_START).thenReturn(KYIV_TIME_START);
+        when(rs.getString(RESULT_SET_TIME_END)).thenReturn(CYPRUS_TIME_END).thenReturn(KYIV_TIME_END);
+        when(rs.getString(RESULT_SET_PLACE)).thenReturn(CYPRUS_PLACE).thenReturn(KYIV_PLACE);
+        when(rs.getString(RESULT_SET_PHOTO_PATH)).thenReturn(CYPRUS_PHOTO_PATH).thenReturn(KYIV_PHOTO_PATH);
 
         when(c.prepareStatement(anyString())).thenReturn(p);
         when(p.executeQuery()).thenReturn(rs);
@@ -318,7 +380,7 @@ class MeetingServiceImplTest {
                 .thenReturn(true)
                 .thenReturn(false);
 
-        when(rs.getLong("speaker_id"))
+        when(rs.getLong(RESULT_SET_SPEAKER_ID))
                 .thenReturn(99L)
                 .thenReturn(98L)
                 .thenReturn(97L);
@@ -395,7 +457,7 @@ class MeetingServiceImplTest {
         meetingService.setSpeakerService(speakerService);
         when(speakerService.getSpeakerById(322L)).thenReturn(createSpeaker());
         when(rs.next()).thenReturn(true).thenReturn(false);
-        when(rs.getLong("speaker_id")).thenReturn(322L);
+        when(rs.getLong(RESULT_SET_SPEAKER_ID)).thenReturn(322L);
 
         when(c.prepareStatement(GET_ALL_SPEAKER_BY_MEETING_ID_SQL)).thenReturn(p);
         when(p.executeQuery()).thenReturn(rs);
@@ -488,7 +550,7 @@ class MeetingServiceImplTest {
     private Meeting createFirstMeeting() {
         Meeting meeting = new Meeting();
         meeting.setId(9L);
-        meeting.setName(Utils.generateStringWithRandomChars(16));
+        meeting.setName(Util.generateStringWithRandomChars(16));
         meeting.setTimeStart("22:40");
         meeting.setTimeEnd("23:59");
         meeting.setDate("22.08.2022");
@@ -503,20 +565,5 @@ class MeetingServiceImplTest {
         newMeeting.setDate("23.08.2022");
         newMeeting.setPlace("Kyiv");
         return newMeeting;
-    }
-
-    private User createUser() {
-        User user = new User();
-        user.setId(7L);
-        user.setLogin("TempUSer");
-        user.setPassword("aksdlaskldas33");
-        user.setRegistrationDate("24.08.2021");
-        user.setEmail("mailTest-t@gmail.com");
-        user.setRole(Role.USER);
-        return user;
-    }
-
-    private Speaker createSpeaker() {
-        return new Speaker(322L, "not talkative speaker");
     }
 }

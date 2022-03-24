@@ -27,11 +27,20 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static com.meeting.service.connection.ConnectionPool.*;
+import static com.meeting.service.connection.ConnectionPool.close;
+import static com.meeting.service.connection.ConnectionPool.getInstance;
+import static com.meeting.service.connection.ConnectionPool.rollback;
 
 public class MeetingServiceImpl implements MeetingService {
 
@@ -39,7 +48,7 @@ public class MeetingServiceImpl implements MeetingService {
 
     private TopicDao topicDao;
     private MeetingDao meetingDao;
-    private final SpeakerDao speakerDao;
+    private SpeakerDao speakerDao;
 
     private UserService userService;
     private TopicService topicService;
@@ -263,12 +272,6 @@ public class MeetingServiceImpl implements MeetingService {
                 Speaker speaker = speakerService.getSpeakerById(entry.getValue());
                 proposedTopicsBySpeaker.put(topic, speaker);
             }
-            /* proposedTopicsMap.entrySet().forEach(entry -> {
-                Topic topic = topicService.getById(entry.getKey());
-                Speaker speaker = speakerService.getSpeakerById(entry.getValue());
-                proposedTopicsBySpeaker.put(topic, speaker);
-            });
-           */
         } catch (SQLException e) {
             log.error("Cannot get proposed topics by speaker for meeting with ID: {}", meetingId, e);
             throw new DataBaseException("Cannot get proposed topics by speaker for meeting with ID: " + meetingId, e);
@@ -364,7 +367,6 @@ public class MeetingServiceImpl implements MeetingService {
             for (Long id : listWithParticipantIds) {
                 participants.add(userService.getUserById(id));
             }
-            //listWithParticipantIds.forEach(id -> participants.add(userService.getUserById(id)));
         } catch (SQLException e) {
             log.error("Cannot get participants of this meeting with ID {} by his ID", meetingId, e);
             throw new DataBaseException("Cannot get participants of this meeting with ID" + meetingId + " by his ID", e);
@@ -480,19 +482,12 @@ public class MeetingServiceImpl implements MeetingService {
     }
 
     private void extractMeetingInformation(Meeting meeting) throws DataBaseException, UserNotFoundException {
-        Set<Topic> freeTopics = topicService.getAllFreeTopicsByMeetingId(meeting.getId());
-        Map<Speaker, Set<Topic>> topicsWithSpeakers = getAcceptedTopicsMapByMeetingId(meeting.getId());
-        Map<Topic, Set<Speaker>> sentApplicationMap = getSentApplicationMapByMeetingId(meeting.getId());
-        Map<Topic, Speaker> proposedTopics = getProposedTopicsBySpeakerByMeetingId(meeting.getId());
-        List<User> participants = getParticipantsByMeetingId(meeting.getId());
-        double percentageAttendance = getAttendancePercentageByMeetingId(meeting.getId());
-
-        meeting.setFreeTopics(freeTopics);
-        meeting.setSpeakerTopics(topicsWithSpeakers);
-        meeting.setSentApplicationsMap(sentApplicationMap);
-        meeting.setProposedTopicsMap(proposedTopics);
-        meeting.setParticipants(participants);
-        meeting.setPercentageAttendance(percentageAttendance);
+        meeting.setFreeTopics(topicService.getAllFreeTopicsByMeetingId(meeting.getId()));
+        meeting.setSpeakerTopics(getAcceptedTopicsMapByMeetingId(meeting.getId()));
+        meeting.setSentApplicationsMap(getSentApplicationMapByMeetingId(meeting.getId()));
+        meeting.setProposedTopicsMap(getProposedTopicsBySpeakerByMeetingId(meeting.getId()));
+        meeting.setParticipants(getParticipantsByMeetingId(meeting.getId()));
+        meeting.setPercentageAttendance(getAttendancePercentageByMeetingId(meeting.getId()));
         meeting.setStarted(isMeetingStarted(meeting));
         meeting.setGoingOnNow(isMeetingGoingOnNow(meeting));
         meeting.setPassed(isMeetingPassed(meeting));

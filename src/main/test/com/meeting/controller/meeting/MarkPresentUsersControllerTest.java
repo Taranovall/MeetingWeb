@@ -6,17 +6,23 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import util.Constant;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import java.io.IOException;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static util.Constant.LAST_PAGE_URI_ATTRIBUTE_NAME;
 
 class MarkPresentUsersControllerTest {
+
+    private static final String LAST_PAGE_URI = "/meeting/4";
 
     private MarkPresentUsersController markPresentUsersController;
     @Mock
@@ -52,18 +58,17 @@ class MarkPresentUsersControllerTest {
 
     @Test
     void shouldMarkPresentUsers() throws IOException, ServletException {
-        String lastURI = "/meeting/4";
         String[] presentUsersId = {"4", "92", "12"};
 
         markPresentUsersController.setMeetingService(meetingService);
 
         when(req.getSession()).thenReturn(session);
-        when(session.getAttribute("lastPageURI")).thenReturn(lastURI);
-        when(req.getParameterValues("presentUserId")).thenReturn(presentUsersId);
+        when(session.getAttribute(LAST_PAGE_URI_ATTRIBUTE_NAME)).thenReturn(LAST_PAGE_URI);
+        when(req.getParameterValues(Constant.PRESENT_USER_ID)).thenReturn(presentUsersId);
         when(req.getPathInfo()).thenReturn("/4");
 
         markPresentUsersController.doPost(req, resp);
 
-        verify(resp, times(1)).sendRedirect(lastURI);
+        verify(resp, times(1)).sendRedirect(LAST_PAGE_URI);
     }
 }

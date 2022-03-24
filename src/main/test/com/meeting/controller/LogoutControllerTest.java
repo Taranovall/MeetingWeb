@@ -12,7 +12,9 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 import static org.mockito.Mockito.*;
-import static util.Utils.createUser;
+import static util.Constant.LAST_PAGE_URI_ATTRIBUTE_NAME;
+import static util.Constant.USER;
+import static util.Util.createUser;
 
 class LogoutControllerTest {
 
@@ -47,8 +49,8 @@ class LogoutControllerTest {
     @Test
     void shouldLogoutAndRedirectToPreviousPage() throws IOException {
         when(req.getSession()).thenReturn(session);
-        when(session.getAttribute("lastPageURI")).thenReturn("/meeting/3");
-        when(session.getAttribute("user")).thenReturn(createUser());
+        when(session.getAttribute(LAST_PAGE_URI_ATTRIBUTE_NAME)).thenReturn("/meeting/3");
+        when(session.getAttribute(USER)).thenReturn(createUser());
         logoutController.doGet(req, resp);
         verify(session,times(1)).invalidate();
         verify(resp, times(1)).sendRedirect("/meeting/3");
@@ -57,8 +59,8 @@ class LogoutControllerTest {
     @Test
     void shouldLogoutAndRedirectToMainPage() throws IOException {
         when(req.getSession()).thenReturn(session);
-        when(session.getAttribute("lastPageURI")).thenReturn(null);
-        when(session.getAttribute("user")).thenReturn(createUser());
+        when(session.getAttribute(LAST_PAGE_URI_ATTRIBUTE_NAME)).thenReturn(null);
+        when(session.getAttribute(USER)).thenReturn(createUser());
         logoutController.doGet(req, resp);
         verify(session,times(1)).invalidate();
         verify(resp, times(1)).sendRedirect("/");

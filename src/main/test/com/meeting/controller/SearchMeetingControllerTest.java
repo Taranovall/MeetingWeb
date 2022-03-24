@@ -18,14 +18,18 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static util.Utils.createListWithMeetings;
+import static util.Util.createListWithMeetings;
 
 class SearchMeetingControllerTest {
+
+    private static final String QUERY_IS_NOT_VALID = "queryIsNotValid";
+    private static final String QUERY = "query";
 
     private SearchMeetingController searchMeetingController;
     @Mock
@@ -70,13 +74,13 @@ class SearchMeetingControllerTest {
         searchMeetingController.setMeetingService(meetingService);
         searchMeetingController.setValidationService(validationService);
 
-        when(req.getParameter("query")).thenReturn("Meet");
         when(req.getSession()).thenReturn(session);
+        when(req.getParameter(QUERY)).thenReturn(meetings.get(0).getName());
         when(meetingService.getAllMeetings()).thenReturn(meetings);
-        when(validationService.searchValidator(anyString(),eq(session))).thenReturn(true);
+        when(validationService.searchValidator(anyString(),eq(req))).thenReturn(true);
 
         searchMeetingController.doPost(req, resp);
 
-        assertEquals(1, meetings.size());
+        verify(session, times(1)).removeAttribute(QUERY_IS_NOT_VALID);
     }
 }

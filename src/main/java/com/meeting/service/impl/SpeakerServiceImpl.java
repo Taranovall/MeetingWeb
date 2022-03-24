@@ -15,7 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.meeting.service.connection.ConnectionPool.*;
+import static com.meeting.service.connection.ConnectionPool.close;
+import static com.meeting.service.connection.ConnectionPool.getInstance;
+import static com.meeting.service.connection.ConnectionPool.rollback;
 import static com.meeting.util.SQLQuery.GET_RECEIVED_APPLICATIONS_BY_SPEAKER_ID_SQL;
 import static com.meeting.util.SQLQuery.GET_SENT_APPLICATIONS_BY_SPEAKER_ID_SQL;
 

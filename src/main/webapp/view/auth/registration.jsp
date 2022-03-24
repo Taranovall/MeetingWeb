@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=utf-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
 <head>
     <title>Registration</title>
@@ -12,20 +13,20 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" >Регистрация</h5>
+                    <h5 class="modal-title" ><fmt:message key="registration"/></h5>
                 </div>
                 <div class="modal-body text-center" style="padding-bottom: 0">
                     <!-- ОБРАБОТКА ОШИБОК -->
                     <c:if test="${passwordError}"><p class="error alert alert-danger" role="alert">${message}</p></c:if>
                     <c:if test="${loginError}"><p class="error alert alert-danger" role="alert">${message}</p></c:if>
                     <!-- /ОБРАБОТКА ОШИБОК -->
-                    <input type="text" name="login" placeholder="Логин" class="form-control mb-2">
-                    <input type="password" name="password" placeholder="Пароль" class="form-control mb-2">
-                    <input type="password" name="passwordConfirm" placeholder="Повторите пароль" class="form-control mb-2">
-                    <button type="submit" class="btn btn-outline-dark mb-2">Зарегистрироваться</button>
+                    <input type="text" name="login" placeholder="<fmt:message key="profile.login"/>" class="form-control mb-2">
+                    <input type="password" name="password" placeholder="<fmt:message key="password"/>" class="form-control mb-2">
+                    <input type="password" name="passwordConfirm" placeholder="<fmt:message key="repeat_password"/>" class="form-control mb-2">
+                    <button type="submit" class="btn btn-outline-dark mb-2"><fmt:message key="sign_up"/></button>
                 </div>
                 <div class="modal-footer justify-content-center">
-                    <a class="btn" href="login"><u>Уже есть аккаунт? Авторизируйтесь</u></a>
+                    <a class="btn" href="login"><u><fmt:message key="already_have_account"/></u></a>
                 </div>
             </div>
         </div>

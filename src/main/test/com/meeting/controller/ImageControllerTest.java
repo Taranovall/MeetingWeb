@@ -16,7 +16,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -62,7 +64,7 @@ class ImageControllerTest {
     @Test
     void shouldDisplayImage() {
         try {
-            String imgName = "/Image001.jpg";
+            String imgName = "/Image001.png";
             ServletOutputStream out = mock(ServletOutputStream.class);
             ServletContext cntx = mock(ServletContext.class);
 

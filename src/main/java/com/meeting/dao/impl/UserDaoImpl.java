@@ -5,12 +5,23 @@ import com.meeting.entitiy.Role;
 import com.meeting.entitiy.User;
 import com.meeting.util.SQLQuery;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 
-import static com.meeting.util.SQLQuery.*;
+import static com.meeting.util.SQLQuery.ADD_ROLE_FOR_USER_SQL;
+import static com.meeting.util.SQLQuery.CREATE_USER_SQL;
+import static com.meeting.util.SQLQuery.GET_ALL_USERS_BY_ROLE_SQL;
+import static com.meeting.util.SQLQuery.GET_USER_BY_ID_SQL;
+import static com.meeting.util.SQLQuery.GET_USER_BY_LOGIN_SQL;
+import static com.meeting.util.SQLQuery.GET_USER_ROLE_BY_ID_SQL;
 
 public class UserDaoImpl implements UserDao {
 

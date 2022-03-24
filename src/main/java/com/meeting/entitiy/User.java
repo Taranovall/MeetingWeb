@@ -97,6 +97,10 @@ public class User implements Serializable {
         this.password = password;
     }
 
+    public String getRegistrationDate() {
+        return registrationDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

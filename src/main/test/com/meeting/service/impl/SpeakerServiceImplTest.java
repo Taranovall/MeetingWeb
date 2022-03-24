@@ -5,27 +5,62 @@ import com.meeting.dao.SpeakerDao;
 import com.meeting.dao.TopicDao;
 import com.meeting.dao.UserDao;
 import com.meeting.dao.impl.SpeakerDaoImpl;
-import com.meeting.entitiy.*;
+import com.meeting.entitiy.Meeting;
+import com.meeting.entitiy.Role;
+import com.meeting.entitiy.Speaker;
+import com.meeting.entitiy.Topic;
+import com.meeting.entitiy.User;
 import com.meeting.exception.DataBaseException;
 import com.meeting.service.connection.ConnectionPool;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.MockitoAnnotations;
-import util.Utils;
+import util.Util;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 
-import static com.meeting.util.SQLQuery.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static com.meeting.util.SQLQuery.GET_ALL_USERS_BY_ROLE_SQL;
+import static com.meeting.util.SQLQuery.GET_MEETING_IDS_IN_WHICH_USER_TAKES_PART_SQL;
+import static com.meeting.util.SQLQuery.GET_RECEIVED_APPLICATIONS_BY_SPEAKER_ID_SQL;
+import static com.meeting.util.SQLQuery.GET_SENT_APPLICATIONS_BY_SPEAKER_ID_SQL;
+import static com.meeting.util.SQLQuery.GET_SPEAKER_RESPONSE_TO_THE_OFFER;
+import static com.meeting.util.SQLQuery.GET_USER_ROLE_BY_ID_SQL;
+import static com.meeting.util.SQLQuery.INVITE_SPEAKER_TO_MEETING_SQL;
+import static com.meeting.util.SQLQuery.ROLLBACK_INVITE_SQL;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.when;
 
 class SpeakerServiceImplTest {
 
+    private static final String ID = "id";
+    private static final String LOGIN = "login";
+    private static final String NAME = "name";
+    private static final String SPEAKER = "Speaker";
+    private static final String TOPIC_ID = "topic_id";
+    private static final String MEETING_ID = "meeting_id";
+    private static final String INVITATION = "invitation";
     @Mock
     private ResultSet rs;
     @Mock
@@ -74,9 +109,9 @@ class SpeakerServiceImplTest {
     @Test
     void shouldReturnListWithAllSpeakers() throws SQLException, DataBaseException {
         List<Speaker> speakerList = new ArrayList<>();
-        speakerList.add(new Speaker(1L, Utils.generateStringWithRandomChars(10)));
-        speakerList.add(new Speaker(2L, Utils.generateStringWithRandomChars(10)));
-        speakerList.add(new Speaker(3L, Utils.generateStringWithRandomChars(10)));
+        speakerList.add(new Speaker(1L, Util.generateStringWithRandomChars(10)));
+        speakerList.add(new Speaker(2L, Util.generateStringWithRandomChars(10)));
+        speakerList.add(new Speaker(3L, Util.generateStringWithRandomChars(10)));
 
         when(rs.next())
                 .thenReturn(true)
@@ -88,18 +123,18 @@ class SpeakerServiceImplTest {
                 .thenReturn(true)
                 .thenReturn(true)
                 .thenReturn(false);
-        when(rs.getLong("id"))
+        when(rs.getLong(ID))
                 .thenReturn(speakerList.get(0).getId())
                 .thenReturn(speakerList.get(1).getId())
                 .thenReturn(speakerList.get(2).getId());
-        when(rs.getString("login"))
+        when(rs.getString(LOGIN))
                 .thenReturn(speakerList.get(0).getLogin())
                 .thenReturn(speakerList.get(1).getLogin())
                 .thenReturn(speakerList.get(2).getLogin());
 
         when(c.prepareStatement(GET_ALL_USERS_BY_ROLE_SQL)).thenReturn(p);
         when(p.executeQuery()).thenReturn(rs);
-        when(rs.getString("name")).thenReturn("Speaker");
+        when(rs.getString(NAME)).thenReturn(SPEAKER);
 
         when(c.prepareStatement(GET_USER_ROLE_BY_ID_SQL)).thenReturn(p);
         when(c.prepareStatement(GET_MEETING_IDS_IN_WHICH_USER_TAKES_PART_SQL)).thenReturn(p);
@@ -133,8 +168,8 @@ class SpeakerServiceImplTest {
         when(userDao.getById(anyLong(), eq(c))).thenReturn(Optional.of(new User(1L, "TheUserMMM")));
         when(userDao.getUserRole(anyLong(), eq(c))).thenReturn(Role.SPEAKER);
 
-        when(topicDao.getById(3L, c)).thenReturn(Optional.of(new Topic(3L, Utils.generateStringWithRandomChars(9))));
-        when(topicDao.getById(6L, c)).thenReturn(Optional.of(new Topic(3L, Utils.generateStringWithRandomChars(15))));
+        when(topicDao.getById(3L, c)).thenReturn(Optional.of(new Topic(3L, Util.generateStringWithRandomChars(9))));
+        when(topicDao.getById(6L, c)).thenReturn(Optional.of(new Topic(3L, Util.generateStringWithRandomChars(15))));
 
         when(meetingDao.getById(7L, c)).thenReturn(Optional.of(new Meeting()));
         when(meetingDao.getById(9L, c)).thenReturn(Optional.of(new Meeting()));
@@ -144,13 +179,13 @@ class SpeakerServiceImplTest {
                 .thenReturn(true)
                 .thenReturn(false);
 
-        when(rs.getLong("topic_id"))
+        when(rs.getLong(TOPIC_ID))
                 .thenReturn(3L)
                 .thenReturn(6L);
-        when(rs.getLong("meeting_id"))
+        when(rs.getLong(MEETING_ID))
                 .thenReturn(7L)
                 .thenReturn(9L);
-        when(rs.getBoolean("invitation"))
+        when(rs.getBoolean(INVITATION))
                 .thenReturn(true)
                 .thenReturn(false);
 
@@ -180,7 +215,7 @@ class SpeakerServiceImplTest {
                 .thenReturn(true)
                 .thenReturn(true)
                 .thenReturn(false);
-        when(rs.getLong("topic_id"))
+        when(rs.getLong(TOPIC_ID))
                 .thenReturn(3L)
                 .thenReturn(4L);
         when(c.prepareStatement(GET_SENT_APPLICATIONS_BY_SPEAKER_ID_SQL)).thenReturn(p);
@@ -322,7 +357,7 @@ class SpeakerServiceImplTest {
     }
 
     @Test
-    void shouldReturnTrueAndRemoveApplication() throws SQLException, DataBaseException {
+    void shouldReturnTrueAndRemoveApplication() throws DataBaseException {
         SpeakerDao speakerDao = mock(SpeakerDao.class);
         speakerService.setSpeakerDao(speakerDao);
 

@@ -24,7 +24,8 @@ import java.util.HashSet;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
-import static util.Utils.*;
+import static util.Constant.USER;
+import static util.Util.*;
 
 class PersonalAccountControllerTest {
 
@@ -69,7 +70,7 @@ class PersonalAccountControllerTest {
         RequestDispatcher requestDispatcher = mock(RequestDispatcher.class);
         personalAccountController.setUserService(userService);
         when(req.getSession()).thenReturn(session);
-        when(session.getAttribute("user")).thenReturn(createUser());
+        when(session.getAttribute(USER)).thenReturn(createUser());
         when(userService.getUserById(4L)).thenReturn(createUser());
         when(req.getPathInfo()).thenReturn("/4");
         when(req.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
@@ -84,7 +85,7 @@ class PersonalAccountControllerTest {
         String exceptionMessage = "Cannot get user by ID: 4";
         personalAccountController.setUserService(userService);
         when(req.getSession()).thenReturn(session);
-        when(session.getAttribute("user")).thenReturn(createUser());
+        when(session.getAttribute(USER)).thenReturn(createUser());
         when(req.getPathInfo()).thenReturn("/8");
         when(userService.getUserById(8L)).thenThrow(new UserNotFoundException(exceptionMessage, new SQLException()));
 
@@ -104,9 +105,9 @@ class PersonalAccountControllerTest {
         personalAccountController.setMeetingService(meetingService);
 
         when(req.getSession()).thenReturn(session);
-        when(session.getAttribute("user")).thenReturn(createUser());
-        when(speakerService.getSpeakerById(228L)).thenReturn(createSpeaker());
-        when(meetingService.getMeetingsSpeakerIsInvolvedIn(228L)).thenReturn(new HashSet<>(Collections.singletonList(new Meeting())));
+        when(session.getAttribute(USER)).thenReturn(createUser());
+        when(speakerService.getSpeakerById(anyLong())).thenReturn(createSpeaker());
+        when(meetingService.getMeetingsSpeakerIsInvolvedIn(anyLong())).thenReturn(new HashSet<>(Collections.singletonList(new Meeting())));
         when(userService.getUserById(anyLong())).thenReturn(createUserWithRoleSpeaker());
         when(req.getPathInfo()).thenReturn("/4");
         when(req.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);

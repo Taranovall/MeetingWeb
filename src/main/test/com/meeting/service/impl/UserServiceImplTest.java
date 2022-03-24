@@ -8,20 +8,54 @@ import com.meeting.exception.DataBaseException;
 import com.meeting.exception.UserNotFoundException;
 import com.meeting.service.connection.ConnectionPool;
 import com.meeting.util.SQLQuery;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.MockitoAnnotations;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.LinkedList;
 
-import static com.meeting.util.SQLQuery.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static com.meeting.util.SQLQuery.ADD_ROLE_FOR_USER_SQL;
+import static com.meeting.util.SQLQuery.CREATE_USER_SQL;
+import static com.meeting.util.SQLQuery.USER_PARTICIPATE_SQL;
+import static com.meeting.util.SQLQuery.USER_STOP_PARTICIPATING_SQL;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static util.Constant.USER;
 
 class UserServiceImplTest {
 
+    private static final String ID = "id";
+    private static final String LOGIN = "login";
+    private static final String PASSWORD = "password";
+    private static final String REGISTRATION_DATE = "registration_date";
+    private static final String EMAIL = "email";
+    private static final String NAME = "name";
+    private static final String SPEAKER_LOGIN = "Speaker827";
+    private static final String SPEAKER_PASSWORD = "dwerd8299DD";
+    private static final String SPEKAER_REGISTRATION_DATE = "24.08.2021";
+    private static final String SPEAKER_MAIL = "dabadabda@gmail.com";
     @Mock
     private ResultSet rs;
     @Mock
@@ -50,7 +84,7 @@ class UserServiceImplTest {
         when(ConnectionPool.getInstance().getConnection()).thenReturn(c);
         when(connectionPool.getConnection()).thenReturn(c);
         userService = new UserServiceImpl();
-        user = new User("Speaker827", "dwerd8299DD");
+        user = new User(SPEAKER_LOGIN, SPEAKER_PASSWORD);
         p = mock(PreparedStatement.class);
         rs = mock(ResultSet.class);
 
@@ -104,17 +138,17 @@ class UserServiceImplTest {
         when(c.prepareStatement(anyString())).thenReturn(p);
         when(p.executeQuery()).thenReturn(rs);
 
-        when(rs.getLong("id")).thenReturn(1L);
-        when(rs.getString("login")).thenReturn("Speaker827");
-        when(rs.getString("password")).thenReturn("dwerd8299DD");
-        when(rs.getString("registration_date")).thenReturn("24.08.2021");
-        when(rs.getString("email")).thenReturn("dabadabda@gmail.com");
-        when(rs.getString("name")).thenReturn("user");
+        when(rs.getLong(ID)).thenReturn(1L);
+        when(rs.getString(LOGIN)).thenReturn(SPEAKER_LOGIN);
+        when(rs.getString(PASSWORD)).thenReturn(SPEAKER_PASSWORD);
+        when(rs.getString(REGISTRATION_DATE)).thenReturn(SPEKAER_REGISTRATION_DATE);
+        when(rs.getString(EMAIL)).thenReturn(SPEAKER_MAIL);
+        when(rs.getString(NAME)).thenReturn(USER);
         when(userDao.getUserByLogin(anyString(), eq(c))).thenCallRealMethod();
         when(userDao.getUserRole(anyLong(), eq(c))).thenReturn(Role.USER);
         when(userDao.getMeetingIdsUserTakesPart(anyLong(), eq(c))).thenReturn(new LinkedList<>());
 
-        User user = userService.getUserByLogin("Speaker827");
+        User user = userService.getUserByLogin(SPEAKER_LOGIN);
 
         assertNotNull(user);
     }
@@ -137,11 +171,11 @@ class UserServiceImplTest {
         when(p.executeQuery()).thenReturn(rs);
 
         when(rs.getLong("id")).thenReturn(1L);
-        when(rs.getString("login")).thenReturn("Speaker827");
-        when(rs.getString("password")).thenReturn("dwerd8299DD");
-        when(rs.getString("registration_date")).thenReturn("24.08.2021");
-        when(rs.getString("email")).thenReturn("dabadabda@gmail.com");
-        when(rs.getString("name")).thenReturn("user");
+        when(rs.getString(LOGIN)).thenReturn(SPEAKER_LOGIN);
+        when(rs.getString(PASSWORD)).thenReturn(SPEAKER_PASSWORD);
+        when(rs.getString(REGISTRATION_DATE)).thenReturn(SPEKAER_REGISTRATION_DATE);
+        when(rs.getString(EMAIL)).thenReturn(SPEAKER_MAIL);
+        when(rs.getString(NAME)).thenReturn(USER);
         when(userDao.getById(anyLong(), eq(c))).thenCallRealMethod();
         when(userDao.getUserRole(anyLong(), eq(c))).thenReturn(Role.USER);
         when(userDao.getMeetingIdsUserTakesPart(anyLong(), eq(c))).thenReturn(new LinkedList<>());

@@ -19,7 +19,7 @@ class SearchQueryUtilTest {
         List<Meeting> meetingList = new ArrayList<>(Arrays.asList(firstMeeting, secondMeeting));
         String query = "first";
 
-        SearchQueryUtil.executeQuery(meetingList, query);
+        meetingList = SearchQueryUtil.executeQuery(meetingList, query);
 
         List<Meeting> expectedList = new ArrayList<>(Arrays.asList(firstMeeting));
 

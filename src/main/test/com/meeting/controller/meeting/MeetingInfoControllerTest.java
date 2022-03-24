@@ -25,9 +25,15 @@ import java.util.Collections;
 import static com.meeting.entitiy.Role.MODERATOR;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
-import static util.Utils.*;
+import static util.Constant.USER;
+import static util.Util.*;
 
 class MeetingInfoControllerTest {
+
+    private static final String PARTICIPATING = "participating";
+    private static final String SENT_APPLICATION_LIST = "sentApplicationList";
+    private static final String RECEIVED_APPLICATION_LIST = "receivedApplicationList";
+    private static final String PRESENT_USER = "presentUser";
 
     private MeetingInfoController meetingInfoController;
     @Mock
@@ -81,13 +87,14 @@ class MeetingInfoControllerTest {
 
         when(req.getSession()).thenReturn(session);
         when(req.getPathInfo()).thenReturn("/2");
-        when(session.getAttribute("user")).thenReturn(user);
+        when(session.getAttribute(USER)).thenReturn(user);
         when(meetingService.getMeetingById(anyLong())).thenReturn(createMeeting());
         when(req.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
 
         meetingInfoController.doGet(req, resp);
 
-        verify(req, times(1)).setAttribute("participating", true);
+
+        verify(req, times(1)).setAttribute(PARTICIPATING, true);
     }
 
     @Test
@@ -100,7 +107,7 @@ class MeetingInfoControllerTest {
 
         when(req.getSession()).thenReturn(session);
         when(req.getPathInfo()).thenReturn("/2");
-        when(session.getAttribute("user")).thenReturn(user);
+        when(session.getAttribute(USER)).thenReturn(user);
         when(meetingService.getMeetingById(anyLong())).thenReturn(createMeeting());
         when(speakerService.getSentApplications(anyLong())).thenReturn(new ArrayList<>(Arrays.asList("7", "9")));
         when(speakerService.getReceivedApplications(anyLong())).thenReturn(new ArrayList<>(Arrays.asList("10", "11")));
@@ -108,8 +115,8 @@ class MeetingInfoControllerTest {
 
         meetingInfoController.doGet(req, resp);
 
-        verify(session, times(1)).setAttribute(eq("sentApplicationList"), any());
-        verify(session, times(1)).setAttribute(eq("receivedApplicationList"), any());
+        verify(session, times(1)).setAttribute(eq(SENT_APPLICATION_LIST), any());
+        verify(session, times(1)).setAttribute(eq(RECEIVED_APPLICATION_LIST), any());
     }
 
     @Test
@@ -123,7 +130,7 @@ class MeetingInfoControllerTest {
 
         when(req.getSession()).thenReturn(session);
         when(req.getPathInfo()).thenReturn("/2");
-        when(session.getAttribute("user")).thenReturn(user);
+        when(session.getAttribute(USER)).thenReturn(user);
         when(meetingService.getMeetingById(anyLong())).thenReturn(createMeeting());
         when(speakerService.getSentApplications(anyLong())).thenReturn(new ArrayList<>(Arrays.asList("7", "9")));
         when(speakerService.getReceivedApplications(anyLong())).thenReturn(new ArrayList<>(Arrays.asList("10", "11")));
@@ -131,6 +138,6 @@ class MeetingInfoControllerTest {
 
         meetingInfoController.doGet(req, resp);
 
-        verify(req, times(1)).setAttribute("presentUser", meetingService.getPresentUserIds(anyLong()));
+        verify(req, times(1)).setAttribute(PRESENT_USER, meetingService.getPresentUserIds(anyLong()));
     }
 }

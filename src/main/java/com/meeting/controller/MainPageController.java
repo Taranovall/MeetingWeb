@@ -19,7 +19,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static com.meeting.util.Constant.*;
+import static com.meeting.util.Constant.IS_FORM_HAS_BEEN_USED_ATTRIBUTE_NAME;
+import static com.meeting.util.Constant.MEETING_ATTRIBUTE_NAME;
+import static com.meeting.util.Constant.PATH_TO_MAIN_PAGE_JSP;
+import static com.meeting.util.Constant.QUERY_IS_NOT_VALID_ATTRIBUTE_NAME;
+import static com.meeting.util.Constant.SORT_METHOD_ATTRIBUTE_NAME;
+
 
 @WebServlet(name = "meetings", urlPatterns = "")
 public class MainPageController extends HttpServlet {

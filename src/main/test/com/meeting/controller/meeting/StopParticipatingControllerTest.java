@@ -11,13 +11,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import java.io.IOException;
 
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.times;
-import static util.Utils.createMeeting;
-import static util.Utils.createUser;
+import static util.Constant.*;
+import static util.Util.createMeeting;
+import static util.Util.createUser;
 
 class StopParticipatingControllerTest {
 
@@ -55,17 +54,16 @@ class StopParticipatingControllerTest {
 
     @Test
     void userShouldStopParticipateInMeeting() throws IOException, ServletException {
-        String lastPageURI = "/meeting/2";
 
         stopParticipatingController.setUserService(userService);
 
         when(req.getSession()).thenReturn(session);
-        when(session.getAttribute("lastPageURI")).thenReturn(lastPageURI);
-        when(session.getAttribute("user")).thenReturn(createUser());
-        when(session.getAttribute("meeting")).thenReturn(createMeeting());
+        when(session.getAttribute(LAST_PAGE_URI_ATTRIBUTE_NAME)).thenReturn(LAST_PAGE_URI);
+        when(session.getAttribute(USER)).thenReturn(createUser());
+        when(session.getAttribute(MEETING)).thenReturn(createMeeting());
 
         stopParticipatingController.doPost(req, resp);
 
-        verify(resp, times(1)).sendRedirect(lastPageURI);
+        verify(resp, times(1)).sendRedirect(LAST_PAGE_URI);
     }
 }

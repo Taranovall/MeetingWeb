@@ -16,8 +16,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static org.mockito.Mockito.*;
-import static util.Utils.createUserWithRoleModerator;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static util.Constant.APPLICATION;
+import static util.Constant.LAST_PAGE_URI;
+import static util.Constant.LAST_PAGE_URI_ATTRIBUTE_NAME;
+import static util.Constant.SENT_APPLICATION_LIST;
+import static util.Constant.USER;
+import static util.Util.createUserWithRoleModerator;
 
 class RemoveApplicationControllerTest {
 
@@ -55,18 +63,17 @@ class RemoveApplicationControllerTest {
     @Test
     void shouldAcceptApplicationSentBySpeaker() throws IOException, ServletException {
         User userWithRoleModerator = createUserWithRoleModerator();
-        String lastPageURI = "/meeting/2";
 
         removeApplicationController.setSpeakerService(speakerService);
 
         when(req.getSession()).thenReturn(session);
-        when(session.getAttribute("user")).thenReturn(userWithRoleModerator);
-        when(session.getAttribute("lastPageURI")).thenReturn(lastPageURI);
-        when(req.getParameter("application")).thenReturn("7");
-        when(session.getAttribute("sentApplicationList")).thenReturn(new ArrayList<>(Arrays.asList("7","8","9")));
+        when(session.getAttribute(USER)).thenReturn(userWithRoleModerator);
+        when(session.getAttribute(LAST_PAGE_URI_ATTRIBUTE_NAME)).thenReturn(LAST_PAGE_URI);
+        when(req.getParameter(APPLICATION)).thenReturn("7");
+        when(session.getAttribute(SENT_APPLICATION_LIST)).thenReturn(new ArrayList<>(Arrays.asList("7","8","9")));
 
         removeApplicationController.doPost(req, resp);
 
-        verify(resp, times(1)).sendRedirect(lastPageURI);
+        verify(resp, times(1)).sendRedirect(LAST_PAGE_URI);
     }
 }

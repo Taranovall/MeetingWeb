@@ -15,10 +15,21 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-import static org.mockito.Mockito.*;
-import static util.Utils.createUserWithRoleSpeaker;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static util.Constant.LAST_PAGE_URI;
+import static util.Constant.LAST_PAGE_URI_ATTRIBUTE_NAME;
+import static util.Constant.TOPIC_NAME;
+import static util.Constant.USER;
+import static util.Util.createUserWithRoleSpeaker;
 
 class ProposeTopicControllerTest {
+
+    private static final String NAME_OF_TOPIC = "seventeen";
 
     private ProposeTopicController proposeTopicController;
     @Mock
@@ -59,19 +70,18 @@ class ProposeTopicControllerTest {
     @Test
     void shouldAcceptApplicationSentBySpeaker() throws IOException, ServletException {
         User userWithRoleSpeaker = createUserWithRoleSpeaker();
-        String lastPageURI = "/meeting/2";
 
         proposeTopicController.setMeetingService(meetingService);
         proposeTopicController.setValidationService(validationService);
 
         when(req.getSession()).thenReturn(session);
-        when(session.getAttribute("lastPageURI")).thenReturn(lastPageURI);
-        when(session.getAttribute("user")).thenReturn(userWithRoleSpeaker);
-        when(req.getParameter("topicName")).thenReturn("seventeen");
+        when(session.getAttribute(LAST_PAGE_URI_ATTRIBUTE_NAME)).thenReturn(LAST_PAGE_URI);
+        when(session.getAttribute(USER)).thenReturn(userWithRoleSpeaker);
+        when(req.getParameter(TOPIC_NAME)).thenReturn(NAME_OF_TOPIC);
         when(validationService.proposingTopicsValidator(anyString(), any())).thenReturn(true);
 
         proposeTopicController.doPost(req, resp);
 
-        verify(resp, times(1)).sendRedirect(lastPageURI);
+        verify(resp, times(1)).sendRedirect(LAST_PAGE_URI);
     }
 }

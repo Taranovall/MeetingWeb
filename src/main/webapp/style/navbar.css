@@ -20,3 +20,12 @@
     position: absolute;
     right: 25%;
 }
+
+.navbar-soring-form select {
+    width: 222px !important;
+}
+
+.locale {
+    border: none;
+    background: none;
+}

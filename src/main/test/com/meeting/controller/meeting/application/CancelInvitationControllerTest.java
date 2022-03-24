@@ -14,8 +14,15 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-import static org.mockito.Mockito.*;
-import static util.Utils.createUserWithRoleModerator;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static util.Constant.APPLICATION;
+import static util.Constant.LAST_PAGE_URI;
+import static util.Constant.LAST_PAGE_URI_ATTRIBUTE_NAME;
+import static util.Constant.USER;
+import static util.Util.createUserWithRoleSpeaker;
 
 class CancelInvitationControllerTest {
 
@@ -52,18 +59,17 @@ class CancelInvitationControllerTest {
 
     @Test
     void shouldAcceptApplicationSentBySpeaker() throws IOException, ServletException {
-        User userWithRoleModerator = createUserWithRoleModerator();
-        String lastPageURI = "/meeting/2";
+        User userWithRoleSpeaker = createUserWithRoleSpeaker();
 
         cancelInvitationController.setSpeakerService(speakerService);
 
         when(req.getSession()).thenReturn(session);
-        when(session.getAttribute("user")).thenReturn(userWithRoleModerator);
-        when(session.getAttribute("lastPageURI")).thenReturn(lastPageURI);
-        when(req.getParameter("application")).thenReturn("7");
+        when(session.getAttribute(USER)).thenReturn(userWithRoleSpeaker);
+        when(session.getAttribute(LAST_PAGE_URI_ATTRIBUTE_NAME)).thenReturn(LAST_PAGE_URI);
+        when(req.getParameter(APPLICATION)).thenReturn("7");
 
         cancelInvitationController.doPost(req, resp);
 
-        verify(resp, times(1)).sendRedirect(lastPageURI);
+        verify(resp, times(1)).sendRedirect(LAST_PAGE_URI);
     }
 }

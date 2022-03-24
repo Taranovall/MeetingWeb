@@ -4,13 +4,20 @@ import com.meeting.dao.TopicDao;
 import com.meeting.entitiy.Meeting;
 import com.meeting.entitiy.Topic;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static com.meeting.util.SQLQuery.*;
+import static com.meeting.util.SQLQuery.CREATE_FREE_TOPIC_SQL;
+import static com.meeting.util.SQLQuery.CREATE_TOPIC_SQL;
+import static com.meeting.util.SQLQuery.GET_ALL_FREE_TOPICS_BY_MEETING_ID;
+import static com.meeting.util.SQLQuery.GET_TOPIC_BY_ID_SQL;
+import static com.meeting.util.SQLQuery.LINK_TOPIC_WITH_MEETING_SQL;
 
 public class TopicDaoImpl implements TopicDao {
 

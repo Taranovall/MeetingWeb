@@ -15,7 +15,9 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
-import static com.meeting.util.Constant.*;
+import static com.meeting.util.Constant.IS_FORM_HAS_BEEN_USED_ATTRIBUTE_NAME;
+import static com.meeting.util.Constant.MEETING_ATTRIBUTE_NAME;
+import static com.meeting.util.Constant.SORT_METHOD_ATTRIBUTE_NAME;
 
 @WebServlet(name = "sortMeeting", urlPatterns = "/sort-meeting")
 public class SortMeetingController extends HttpServlet {

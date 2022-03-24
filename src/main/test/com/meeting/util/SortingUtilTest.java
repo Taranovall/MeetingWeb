@@ -6,9 +6,13 @@ import com.meeting.entitiy.User;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import util.Utils;
+import util.Util;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -50,22 +54,22 @@ class SortingUtilTest {
     @Test
     void shouldSortByNumberOfParticipants() {
         meetingA.setParticipants(new LinkedList<>(Arrays.asList(
-                new User(Utils.generateStringWithRandomChars(8)),
-                new User(Utils.generateStringWithRandomChars(8)),
-                new User(Utils.generateStringWithRandomChars(8)))));
+                new User(Util.generateStringWithRandomChars(8)),
+                new User(Util.generateStringWithRandomChars(8)),
+                new User(Util.generateStringWithRandomChars(8)))));
 
         meetingB.setParticipants(new LinkedList<>(Arrays.asList(
-                new User(Utils.generateStringWithRandomChars(8)),
-                new User(Utils.generateStringWithRandomChars(8)),
-                new User(Utils.generateStringWithRandomChars(8)),
-                new User(Utils.generateStringWithRandomChars(8)),
-                new User(Utils.generateStringWithRandomChars(8)))));
+                new User(Util.generateStringWithRandomChars(8)),
+                new User(Util.generateStringWithRandomChars(8)),
+                new User(Util.generateStringWithRandomChars(8)),
+                new User(Util.generateStringWithRandomChars(8)),
+                new User(Util.generateStringWithRandomChars(8)))));
 
         meetingC.setParticipants(new LinkedList<>(Arrays.asList(
-                new User(Utils.generateStringWithRandomChars(8)),
-                new User(Utils.generateStringWithRandomChars(8)),
-                new User(Utils.generateStringWithRandomChars(8)),
-                new User(Utils.generateStringWithRandomChars(8)))));
+                new User(Util.generateStringWithRandomChars(8)),
+                new User(Util.generateStringWithRandomChars(8)),
+                new User(Util.generateStringWithRandomChars(8)),
+                new User(Util.generateStringWithRandomChars(8)))));
 
         List<Meeting> list = new LinkedList<>(Arrays.asList(meetingA, meetingB, meetingC));
 
@@ -94,20 +98,20 @@ class SortingUtilTest {
     @Test
     void shouldSortByNumberOfTopics() {
         meetingA.setFreeTopics(new HashSet<>(Arrays.asList(
-                new Topic(1L, Utils.generateStringWithRandomChars(5)),
-                new Topic(2L, Utils.generateStringWithRandomChars(5))
+                new Topic(1L, Util.generateStringWithRandomChars(5)),
+                new Topic(2L, Util.generateStringWithRandomChars(5))
         )));
         meetingA.setName("TheFirst");
         meetingB.setFreeTopics(new HashSet<>(Arrays.asList(
-                new Topic(3L, Utils.generateStringWithRandomChars(5)),
-                new Topic(4L, Utils.generateStringWithRandomChars(5))
+                new Topic(3L, Util.generateStringWithRandomChars(5)),
+                new Topic(4L, Util.generateStringWithRandomChars(5))
         )));
         meetingB.setName("TheSecond");
         meetingC.setFreeTopics(new HashSet<>(Arrays.asList(
-                new Topic(6L, Utils.generateStringWithRandomChars(5)),
-                new Topic(7L, Utils.generateStringWithRandomChars(5)),
-                new Topic(8L, Utils.generateStringWithRandomChars(5)),
-                new Topic(9L, Utils.generateStringWithRandomChars(5))
+                new Topic(6L, Util.generateStringWithRandomChars(5)),
+                new Topic(7L, Util.generateStringWithRandomChars(5)),
+                new Topic(8L, Util.generateStringWithRandomChars(5)),
+                new Topic(9L, Util.generateStringWithRandomChars(5))
         )));
 
         List<Meeting> list = new LinkedList<>(Arrays.asList(meetingA, meetingB, meetingC));

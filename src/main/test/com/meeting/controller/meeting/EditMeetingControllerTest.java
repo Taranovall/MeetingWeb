@@ -6,7 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import util.Utils;
+import util.Util;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -14,10 +14,21 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static util.Constant.LAST_PAGE_URI_ATTRIBUTE_NAME;
+import static util.Constant.MEETING;
 
 class EditMeetingControllerTest {
 
+    private static final String MEETING_START_TIME = "meetingStartTime";
+    private static final String MEETING_END_TIME = "meetingEndTime";
+    private static final String MEETING_DATE = "meetingDate";
+    private static final String MEETING_PLACE = "meetingPlace";
+    private static final String COUNT_OF_TOPICS = "countOfTopics";
+    private static final String LAST_PAGE_URI = "/meeting/4";
     private EditMeetingController editMeetingController;
     @Mock
     MeetingService meetingService;
@@ -52,22 +63,20 @@ class EditMeetingControllerTest {
 
     @Test
     void shouldEditMeetingInformation() throws IOException, ServletException {
-        String lastPageURI = "/meeting/4";
-
         editMeetingController.setMeetingService(meetingService);
 
         when(req.getSession()).thenReturn(session);
-        when(session.getAttribute("lastPageURI")).thenReturn(lastPageURI);
-        when(session.getAttribute("meeting")).thenReturn(Utils.createMeeting());
-        when(req.getParameter("meetingStartTime")).thenReturn("14:20");
-        when(req.getParameter("meetingEndTime")).thenReturn("16:20");
-        when(req.getParameter("meetingDate")).thenReturn("2022-06-21");
-        when(req.getParameter("meetingPlace")).thenReturn("14:20");
+        when(session.getAttribute(LAST_PAGE_URI_ATTRIBUTE_NAME)).thenReturn(LAST_PAGE_URI);
+        when(session.getAttribute(MEETING)).thenReturn(Util.createMeeting());
+        when(req.getParameter(MEETING_START_TIME)).thenReturn("14:20");
+        when(req.getParameter(MEETING_END_TIME)).thenReturn("16:20");
+        when(req.getParameter(MEETING_DATE)).thenReturn("2022-06-21");
+        when(req.getParameter(MEETING_PLACE)).thenReturn("14:20");
         when(req.getRequestURI()).thenReturn("/moderator/create-meeting");
-        when(req.getParameter("countOfTopics")).thenReturn("5");
+        when(req.getParameter(COUNT_OF_TOPICS)).thenReturn("5");
 
         editMeetingController.doPost(req, resp);
 
-        verify(resp, times(1)).sendRedirect(lastPageURI);
+        verify(resp, times(1)).sendRedirect(LAST_PAGE_URI);
     }
 }

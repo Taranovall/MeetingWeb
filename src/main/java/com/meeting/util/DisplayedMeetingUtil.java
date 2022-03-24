@@ -3,8 +3,8 @@ package com.meeting.util;
 import com.meeting.entitiy.Meeting;
 import com.meeting.exception.DataBaseException;
 
-import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class DisplayedMeetingUtil {
 
@@ -34,32 +34,32 @@ public class DisplayedMeetingUtil {
      * leaves in list only future meetings
      */
     private static List<Meeting> futureMeetings(List<Meeting> meetingList) {
-        List<Meeting> meetings = new LinkedList<>(meetingList);
+        CopyOnWriteArrayList<Meeting> meetings = new CopyOnWriteArrayList<>(meetingList);
         meetings.forEach(meeting -> {
-            if (meeting.isStarted() || meeting.isGoingOnNow()) meetingList.remove(meeting);
+            if (meeting.isStarted() || meeting.isGoingOnNow()) meetings.remove(meeting);
         });
-        return meetingList;
+        return meetings;
     }
 
     /**
      * leaves in list only past meetings
      */
     private static List<Meeting> pastMeetings(List<Meeting> meetingList) {
-        List<Meeting> meetings = new LinkedList<>(meetingList);
+        CopyOnWriteArrayList<Meeting> meetings = new CopyOnWriteArrayList<>(meetingList);
         meetings.forEach(meeting -> {
-            if (!meeting.isPassed()) meetingList.remove(meeting);
+            if (!meeting.isPassed()) meetings.remove(meeting);
         });
-        return meetingList;
+        return meetings;
     }
 
     /**
      * leaves in list meetings which are going on right now
      */
     private static List<Meeting> isGoingOnRightNow(List<Meeting> meetingList) {
-        List<Meeting> meetings = new LinkedList<>(meetingList);
+        CopyOnWriteArrayList<Meeting> meetings = new CopyOnWriteArrayList<>(meetingList);
         meetings.forEach(meeting -> {
-            if (!meeting.isGoingOnNow()) meetingList.remove(meeting);
+            if (!meeting.isGoingOnNow()) meetings.remove(meeting);
         });
-        return meetingList;
+        return meetings;
     }
 }

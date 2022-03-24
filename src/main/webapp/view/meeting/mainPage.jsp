@@ -7,6 +7,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
 <head>
     <title>Title</title>
@@ -18,7 +19,7 @@
 <div id="meetingList">
     <c:if test="${query != null}">
         <div class="alert alert-info text-center mt-2 mb-0" role="alert">
-            All results by query: ${query}
+            <fmt:message key="query.show_all_results"/>: ${query}
         </div>
     </c:if>
     <c:if test="${error != null}">
@@ -64,11 +65,11 @@
                     </div>
                     <p class="name">${m.getName()}</p>
                     <ul class="info list-group">
-                        <li class="list-group-item"><small>Date: ${m.getDate()}</small>
+                        <li class="list-group-item"><small><fmt:message key="meeting.date"/>: ${m.getDate()}</small>
                         </li>
-                        <li class="list-group-item"><small>Time: ${m.getTimeStart()} - ${m.getTimeEnd()}</small>
+                        <li class="list-group-item"><small><fmt:message key="meeting.time"/>: ${m.getTimeStart()} - ${m.getTimeEnd()}</small>
                         </li>
-                        <li class="list-group-item"><small>Place: ${m.getPlace()}</small>
+                        <li class="list-group-item"><small><fmt:message key="meeting.place"/>: ${m.getPlace()}</small>
                         </li>
                     </ul>
                 </a>
@@ -79,13 +80,13 @@
 <c:if test="${maxPageCount > 1}">
     <ul class="pagination justify-content-center">
         <c:if test="${pageNumber > 1}">
-            <li class="page-item"><a class="page-link" href="?page=${pageNumber - 1}">Previous</a></li>
+            <li class="page-item"><a class="page-link" href="?page=${pageNumber - 1}"><fmt:message key="pagination.previous_page"/></a></li>
         </c:if>
         <c:forEach begin="1" end="${maxPageCount}" var="i">
             <li class="page-item"><a class="page-link" href="?page=${i}">${i}</a></li>
         </c:forEach>
         <c:if test="${pageNumber < maxPageCount}">
-            <li class="page-item"><a class="page-link" href="?page=${pageNumber + 1}">Next</a></li>
+            <li class="page-item"><a class="page-link" href="?page=${pageNumber + 1}"><fmt:message key="pagination.next_page"/></a></li>
         </c:if>
     </ul>
 </c:if>

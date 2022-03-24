@@ -20,11 +20,16 @@ import java.util.LinkedList;
 
 import static com.meeting.util.Constant.IS_FORM_HAS_BEEN_USED_ATTRIBUTE_NAME;
 import static com.meeting.util.Constant.SORT_METHOD_ATTRIBUTE_NAME;
-import static org.mockito.Mockito.*;
-import static util.Utils.createMeeting;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static util.Util.createMeeting;
 
 class MainPageControllerTest {
 
+    private static final String PARTICIPANTS = "participants";
     @Mock
     MeetingService meetingService;
     private MainPageController mainPageController;
@@ -92,8 +97,8 @@ class MainPageControllerTest {
         mainPageController.setMeetingService(meetingService);
 
         when(req.getSession()).thenReturn(session);
-        when(session.getAttribute(IS_FORM_HAS_BEEN_USED_ATTRIBUTE_NAME)).thenReturn("participants");
-        when(session.getAttribute(SORT_METHOD_ATTRIBUTE_NAME)).thenReturn("participants");
+        when(session.getAttribute(IS_FORM_HAS_BEEN_USED_ATTRIBUTE_NAME)).thenReturn(PARTICIPANTS);
+        when(session.getAttribute(SORT_METHOD_ATTRIBUTE_NAME)).thenReturn(PARTICIPANTS);
         when(meetingService.getAllMeetings()).thenReturn(new LinkedList<>(Collections.singletonList(createMeeting())));
         when(req.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
 
@@ -108,7 +113,7 @@ class MainPageControllerTest {
         mainPageController.setMeetingService(meetingService);
 
         when(req.getSession()).thenReturn(session);
-        when(session.getAttribute(IS_FORM_HAS_BEEN_USED_ATTRIBUTE_NAME)).thenReturn("participants");
+        when(session.getAttribute(IS_FORM_HAS_BEEN_USED_ATTRIBUTE_NAME)).thenReturn(PARTICIPANTS);
         when(session.getAttribute(SORT_METHOD_ATTRIBUTE_NAME)).thenReturn(null);
         when(meetingService.getAllMeetings()).thenReturn(new LinkedList<>(Collections.singletonList(createMeeting())));
         when(req.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);

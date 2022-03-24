@@ -14,7 +14,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Optional;
 
-import static com.meeting.service.connection.ConnectionPool.*;
+import static com.meeting.service.connection.ConnectionPool.close;
+import static com.meeting.service.connection.ConnectionPool.getInstance;
+import static com.meeting.service.connection.ConnectionPool.rollback;
 
 public class UserServiceImpl implements UserService {
 
@@ -51,10 +53,6 @@ public class UserServiceImpl implements UserService {
             if (userOptional.isPresent()) {
                 user = userOptional.get();
             } else {
-                /*Locale locale = new Locale("en");
-                String message = ResourceBundle.getBundle("message", locale).getString("user.notfound");
-                throw new UserNotFoundException(MessageFormat.format(message, login));
-                 */
                 throw new SQLException();
             }
         } catch (SQLException e) {

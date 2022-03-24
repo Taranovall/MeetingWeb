@@ -3,11 +3,14 @@ package com.meeting.util;
 import com.meeting.entitiy.Meeting;
 
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class SearchQueryUtil {
 
-    public static void executeQuery(List<Meeting> meetingList, String query) {
+    public static List<Meeting> executeQuery(List<Meeting> meetingList, String query) {
+        CopyOnWriteArrayList<Meeting> meetings = new CopyOnWriteArrayList<>(meetingList);
         // if search query was made then removes all meetings from list that don't contain search query ignoring case
-            meetingList.removeIf(meeting -> !meeting.getName().toLowerCase().contains(query.toLowerCase()));
+        meetings.removeIf(meeting -> !meeting.getName().toLowerCase().contains(query.toLowerCase()));
+        return meetings;
     }
 }

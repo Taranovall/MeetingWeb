@@ -12,14 +12,16 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import java.io.IOException;
 
-import static com.meeting.util.Constant.*;
 import static org.mockito.Mockito.*;
-import static util.Utils.createListWithMeetings;
+import static util.Util.createListWithMeetings;
 
 class SortMeetingControllerTest {
+
+    private static final String SORT_METHOD = "sortMethod";
+    private static final String MEETINGS = "meetings";
+    private static final String IS_FORM_HAS_BEEN_USED = "isFormHasBeenUsed";
 
     private SortMeetingController sortMeetingController;
     @Mock
@@ -61,12 +63,12 @@ class SortMeetingControllerTest {
     void shouldDisplayPageWithSortedMeetings() throws IOException, ServletException {
         String sortMethod = "date";
         when(req.getSession()).thenReturn(session);
-        when(req.getParameter(SORT_METHOD_ATTRIBUTE_NAME)).thenReturn(sortMethod);
-        when(session.getAttribute(MEETING_ATTRIBUTE_NAME)).thenReturn(createListWithMeetings());
+        when(req.getParameter(SORT_METHOD)).thenReturn(sortMethod);
+        when(session.getAttribute(MEETINGS)).thenReturn(createListWithMeetings());
 
         sortMeetingController.doPost(req, resp);
 
-        verify(session, times(1)).setAttribute(IS_FORM_HAS_BEEN_USED_ATTRIBUTE_NAME, sortMethod);
+        verify(session, times(1)).setAttribute(IS_FORM_HAS_BEEN_USED, sortMethod);
         verify(resp, times(1)).sendRedirect("/");
     }
 }

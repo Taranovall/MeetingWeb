@@ -13,10 +13,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class ErrorControllerTest {
 
+    private static final String ERROR_ATTR_NAME = "javax.servlet.error.message";
+    private static final String ERROR_MSG = "File '123K.docx' not found!";
     private ErrorController errorController;
     @Mock
     private HttpServletRequest req;
@@ -44,7 +50,7 @@ class ErrorControllerTest {
     @Test
     void shouldDisplayErrorPage() throws ServletException, IOException {
         RequestDispatcher requestDispatcher = mock(RequestDispatcher.class);
-        when(req.getAttribute("javax.servlet.error.message")).thenReturn("File '123K.docx' not found!");
+        when(req.getAttribute(ERROR_ATTR_NAME)).thenReturn(ERROR_MSG);
         when(req.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
 
         errorController.doGet(req, resp);

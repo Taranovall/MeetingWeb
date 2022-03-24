@@ -18,11 +18,19 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
-import static util.Utils.createListWithMeetings;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static util.Util.createListWithMeetings;
 
 class DisplayMeetingsControllerTest {
+
+    private static final String GOING_ON_NOW = "goingOnNow";
+    private static final String IS_FORM_HAS_BEEN_USED = "isFormHasBeenUsed";
+    private static final String RADIO_BUTTON = "radioButton";
+    private static final String ERROR_ATTRIBUTE = "error";
+    private static final String ERROR_TEXT = "You didn't choose any option";
 
     private DisplayMeetingsController displayMeetingsController;
     @Mock
@@ -64,27 +72,27 @@ class DisplayMeetingsControllerTest {
     void shouldDisplayMeetingsWhichIsGoingOnRightNow() throws UserNotFoundException, DataBaseException, ServletException, IOException {
         List<Meeting> meetings = createListWithMeetings();
         when(req.getSession()).thenReturn(session);
-        when(req.getParameter("radioButton")).thenReturn("goingOnNow");
+        when(req.getParameter(RADIO_BUTTON)).thenReturn(GOING_ON_NOW);
         when(meetingService.getAllMeetings()).thenReturn(meetings);
 
         displayMeetingsController.setMeetingService(meetingService);
 
         displayMeetingsController.doPost(req, resp);
 
-        assertEquals(0, meetings.size());
+        verify(session, times(1)).setAttribute(IS_FORM_HAS_BEEN_USED, GOING_ON_NOW);
     }
 
     @Test
     void shouldShowErrorMessage() throws ServletException, IOException, UserNotFoundException, DataBaseException {
         List<Meeting> meetings = createListWithMeetings();
         when(req.getSession()).thenReturn(session);
-        when(req.getParameter("radioButton")).thenReturn(null);
+        when(req.getParameter(RADIO_BUTTON)).thenReturn(null);
         when(meetingService.getAllMeetings()).thenReturn(meetings);
 
         displayMeetingsController.setMeetingService(meetingService);
 
         displayMeetingsController.doPost(req, resp);
 
-        verify(session, times(1)).setAttribute("error", "You didn't choose any option");
+        verify(session, times(1)).setAttribute(ERROR_ATTRIBUTE, ERROR_TEXT);
     }
 }

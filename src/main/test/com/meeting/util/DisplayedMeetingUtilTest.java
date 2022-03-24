@@ -50,7 +50,7 @@ class DisplayedMeetingUtilTest {
         meetingB.setGoingOnNow(true);
 
         List<Meeting> meetingList = new LinkedList<>(Arrays.asList(meetingA, meetingB, meetingC));
-        DisplayedMeetingUtil.displayMeetings(meetingList, "notStarted");
+        meetingList = DisplayedMeetingUtil.displayMeetings(meetingList, "notStarted");
 
         int expectedSize = 1;
         int actualSize = meetingList.size();
@@ -64,8 +64,7 @@ class DisplayedMeetingUtilTest {
         meetingC.setPassed(true);
 
         List<Meeting> meetingList = new LinkedList<>(Arrays.asList(meetingA, meetingB, meetingC));
-
-        DisplayedMeetingUtil.displayMeetings(meetingList, "passed");
+        meetingList = DisplayedMeetingUtil.displayMeetings(meetingList, "passed");
 
         int expectedSize = 2;
         int actualSize = meetingList.size();
@@ -78,8 +77,7 @@ class DisplayedMeetingUtilTest {
         meetingA.setGoingOnNow(true);
 
         List<Meeting> meetingList = new LinkedList<>(Arrays.asList(meetingA, meetingB, meetingC));
-
-        DisplayedMeetingUtil.displayMeetings(meetingList, "goingOnNow");
+        meetingList = DisplayedMeetingUtil.displayMeetings(meetingList, "goingOnNow");
 
         int expectedSize = 1;
         int actualSize = meetingList.size();

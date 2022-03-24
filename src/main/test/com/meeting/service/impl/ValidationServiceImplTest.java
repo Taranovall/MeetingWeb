@@ -1,7 +1,6 @@
 package com.meeting.service.impl;
 
 import com.meeting.entitiy.Meeting;
-import com.meeting.entitiy.Role;
 import com.meeting.entitiy.User;
 import com.meeting.exception.UserNotFoundException;
 import com.meeting.service.UserService;
@@ -10,18 +9,34 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import util.Utils;
+import util.Util;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
 import static com.meeting.util.Constant.QUERY_IS_NOT_VALID_ATTRIBUTE_NAME;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static util.Constant.COUNT_OF_TOPICS_PARAM_NAME;
+import static util.Constant.LANGUAGE_ATTR_NAME;
+import static util.Util.createUser;
 
 public class ValidationServiceImplTest {
 
+    private static final String LOGIN = "login";
+    private static final String PASSWORD = "password";
+    private static final String PASSWORD_CONFIRM = "passwordConfirm";
+    private static final String USER_LOGIN = "user";
+    private static final String SPEAKER_LOGIN = "Spek";
     private final ValidationServiceImpl validationService = new ValidationServiceImpl();
     @Mock
     private static HttpServletRequest req;
@@ -35,6 +50,7 @@ public class ValidationServiceImplTest {
     void setUp() {
         closeable = MockitoAnnotations.openMocks(this);
         when(req.getSession()).thenReturn(session);
+        when(session.getAttribute(LANGUAGE_ATTR_NAME)).thenReturn("en");
     }
 
     @AfterEach
@@ -44,9 +60,9 @@ public class ValidationServiceImplTest {
 
     @Test
     void shouldSetAttributeLoginErrorTrue() {
-        when(req.getParameter("login")).thenReturn("usesjdvhwg8493whfiuhvr");
-        when(req.getParameter("password")).thenReturn("askjdjakdfj22");
-        when(req.getParameter("passwordConfirm")).thenReturn("askjdjakdfj22");
+        when(req.getParameter(LOGIN)).thenReturn("usesjdvhwg8493whfiuhvr");
+        when(req.getParameter(PASSWORD)).thenReturn("askjdjakdfj22");
+        when(req.getParameter(PASSWORD_CONFIRM)).thenReturn("askjdjakdfj22");
 
         validationService.registrationValidator(req);
 
@@ -55,7 +71,7 @@ public class ValidationServiceImplTest {
 
     @Test
     void ifUserDoesNotExistThenSetLoginErrorTrue() throws UserNotFoundException {
-        when(req.getParameter("login")).thenReturn("user");
+        when(req.getParameter(LOGIN)).thenReturn(USER_LOGIN);
 
         doReturn(null).when(userService).getUserByLogin(anyString());
         validationService.setUserService(userService);
@@ -68,9 +84,9 @@ public class ValidationServiceImplTest {
 
     @Test
     void shouldSetAttributePasswordErrorTrue() throws UserNotFoundException {
-        when(req.getParameter("login")).thenReturn("user");
-        when(req.getParameter("password")).thenReturn("kladjfajdkf23");
-        when(req.getParameter("passwordConfirm")).thenReturn("lfalffkal72");
+        when(req.getParameter(LOGIN)).thenReturn(USER_LOGIN);
+        when(req.getParameter(PASSWORD)).thenReturn("kladjfajdkf23");
+        when(req.getParameter(PASSWORD_CONFIRM)).thenReturn("lfalffkal72");
 
         validationService.registrationValidator(req);
 
@@ -85,30 +101,21 @@ public class ValidationServiceImplTest {
 
     @Test
     void shouldReturnNotNullUser() {
-        when(req.getParameter("login")).thenReturn("user");
-        when(req.getParameter("password")).thenReturn("lfalffkal72");
-        when(req.getParameter("passwordConfirm")).thenReturn("lfalffkal72");
+        when(req.getParameter(LOGIN)).thenReturn(USER_LOGIN);
+        when(req.getParameter(PASSWORD)).thenReturn("lfalffkal72");
+        when(req.getParameter(PASSWORD_CONFIRM)).thenReturn("lfalffkal72");
 
         User user = validationService.registrationValidator(req);
 
         assertNotNull(user);
     }
 
-    private User createUser() {
-        User user = new User(1L, "Spek", "1");
-        user.setRegistrationDate("14.02.2022");
-        user.setEmail("dasofo8688@diolang.com");
-        user.setRole(Role.SPEAKER);
-        user.setPassword("dd9422DNAN");
-        return user;
-    }
-
     @Test
     public void shouldReturnTrueIfUsersAreEquals() throws UserNotFoundException {
         User user = createUser();
 
-        when(req.getParameter("login")).thenReturn("Spek");
-        when(req.getParameter("password")).thenReturn("dd9422DNAN");
+        when(req.getParameter(LOGIN)).thenReturn(SPEAKER_LOGIN);
+        when(req.getParameter(PASSWORD)).thenReturn("dd9422DNAN");
         doReturn(user).when(userService).getUserByLogin(anyString());
 
         validationService.setUserService(userService);
@@ -120,17 +127,18 @@ public class ValidationServiceImplTest {
     @Test
     public void searchValidator() {
         String query = "";
-        validationService.searchValidator(query, session);
+        validationService.searchValidator(query, req);
+        when(req.getSession()).thenReturn(session);
 
         verify(session, times(1)).setAttribute(QUERY_IS_NOT_VALID_ATTRIBUTE_NAME, "Query cannot be empty");
 
         query = "Query in which more than 32 characters PPPPPP QQQ PPPPPP SSSSS PPPPP";
-        validationService.searchValidator(query, session);
+        validationService.searchValidator(query, req);
 
         verify(session, times(1)).setAttribute(QUERY_IS_NOT_VALID_ATTRIBUTE_NAME, "Query cannot be longer than 32 characters");
 
         query = "Valid query";
-        boolean actual = validationService.searchValidator(query, session);
+        boolean actual = validationService.searchValidator(query, req);
 
         assertTrue(actual);
     }
@@ -140,7 +148,7 @@ public class ValidationServiceImplTest {
         Meeting meeting = createMeeting();
 
         when(req.getRequestURI()).thenReturn("/moderator/create-meeting");
-        when(req.getParameter("countOfTopics")).thenReturn("2");
+        when(req.getParameter(COUNT_OF_TOPICS_PARAM_NAME)).thenReturn("2");
 
         boolean actual = validationService.meetingMainInfoValidator(meeting, req);
         assertFalse(actual);
@@ -175,7 +183,7 @@ public class ValidationServiceImplTest {
         boolean actual = validationService.proposingTopicsValidator(topicName, req);
         assertTrue(actual);
 
-        topicName = Utils.generateStringWithRandomChars(99);
+        topicName = Util.generateStringWithRandomChars(99);
 
         actual = validationService.proposingTopicsValidator(topicName, req);
         assertFalse(actual);
@@ -205,7 +213,7 @@ public class ValidationServiceImplTest {
     }
 
     private Meeting createMeeting() {
-        Meeting meeting = new Meeting();
+        Meeting meeting = Util.createMeeting();
         meeting.setDate("2024-08-08");
         meeting.setTimeStart("17:40");
         meeting.setTimeEnd("17:30");

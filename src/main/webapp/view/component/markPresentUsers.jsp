@@ -7,6 +7,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
 <%--content is visible only for moderator--%>
 <c:if test="${sessionScope.user.getRole().name() == 'MODERATOR'}">
@@ -40,14 +41,14 @@
                             </c:when>
                             <c:otherwise>
                                 <p class="text-center mt-2">
-                                    There's no participants
+                                    <fmt:message key="meeting.no_participants"/>
                                 </p>
                             </c:otherwise>
                         </c:choose>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-outline-dark">Submit</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal"><fmt:message key="close"/></button>
+                        <button type="submit" class="btn btn-outline-dark"><fmt:message key="submit"/></button>
                     </div>
                 </form>
             </div>

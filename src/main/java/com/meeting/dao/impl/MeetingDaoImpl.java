@@ -3,10 +3,37 @@ package com.meeting.dao.impl;
 import com.meeting.dao.MeetingDao;
 import com.meeting.entitiy.Meeting;
 
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
-import static com.meeting.util.SQLQuery.*;
+import static com.meeting.util.SQLQuery.ACCEPT_PROPOSED_TOPIC_SQL;
+import static com.meeting.util.SQLQuery.CREATE_MEETING_SQL;
+import static com.meeting.util.SQLQuery.GET_ALL_ACCEPTED_TOPICS_BY_MEETING_ID;
+import static com.meeting.util.SQLQuery.GET_ALL_MEETINGS_ID_WHERE_SPEAKER_INVOLVES_IN;
+import static com.meeting.util.SQLQuery.GET_ALL_MEETINGS_SQL;
+import static com.meeting.util.SQLQuery.GET_ALL_PARTICIPANTS_BY_MEETING_ID_SQL;
+import static com.meeting.util.SQLQuery.GET_ALL_SPEAKER_BY_MEETING_ID_SQL;
+import static com.meeting.util.SQLQuery.GET_ATTENDED_PARTICIPANTS_SQL;
+import static com.meeting.util.SQLQuery.GET_MEETING_BY_ID;
+import static com.meeting.util.SQLQuery.GET_PRESENT_USERS_SQL;
+import static com.meeting.util.SQLQuery.GET_PROPOSED_TOPICS_BY_MEETING_ID;
+import static com.meeting.util.SQLQuery.GET_SENT_APPLICATION_BY_MEETING_ID;
+import static com.meeting.util.SQLQuery.LINK_TOPIC_WITH_MEETING_SQL;
+import static com.meeting.util.SQLQuery.MARK_PRESENT_USERS_SQL;
+import static com.meeting.util.SQLQuery.PROPOSE_TOPIC_SQL;
+import static com.meeting.util.SQLQuery.REMOVE_PROPOSED_TOPIC_SQL;
+import static com.meeting.util.SQLQuery.SET_PRESENCE_FALSE_SQL;
+import static com.meeting.util.SQLQuery.UPDATE_MEETING_INFORMATION_SQL;
 
 public class MeetingDaoImpl implements MeetingDao {
 

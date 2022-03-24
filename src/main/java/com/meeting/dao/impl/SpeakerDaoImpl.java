@@ -4,15 +4,31 @@ import com.meeting.dao.MeetingDao;
 import com.meeting.dao.SpeakerDao;
 import com.meeting.dao.TopicDao;
 import com.meeting.dao.UserDao;
-import com.meeting.entitiy.*;
+import com.meeting.entitiy.Meeting;
+import com.meeting.entitiy.Role;
+import com.meeting.entitiy.Speaker;
+import com.meeting.entitiy.State;
+import com.meeting.entitiy.Topic;
+import com.meeting.entitiy.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
-import static com.meeting.util.SQLQuery.*;
+import static com.meeting.util.SQLQuery.ACCEPT_INVITATION_SQL;
+import static com.meeting.util.SQLQuery.GET_SPEAKER_RESPONSE_TO_THE_OFFER;
+import static com.meeting.util.SQLQuery.INVITE_SPEAKER_TO_MEETING_SQL;
+import static com.meeting.util.SQLQuery.REMOVE_APPLICATION_FROM_FREE_TOPICS_AFTER_ACCEPTING_IT_SQL;
+import static com.meeting.util.SQLQuery.REMOVE_REDUNDANT_APPLICATIONS_AFTER_ACCEPTING_ONE_SQL;
+import static com.meeting.util.SQLQuery.ROLLBACK_INVITE_SQL;
 
 public class SpeakerDaoImpl implements SpeakerDao {
 

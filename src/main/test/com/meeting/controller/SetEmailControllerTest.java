@@ -20,10 +20,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
-import static util.Utils.createUser;
+import static util.Constant.*;
+import static util.Util.createUser;
 
 class SetEmailControllerTest {
 
+    private static final String ERROR_MSG = "Invalid email";
     private SetEmailController setEmailController;
     @Mock
     UserService userService;
@@ -70,9 +72,9 @@ class SetEmailControllerTest {
         setEmailController.setValidationService(validationService);
 
         when(req.getSession()).thenReturn(session);
-        when(session.getAttribute("lastPageURI")).thenReturn(redirectTo);
-        when(session.getAttribute("user")).thenReturn(user);
-        when(req.getParameter("email")).thenReturn(email);
+        when(session.getAttribute(LAST_PAGE_URI_ATTRIBUTE_NAME)).thenReturn(redirectTo);
+        when(session.getAttribute(USER)).thenReturn(user);
+        when(req.getParameter(EMAIL)).thenReturn(email);
         when(validationService.emailValidator(anyString(), eq(req))).thenReturn(true);
 
         setEmailController.doPost(req, resp);
@@ -86,10 +88,10 @@ class SetEmailControllerTest {
         setEmailController.setValidationService(validationService);
 
         when(req.getSession()).thenReturn(session);
-        when(session.getAttribute("error")).thenReturn("Invalid email");
+        when(session.getAttribute(ERROR_ATTR_NAME)).thenReturn(ERROR_MSG);
 
         setEmailController.doPost(req, resp);
 
-        verify(session, times(1)).removeAttribute("error");
+        verify(session, times(1)).removeAttribute(ERROR_ATTR_NAME);
     }
 }

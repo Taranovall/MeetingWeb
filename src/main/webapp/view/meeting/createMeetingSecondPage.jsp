@@ -1,15 +1,16 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Create meeting</title>
+    <title><fmt:message key="moderator.meeting_creating"/></title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/style/createMeeting.css">
 </head>
 <body>
 <jsp:include page="../component/navbar.jsp"></jsp:include>
 <div class="container mt-5 mb-5 text-center">
-    <h1>Create new meeting</h1><br>
+    <h1><fmt:message key="moderator.meeting_creating"/></h1><br>
     <form action="/moderator/create-meeting" method="post" class="add" enctype="multipart/form-data">
         <c:if test="${error != null}">
             <div class="alert alert-danger text-center" role="alert">
@@ -19,9 +20,9 @@
         <c:forEach var="i" begin="1" end="${countOfTopics}">
             <div class="field">
                 <div class="input-group mb-3">
-                    <input type="text" name="topicName" placeholder="Topic's name" class="form-control">
+                    <input type="text" name="topicName" placeholder="<fmt:message key="meeting.topic"/>" class="form-control">
                     <select class="custom-select" id="inputGroupSelect" name="speakerName">
-                        <option selected value="none" }>Don't invite anyone</option>
+                        <option selected value="none" }><fmt:message key="meeting.do_not_invite"/></option>
                         <c:forEach items="${speakers}" var="s">
                             <option value="${s.getLogin()}">${s.getLogin()}</option>
                         </c:forEach>
@@ -31,11 +32,11 @@
         </c:forEach>
         <div class="field">
             <div class="custom-file">
-                <input id="customFile" type="file" name="photo" class="custom-file-input" accept="image/*">
-                <label class="custom-file-label" for="customFile">Choose file</label>
+                <input id="customFile" type="text" placeholder="sdfsdf" name="photo" class="custom-file-input" accept="image/*" onfocus="(this.type='file')">
+                <label class="custom-file-label" for="customFile" ><fmt:message key="meeting.choose_img"/></label>
             </div>
         </div>
-        <button type="submit" class="btn btn-outline-dark">Next</button>
+        <button type="submit" class="btn btn-outline-dark"><fmt:message key="submit"/></button>
     </form>
 </div>
 </body>
