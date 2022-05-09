@@ -61,10 +61,9 @@ public interface MeetingDao extends Dao<Meeting> {
     /**
      * Function for moderator to cancel proposed topic by speaker
      * @param topicId
-     * @param speakerId
      * @return true if the function was successful
      */
-    boolean cancelProposedTopic(Long topicId, Long speakerId, Connection c) throws SQLException;
+    boolean cancelProposedTopic(Long topicId, Connection c) throws SQLException;
 
 
     /**

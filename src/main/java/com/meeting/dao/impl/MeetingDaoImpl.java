@@ -17,6 +17,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static com.meeting.util.SQLQuery.ACCEPT_PROPOSED_TOPIC_SQL;
+import static com.meeting.util.SQLQuery.CANCEL_PROPOSED_TOPIC_SQL;
 import static com.meeting.util.SQLQuery.CREATE_MEETING_SQL;
 import static com.meeting.util.SQLQuery.GET_ALL_ACCEPTED_TOPICS_BY_MEETING_ID;
 import static com.meeting.util.SQLQuery.GET_ALL_MEETINGS_ID_WHERE_SPEAKER_INVOLVES_IN;
@@ -184,10 +185,9 @@ public class MeetingDaoImpl implements MeetingDao {
     }
 
     @Override
-    public boolean cancelProposedTopic(Long topicId, Long speakerId, Connection c) throws SQLException {
-        PreparedStatement p = c.prepareStatement(REMOVE_PROPOSED_TOPIC_SQL);
-        p.setLong(1, speakerId);
-        p.setLong(2, topicId);
+    public boolean cancelProposedTopic(Long topicId, Connection c) throws SQLException {
+        PreparedStatement p = c.prepareStatement(CANCEL_PROPOSED_TOPIC_SQL);
+        p.setLong(1, topicId);
         p.executeUpdate();
         return true;
     }

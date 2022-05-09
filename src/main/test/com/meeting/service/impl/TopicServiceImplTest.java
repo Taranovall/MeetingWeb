@@ -4,7 +4,7 @@ import com.meeting.dao.TopicDao;
 import com.meeting.dao.impl.TopicDaoImpl;
 import com.meeting.entitiy.Topic;
 import com.meeting.exception.DataBaseException;
-import com.meeting.service.connection.ConnectionPool;
+import com.meeting.connection.ConnectionPool;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;

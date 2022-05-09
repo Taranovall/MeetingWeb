@@ -6,7 +6,7 @@ import com.meeting.entitiy.User;
 import com.meeting.exception.DataBaseException;
 import com.meeting.exception.UserNotFoundException;
 import com.meeting.service.UserService;
-import com.meeting.service.connection.ConnectionPool;
+import com.meeting.connection.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,9 +14,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Optional;
 
-import static com.meeting.service.connection.ConnectionPool.close;
-import static com.meeting.service.connection.ConnectionPool.getInstance;
-import static com.meeting.service.connection.ConnectionPool.rollback;
+import static com.meeting.connection.ConnectionPool.close;
+import static com.meeting.connection.ConnectionPool.getInstance;
+import static com.meeting.connection.ConnectionPool.rollback;
 
 public class UserServiceImpl implements UserService {
 

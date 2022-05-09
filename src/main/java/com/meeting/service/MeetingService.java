@@ -58,7 +58,7 @@ public interface MeetingService {
      * Function for moderator to cancel proposed topic by speaker
      * @return true if the function was successful
      */
-    boolean cancelProposedTopic(Long topicId, Long speakerId) throws DataBaseException;
+    boolean cancelProposedTopic(Long topicId) throws DataBaseException;
 
     /**
      *

@@ -6,7 +6,7 @@ import com.meeting.entitiy.Role;
 import com.meeting.entitiy.User;
 import com.meeting.exception.DataBaseException;
 import com.meeting.exception.UserNotFoundException;
-import com.meeting.service.connection.ConnectionPool;
+import com.meeting.connection.ConnectionPool;
 import com.meeting.util.SQLQuery;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;

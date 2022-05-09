@@ -34,13 +34,13 @@ public class ProposeTopicController extends HttpServlet {
         User user = (User) session.getAttribute("user");
         Long meetingId = Long.valueOf(lastURI.split("/")[2]);
 
-        // topic will be proposed only if topic name is valid
-        if (validationService.proposingTopicsValidator(topicName, req)) {
-            try {
+        // topic will be proposed only if topic name is valid and free
+        try {
+            if (validationService.proposingTopicsValidator(topicName, req)) {
                 meetingService.proposeTopic(meetingId, user.getId(), topicName);
-            } catch (DataBaseException e) {
-                resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
             }
+        } catch (DataBaseException e) {
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
         resp.sendRedirect(lastURI);
     }

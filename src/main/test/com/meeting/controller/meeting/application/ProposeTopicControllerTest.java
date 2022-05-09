@@ -1,6 +1,7 @@
 package com.meeting.controller.meeting.application;
 
 import com.meeting.entitiy.User;
+import com.meeting.exception.DataBaseException;
 import com.meeting.service.MeetingService;
 import com.meeting.service.ValidationService;
 import org.junit.jupiter.api.AfterEach;
@@ -68,7 +69,7 @@ class ProposeTopicControllerTest {
     }
 
     @Test
-    void shouldAcceptApplicationSentBySpeaker() throws IOException, ServletException {
+    void shouldAcceptApplicationSentBySpeaker() throws IOException, ServletException, DataBaseException {
         User userWithRoleSpeaker = createUserWithRoleSpeaker();
 
         proposeTopicController.setMeetingService(meetingService);

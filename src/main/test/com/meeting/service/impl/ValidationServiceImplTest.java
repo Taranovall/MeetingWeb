@@ -2,7 +2,9 @@ package com.meeting.service.impl;
 
 import com.meeting.entitiy.Meeting;
 import com.meeting.entitiy.User;
+import com.meeting.exception.DataBaseException;
 import com.meeting.exception.UserNotFoundException;
+import com.meeting.service.TopicService;
 import com.meeting.service.UserService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -177,8 +179,12 @@ public class ValidationServiceImplTest {
     }
 
     @Test
-    public void proposingTopicsValidator() {
+    public void proposingTopicsValidator() throws DataBaseException {
         String topicName = "topicName";
+
+        TopicService topicService = mock(TopicService.class);
+        when(topicService.isTopicExist(anyString())).thenReturn(false);
+        validationService.setTopicService(topicService);
 
         boolean actual = validationService.proposingTopicsValidator(topicName, req);
         assertTrue(actual);

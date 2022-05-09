@@ -5,7 +5,7 @@ import com.meeting.dao.impl.TopicDaoImpl;
 import com.meeting.entitiy.Topic;
 import com.meeting.exception.DataBaseException;
 import com.meeting.service.TopicService;
-import com.meeting.service.connection.ConnectionPool;
+import com.meeting.connection.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,6 +23,16 @@ public class TopicServiceImpl implements TopicService {
 
     public TopicServiceImpl() {
         this.topicDao = new TopicDaoImpl();
+    }
+
+    @Override
+    public boolean isTopicExist(String topicName) throws DataBaseException {
+        try (Connection c = ConnectionPool.getInstance().getConnection()) {
+            return topicDao.isTopicExist(topicName,c);
+        } catch (SQLException e) {
+            log.error("Cannot get topic by name: '{}'", topicName, e);
+            throw new DataBaseException("Cannot get topic by name: " + topicName, e);
+        }
     }
 
     @Override

@@ -18,7 +18,7 @@ import com.meeting.service.MeetingService;
 import com.meeting.service.SpeakerService;
 import com.meeting.service.TopicService;
 import com.meeting.service.UserService;
-import com.meeting.service.connection.ConnectionPool;
+import com.meeting.connection.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -38,9 +38,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static com.meeting.service.connection.ConnectionPool.close;
-import static com.meeting.service.connection.ConnectionPool.getInstance;
-import static com.meeting.service.connection.ConnectionPool.rollback;
+import static com.meeting.connection.ConnectionPool.close;
+import static com.meeting.connection.ConnectionPool.getInstance;
+import static com.meeting.connection.ConnectionPool.rollback;
 
 public class MeetingServiceImpl implements MeetingService {
 
@@ -158,11 +158,11 @@ public class MeetingServiceImpl implements MeetingService {
     }
 
     @Override
-    public boolean cancelProposedTopic(Long topicId, Long speakerId) throws DataBaseException {
+    public boolean cancelProposedTopic(Long topicId) throws DataBaseException {
         Connection c = null;
         try {
             c = ConnectionPool.getInstance().getConnection();
-            meetingDao.cancelProposedTopic(topicId, speakerId, c);
+            meetingDao.cancelProposedTopic(topicId, c);
             c.commit();
         } catch (SQLException e) {
             log.error("Cannot cancel proposed topic", e);

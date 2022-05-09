@@ -2,6 +2,7 @@ package com.meeting.service;
 
 import com.meeting.entitiy.Meeting;
 import com.meeting.entitiy.User;
+import com.meeting.exception.DataBaseException;
 import com.meeting.exception.UserNotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,7 +32,7 @@ public interface ValidationService {
     /**
      * @return true only if topic name is valid
      */
-    boolean proposingTopicsValidator(String topicName, HttpServletRequest req);
+    boolean proposingTopicsValidator(String topicName, HttpServletRequest req) throws DataBaseException;
 
     /**
      * @return true only if speaker has been chosen

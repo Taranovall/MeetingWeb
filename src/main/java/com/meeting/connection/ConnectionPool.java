@@ -1,4 +1,4 @@
-package com.meeting.service.connection;
+package com.meeting.connection;
 
 
 import org.apache.logging.log4j.LogManager;

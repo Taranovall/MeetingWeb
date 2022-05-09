@@ -26,10 +26,9 @@ public class CancelProposedTopicController extends HttpServlet {
         HttpSession session = req.getSession();
         String lastURI = (String) session.getAttribute("lastPageURI");
         Long topicId = Long.valueOf(req.getParameter("application"));
-        Long speakerId = Long.valueOf(req.getParameter("speakerId"));
 
         try {
-            meetingService.cancelProposedTopic(topicId, speakerId);
+            meetingService.cancelProposedTopic(topicId);
         } catch (DataBaseException e) {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }

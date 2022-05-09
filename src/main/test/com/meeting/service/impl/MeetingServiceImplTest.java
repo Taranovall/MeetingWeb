@@ -13,7 +13,7 @@ import com.meeting.exception.UserNotFoundException;
 import com.meeting.service.SpeakerService;
 import com.meeting.service.TopicService;
 import com.meeting.service.UserService;
-import com.meeting.service.connection.ConnectionPool;
+import com.meeting.connection.ConnectionPool;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -41,12 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.meeting.util.SQLQuery.CREATE_TOPIC_SQL;
-import static com.meeting.util.SQLQuery.GET_ALL_SPEAKER_BY_MEETING_ID_SQL;
-import static com.meeting.util.SQLQuery.GET_PRESENT_USERS_SQL;
-import static com.meeting.util.SQLQuery.PROPOSE_TOPIC_SQL;
-import static com.meeting.util.SQLQuery.REMOVE_PROPOSED_TOPIC_SQL;
-import static com.meeting.util.SQLQuery.UPDATE_MEETING_INFORMATION_SQL;
+import static com.meeting.util.SQLQuery.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -305,9 +300,9 @@ class MeetingServiceImplTest {
 
     @Test
     void shouldCancelProposedTopicsAndReturnTrue() throws SQLException, DataBaseException {
-        when(c.prepareStatement(REMOVE_PROPOSED_TOPIC_SQL)).thenReturn(p);
+        when(c.prepareStatement(CANCEL_PROPOSED_TOPIC_SQL)).thenReturn(p);
 
-        boolean result = meetingService.cancelProposedTopic(13L, 37L);
+        boolean result = meetingService.cancelProposedTopic(13L);
         assertTrue(result);
     }
 
@@ -315,9 +310,9 @@ class MeetingServiceImplTest {
     void shouldThrowDataBaseExceptionWithMessage_CannotCancelProposedTopic() throws SQLException {
         MeetingDao meetingDao = mock(MeetingDao.class);
         meetingService.setMeetingDao(meetingDao);
-        doThrow(SQLException.class).when(meetingDao).cancelProposedTopic(anyLong(), anyLong(), any());
+        doThrow(SQLException.class).when(meetingDao).cancelProposedTopic(anyLong(), any());
 
-        DataBaseException thrown = assertThrows(DataBaseException.class, () -> meetingService.cancelProposedTopic(4L, 10L));
+        DataBaseException thrown = assertThrows(DataBaseException.class, () -> meetingService.cancelProposedTopic(4L));
 
         String expected = "Cannot cancel proposed topics";
         String actual = thrown.getMessage();

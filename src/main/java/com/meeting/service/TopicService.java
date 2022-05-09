@@ -7,6 +7,8 @@ import java.util.Set;
 
 public interface TopicService {
 
+    boolean isTopicExist(String topicName) throws DataBaseException;
+
     Topic getById(Long id) throws DataBaseException;
 
     Set<Topic> getAllFreeTopicsByMeetingId(Long meetingId) throws DataBaseException;

@@ -52,4 +52,5 @@ public class Constant {
     public static final String LOGIN = "login";
     public static final String PASSWORD = "password";
     public static final String PASSWORD_CONFIRM = "passwordConfirm";
+    public static final String TOPIC_IS_ALREADY_EXIST = "topic_is_already_exist";
 }

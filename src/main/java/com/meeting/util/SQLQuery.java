@@ -37,6 +37,7 @@ public class SQLQuery {
     public static final String PROPOSE_TOPIC_SQL = "INSERT INTO proposed_topics (proposed_by_speaker, meeting_id, topic_id) VALUES (?, ?, ?)";
     public static final String ACCEPT_PROPOSED_TOPIC_SQL = "INSERT INTO speaker_topics (speaker_id, topic_id, invitation, invited_by) VALUES (?, ?, true, ?)";
     public static final String REMOVE_PROPOSED_TOPIC_SQL = "DELETE FROM proposed_topics WHERE proposed_by_speaker = ? AND topic_id = ?";
+    public static final String GET_TOPIC_BY_NAME_SQL = "SELECT TRUE FROM topics WHERE name = ? LIMIT 1";
 
     //Meeting requests
     public static final String CREATE_MEETING_SQL = "INSERT INTO meetings (name, date, time_start, time_end, place, photo_path) VALUES (?, ?, ?, ?, ?, ?)";
@@ -45,6 +46,8 @@ public class SQLQuery {
     public static final String GET_ALL_MEETINGS_ID_WHERE_SPEAKER_INVOLVES_IN = "SELECT DISTINCT meeting_id FROM meeting_topics mt, speaker_topics st WHERE mt.topic_id = st.topic_id AND st.invitation is true AND speaker_id = ?";
     public static final String GET_PROPOSED_TOPICS_BY_MEETING_ID = "SELECT proposed_by_speaker, topic_id FROM proposed_topics WHERE meeting_id = ?";
     public static final String UPDATE_MEETING_INFORMATION_SQL = "UPDATE meetings SET time_start=?, time_end=?, date=?, place=? WHERE id = ?";
+    public static final String CANCEL_PROPOSED_TOPIC_SQL = "DELETE FROM topics WHERE id = ?";
+
 
     //Speaker requests
     public static final String INVITE_SPEAKER_TO_MEETING_SQL = "INSERT INTO speaker_topics (speaker_id, topic_id, invited_by) VALUES (?, ?, ?)";

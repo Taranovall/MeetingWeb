@@ -2,9 +2,12 @@ package com.meeting.service.impl;
 
 import com.meeting.entitiy.Meeting;
 import com.meeting.entitiy.User;
+import com.meeting.exception.DataBaseException;
 import com.meeting.exception.UserNotFoundException;
+import com.meeting.service.TopicService;
 import com.meeting.service.UserService;
 import com.meeting.service.ValidationService;
+import com.meeting.util.Constant;
 import com.meeting.util.ErrorMessageUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -54,9 +57,11 @@ public class ValidationServiceImpl implements ValidationService {
     private static final Logger log = LogManager.getLogger(ValidationServiceImpl.class);
 
     private UserService userService;
+    private TopicService topicService;
 
     public ValidationServiceImpl() {
         userService = new UserServiceImpl();
+        topicService = new TopicServiceImpl();
     }
 
     @Override
@@ -225,10 +230,14 @@ public class ValidationServiceImpl implements ValidationService {
     }
 
     @Override
-    public boolean proposingTopicsValidator(String topicName, HttpServletRequest req) {
+    public boolean proposingTopicsValidator(String topicName, HttpServletRequest req) throws DataBaseException {
         String regex = "^.{1,96}$";
         if (!topicName.matches(regex)) {
             req.getSession().setAttribute(ERROR, ErrorMessageUtil.getByLocale(req, TOPIC_IS_TOO_LONG));
+            return false;
+        }
+        if (topicService.isTopicExist(topicName)) {
+            req.getSession().setAttribute(ERROR, ErrorMessageUtil.getByLocale(req, Constant.TOPIC_IS_ALREADY_EXIST));
             return false;
         }
         return true;
@@ -255,5 +264,9 @@ public class ValidationServiceImpl implements ValidationService {
 
     public void setUserService(UserService userService) {
         this.userService = userService;
+    }
+
+    public void setTopicService(TopicService topicService) {
+        this.topicService = topicService;
     }
 }

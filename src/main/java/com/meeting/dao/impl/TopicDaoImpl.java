@@ -17,6 +17,7 @@ import static com.meeting.util.SQLQuery.CREATE_FREE_TOPIC_SQL;
 import static com.meeting.util.SQLQuery.CREATE_TOPIC_SQL;
 import static com.meeting.util.SQLQuery.GET_ALL_FREE_TOPICS_BY_MEETING_ID;
 import static com.meeting.util.SQLQuery.GET_TOPIC_BY_ID_SQL;
+import static com.meeting.util.SQLQuery.GET_TOPIC_BY_NAME_SQL;
 import static com.meeting.util.SQLQuery.LINK_TOPIC_WITH_MEETING_SQL;
 
 public class TopicDaoImpl implements TopicDao {
@@ -31,6 +32,13 @@ public class TopicDaoImpl implements TopicDao {
             optionalTopic = Optional.of(extractTopic(rs));
         }
         return optionalTopic;
+    }
+
+    @Override
+    public boolean isTopicExist(String topicName, Connection c) throws SQLException {
+        PreparedStatement p = c.prepareStatement(GET_TOPIC_BY_NAME_SQL);
+        p.setString(1, topicName);
+        return p.executeQuery().next();
     }
 
     @Override
