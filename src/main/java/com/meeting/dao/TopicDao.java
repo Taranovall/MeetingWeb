@@ -10,11 +10,11 @@ import java.util.Set;
 public interface TopicDao extends Dao<Topic> {
 
     /**
-     *
+     * @param meetingId
      * @param topicName
-     * @return true if topics with name <code>topicName</code> exists
+     * @return true if topics with name <code>topicName</code> in meeting with id <code>meetingId</code> exists
      */
-    boolean isTopicExist(String topicName, Connection c) throws SQLException;
+    boolean isTopicExist(String topicName, Long meetingId, Connection c) throws SQLException;
 
     /**
      * Creates topic in database and links with meeting

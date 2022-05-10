@@ -36,7 +36,7 @@ public class ProposeTopicController extends HttpServlet {
 
         // topic will be proposed only if topic name is valid and free
         try {
-            if (validationService.proposingTopicsValidator(topicName, req)) {
+            if (validationService.proposingTopicsValidator(topicName, meetingId, req)) {
                 meetingService.proposeTopic(meetingId, user.getId(), topicName);
             }
         } catch (DataBaseException e) {

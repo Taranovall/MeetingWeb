@@ -230,13 +230,13 @@ public class ValidationServiceImpl implements ValidationService {
     }
 
     @Override
-    public boolean proposingTopicsValidator(String topicName, HttpServletRequest req) throws DataBaseException {
+    public boolean proposingTopicsValidator(String topicName, Long meetingId, HttpServletRequest req) throws DataBaseException {
         String regex = "^.{1,96}$";
         if (!topicName.matches(regex)) {
             req.getSession().setAttribute(ERROR, ErrorMessageUtil.getByLocale(req, TOPIC_IS_TOO_LONG));
             return false;
         }
-        if (topicService.isTopicExist(topicName)) {
+        if (topicService.isTopicExist(topicName, meetingId)) {
             req.getSession().setAttribute(ERROR, ErrorMessageUtil.getByLocale(req, Constant.TOPIC_IS_ALREADY_EXIST));
             return false;
         }

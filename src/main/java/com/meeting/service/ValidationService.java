@@ -32,7 +32,7 @@ public interface ValidationService {
     /**
      * @return true only if topic name is valid
      */
-    boolean proposingTopicsValidator(String topicName, HttpServletRequest req) throws DataBaseException;
+    boolean proposingTopicsValidator(String topicName, Long meetingId, HttpServletRequest req) throws DataBaseException;
 
     /**
      * @return true only if speaker has been chosen

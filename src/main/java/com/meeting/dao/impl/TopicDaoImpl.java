@@ -35,9 +35,10 @@ public class TopicDaoImpl implements TopicDao {
     }
 
     @Override
-    public boolean isTopicExist(String topicName, Connection c) throws SQLException {
+    public boolean isTopicExist(String topicName, Long meetingId, Connection c) throws SQLException {
         PreparedStatement p = c.prepareStatement(GET_TOPIC_BY_NAME_SQL);
-        p.setString(1, topicName);
+        p.setLong(1, meetingId);
+        p.setString(2, topicName);
         return p.executeQuery().next();
     }
 

@@ -26,9 +26,9 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
-    public boolean isTopicExist(String topicName) throws DataBaseException {
+    public boolean isTopicExist(String topicName, Long meetingId) throws DataBaseException {
         try (Connection c = ConnectionPool.getInstance().getConnection()) {
-            return topicDao.isTopicExist(topicName,c);
+            return topicDao.isTopicExist(topicName, meetingId, c);
         } catch (SQLException e) {
             log.error("Cannot get topic by name: '{}'", topicName, e);
             throw new DataBaseException("Cannot get topic by name: " + topicName, e);

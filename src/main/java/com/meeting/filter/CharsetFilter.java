@@ -15,6 +15,9 @@ import java.util.Objects;
 
 @WebFilter(filterName = "charset", urlPatterns = "/*")
 public class CharsetFilter implements Filter {
+
+    private static final String LANGUAGE = "language";
+
     private String encoding;
 
     public void init(FilterConfig config) {
@@ -36,11 +39,11 @@ public class CharsetFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) servletRequest;
         HttpSession session = req.getSession();
 
-        String currentLanguage = (String) session.getAttribute("language");
+        String currentLanguage = (String) session.getAttribute(LANGUAGE);
 
         if (Objects.isNull(currentLanguage)) {
             String defaultLanguage = ctx.getInitParameter("default-language");
-            session.setAttribute("language", defaultLanguage);
+            session.setAttribute(LANGUAGE, defaultLanguage);
         }
 
         filterChain.doFilter(servletRequest, servletResponse);

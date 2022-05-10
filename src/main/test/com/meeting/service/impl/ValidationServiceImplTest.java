@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -181,17 +182,18 @@ public class ValidationServiceImplTest {
     @Test
     public void proposingTopicsValidator() throws DataBaseException {
         String topicName = "topicName";
+        Long meetingId = 2L;
 
         TopicService topicService = mock(TopicService.class);
-        when(topicService.isTopicExist(anyString())).thenReturn(false);
+        when(topicService.isTopicExist(anyString(), anyLong())).thenReturn(false);
         validationService.setTopicService(topicService);
 
-        boolean actual = validationService.proposingTopicsValidator(topicName, req);
+        boolean actual = validationService.proposingTopicsValidator(topicName, meetingId, req);
         assertTrue(actual);
 
         topicName = Util.generateStringWithRandomChars(99);
 
-        actual = validationService.proposingTopicsValidator(topicName, req);
+        actual = validationService.proposingTopicsValidator(topicName, meetingId, req);
         assertFalse(actual);
     }
 

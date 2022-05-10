@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.mock;
@@ -79,7 +80,7 @@ class ProposeTopicControllerTest {
         when(session.getAttribute(LAST_PAGE_URI_ATTRIBUTE_NAME)).thenReturn(LAST_PAGE_URI);
         when(session.getAttribute(USER)).thenReturn(userWithRoleSpeaker);
         when(req.getParameter(TOPIC_NAME)).thenReturn(NAME_OF_TOPIC);
-        when(validationService.proposingTopicsValidator(anyString(), any())).thenReturn(true);
+        when(validationService.proposingTopicsValidator(anyString(), anyLong(), any())).thenReturn(true);
 
         proposeTopicController.doPost(req, resp);
 
