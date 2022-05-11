@@ -37,7 +37,7 @@ public class SortingUtil {
 
     private static List<Meeting> sortByNumberOfParticipants(List<Meeting> meetingList) {
         List<Meeting> listBeforeSorting = new LinkedList<>(meetingList);
-        meetingList.sort((o1, o2) -> (o2.getParticipants().size() + o2.getSpeakerTopics().size()) - (o1.getParticipants().size() + o1.getSpeakerTopics().size()));
+        meetingList.sort((o1, o2) -> ((o1.getParticipants().size() + o1.getSpeakerTopics().size()) - o2.getParticipants().size() + o2.getSpeakerTopics().size()));
         log.debug("Meetings were sorted by number of participants");
 
         return listBeforeSorting.equals(meetingList) ? reverseList(meetingList) : meetingList;
@@ -50,7 +50,7 @@ public class SortingUtil {
             if (o1.getFreeTopics().size() == o2.getFreeTopics().size()) {
                 return o1.getName().compareTo(o2.getName());
             } else {
-                return o2.getFreeTopics().size() - o1.getFreeTopics().size();
+                return o1.getFreeTopics().size() - o2.getFreeTopics().size();
             }
         });
         log.debug("Meetings were sorted by number of topics");
@@ -62,9 +62,9 @@ public class SortingUtil {
 
         meetingList.sort((o1, o2) -> {
             if (o1.getDate().equals(o2.getDate())) {
-                return o2.getTimeStart().compareTo(o1.getTimeStart());
+                return o1.getTimeStart().compareTo(o2.getTimeStart());
             } else {
-                return o2.getDate().compareTo(o1.getDate());
+                return o1.getDate().compareTo(o2.getDate());
             }
         });
         log.debug("Meetings were sorted by date");

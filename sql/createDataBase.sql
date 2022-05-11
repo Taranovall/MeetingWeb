@@ -35,9 +35,7 @@ create table meetings
     time_start      varchar(256) not null,
     time_end        varchar(256) not null,
     place           varchar(256) not null,
-    photo_path      varchar(256) not null,
-    is_started      bool,
-    is_going_on_now bool
+    photo_path      varchar(256) not null
 );
 
 
