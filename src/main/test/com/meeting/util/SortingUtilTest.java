@@ -116,7 +116,7 @@ class SortingUtilTest {
 
         List<Meeting> list = new LinkedList<>(Arrays.asList(meetingA, meetingB, meetingC));
 
-        List<Meeting> expectedList = new LinkedList<>(Arrays.asList(meetingC, meetingA, meetingB));
+        List<Meeting> expectedList = new LinkedList<>(Arrays.asList(meetingC, meetingB, meetingA));
         List<Meeting> actualList = SortingUtil.sortByParameter(list, "topics");
 
         assertEquals(expectedList, actualList);
