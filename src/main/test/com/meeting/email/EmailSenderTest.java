@@ -13,7 +13,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 
-class SendEmailTest {
+class EmailSenderTest {
 
     private static final String[] EMAIL_TO = {"_email1@gmail.com", "_email2@gmail.com"};
     private static final String TOPIC_NAME = "test";
@@ -23,11 +23,11 @@ class SendEmailTest {
         Message message = mock(Message.class);
         doThrow(MessagingException.class).when(message).setContent(any());
 
-        SendEmail sendEmail = new SendEmail(EMAIL_TO, TOPIC_NAME);
+        EmailSender emailSender = new EmailSender(EMAIL_TO, TOPIC_NAME);
 
-        sendEmail.setMessage(message);
+        emailSender.setMessage(message);
 
-        EmailException thrown = assertThrows(EmailException.class, () -> sendEmail.sendMessage("TestMsg"));
+        EmailException thrown = assertThrows(EmailException.class, () -> emailSender.sendMessage("TestMsg"));
 
         String expected = "Cannot send message with text TestMsg";
         String actual = thrown.getMessage();
@@ -37,11 +37,11 @@ class SendEmailTest {
 
     @Test
     void shouldThrowMessagingExceptionWithMessage_CannotInitializeConstructor() {
-        SendEmail.MAIL_SMTP_SSL_PROTOCOLS = null;
+        EmailSender.MAIL_SMTP_SSL_PROTOCOLS = null;
 
-        EmailException thrown = assertThrows(EmailException.class, () -> new SendEmail(EMAIL_TO, TOPIC_NAME));
+        EmailException thrown = assertThrows(EmailException.class, () -> new EmailSender(EMAIL_TO, TOPIC_NAME));
 
-        SendEmail.MAIL_SMTP_SSL_PROTOCOLS = "TLSv1.2";
+        EmailSender.MAIL_SMTP_SSL_PROTOCOLS = "TLSv1.2";
 
         String expected = "Cannot initialize constructor";
         String actual = thrown.getMessage();
@@ -51,8 +51,8 @@ class SendEmailTest {
 
     @Test
     void shouldSendMessageAndReturnTrue() throws EmailException {
-        SendEmail sendEmail = new SendEmail(EMAIL_TO, TOPIC_NAME);
-        boolean result = sendEmail.sendMessage("TestMsg");
+        EmailSender emailSender = new EmailSender(EMAIL_TO, TOPIC_NAME);
+        boolean result = emailSender.sendMessage("TestMsg");
 
         assertTrue(result);
     }

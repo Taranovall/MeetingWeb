@@ -17,9 +17,9 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import java.util.Properties;
 
-public class SendEmail {
+public class EmailSender {
 
-    private static final Logger log = LogManager.getLogger(SendEmail.class);
+    private static final Logger log = LogManager.getLogger(EmailSender.class);
 
     private Message message = null;
     protected static String SMTP_SERVER = "smtp.gmail.com";
@@ -31,7 +31,7 @@ public class SendEmail {
     protected static boolean MAIL_SMTP_AUTH = true;
     protected static boolean MAIL_SMTP_STARTTLS_ENABLE = true;
 
-    public SendEmail(final String[] emailTo, final String topic) throws EmailException {
+    public EmailSender(final String[] emailTo, final String topic) throws EmailException {
         try {
             // Configuring SMTP SSL
             Properties properties = new Properties();

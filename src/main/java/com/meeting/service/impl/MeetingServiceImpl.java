@@ -6,7 +6,7 @@ import com.meeting.dao.TopicDao;
 import com.meeting.dao.impl.MeetingDaoImpl;
 import com.meeting.dao.impl.SpeakerDaoImpl;
 import com.meeting.dao.impl.TopicDaoImpl;
-import com.meeting.email.SendEmail;
+import com.meeting.email.EmailSender;
 import com.meeting.entitiy.Meeting;
 import com.meeting.entitiy.Speaker;
 import com.meeting.entitiy.Topic;
@@ -304,8 +304,8 @@ public class MeetingServiceImpl implements MeetingService {
                 String topic = String.format("Changes in meeting '%s'", meeting.getName());
                 String emailMessage = creatingEmailMessage(meeting, meetingBeforeUpdating);
 
-                SendEmail sendEmail = new SendEmail(emailsArray, topic);
-                sendEmail.sendMessage(emailMessage);
+                EmailSender emailSender = new EmailSender(emailsArray, topic);
+                emailSender.sendMessage(emailMessage);
             }
 
             c.commit();
@@ -321,41 +321,23 @@ public class MeetingServiceImpl implements MeetingService {
     private String creatingEmailMessage(Meeting meeting, Meeting meetingBeforeUpdating) {
         StringBuffer sb = new StringBuffer();
         sb.append("Meeting '").append(meeting.getName()).append("' has some changes:").append("\n");
-
-        if (!meeting.getTimeStart().equals(meetingBeforeUpdating.getTimeStart())) {
-            sb.append("\t").append("-")
-                    .append("Start time has been changed from ")
-                    .append(meetingBeforeUpdating.getTimeStart()).append(" to ")
-                    .append(meeting.getTimeStart()).append(";")
-                    .append("\n");
-        }
-
-        if (!meeting.getTimeEnd().equals(meetingBeforeUpdating.getTimeEnd())) {
-            sb.append("\t").append("-")
-                    .append("End time has been changed from ")
-                    .append(meetingBeforeUpdating.getTimeEnd()).append(" to ")
-                    .append(meeting.getTimeEnd()).append(";")
-                    .append("\n");
-        }
-
-        if (!meeting.getDate().equals(meetingBeforeUpdating.getDate())) {
-            sb.append("\t").append("-")
-                    .append("Date of the meeting has been changed from ")
-                    .append(meetingBeforeUpdating.getDate()).append(" to ")
-                    .append(meeting.getDate()).append(";")
-                    .append("\n");
-        }
-
-        if (!meeting.getDate().equals(meetingBeforeUpdating.getDate())) {
-            sb.append("\t").append("-")
-                    .append("Meeting's place has been changed from ")
-                    .append(meetingBeforeUpdating.getPlace()).append(" to ")
-                    .append(meeting.getPlace()).append(";")
-                    .append("\n");
-        }
-
+        messageAppend(sb, meetingBeforeUpdating.getTimeStart(), meeting.getTimeStart(), "Start time");
+        messageAppend(sb, meetingBeforeUpdating.getTimeEnd(), meeting.getTimeEnd(), "End time");
+        messageAppend(sb, meetingBeforeUpdating.getDate(), meeting.getDate(), "Date of the meeting");
+        messageAppend(sb, meetingBeforeUpdating.getPlace(), meeting.getPlace(), "Meeting's place");
         sb.append("Good luck!");
         return sb.toString();
+    }
+
+    private void messageAppend(StringBuffer sb, String oldData, String newData, String fieldName) {
+        if (!newData.equals(oldData)) {
+            sb.append("\t").append("-")
+                    .append(fieldName)
+                    .append(" ").append("has been changed from").append(" ")
+                    .append(oldData).append(" to ")
+                    .append(newData).append(";")
+                    .append("\n");
+        }
     }
 
 
