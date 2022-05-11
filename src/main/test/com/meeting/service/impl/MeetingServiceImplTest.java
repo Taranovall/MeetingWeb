@@ -14,6 +14,7 @@ import com.meeting.service.SpeakerService;
 import com.meeting.service.TopicService;
 import com.meeting.service.UserService;
 import com.meeting.connection.ConnectionPool;
+import com.meeting.util.Constant;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -41,7 +42,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.meeting.util.SQLQuery.*;
+import static com.meeting.util.SQLQuery.CANCEL_PROPOSED_TOPIC_SQL;
+import static com.meeting.util.SQLQuery.CREATE_TOPIC_SQL;
+import static com.meeting.util.SQLQuery.GET_ALL_SPEAKER_BY_MEETING_ID_SQL;
+import static com.meeting.util.SQLQuery.GET_PRESENT_USERS_SQL;
+import static com.meeting.util.SQLQuery.PROPOSE_TOPIC_SQL;
+import static com.meeting.util.SQLQuery.UPDATE_MEETING_INFORMATION_SQL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -242,7 +248,7 @@ class MeetingServiceImplTest {
 
         DataBaseException thrown = assertThrows(DataBaseException.class, () -> meetingService.getMeetingById(4L));
 
-        String expected = "Meeting with ID 4 doesn't exist";
+        String expected = Constant.MEETING_WITH_THIS_ID_NOT_EXIST + "4";
         String actual = thrown.getMessage();
 
         assertEquals(expected, actual);
@@ -393,7 +399,6 @@ class MeetingServiceImplTest {
 
         Meeting oldMeeting = createFirstMeeting();
         Meeting newMeeting = createSecondMeeting();
-
 
         meetingService.updateInformation(newMeeting, oldMeeting);
     }

@@ -23,9 +23,16 @@ import java.util.Collections;
 import java.util.HashSet;
 
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static util.Util.createSpeaker;
+import static util.Util.createUser;
+import static util.Util.createUserWithRoleSpeaker;
+
 import static util.Constant.USER;
-import static util.Util.*;
 
 class PersonalAccountControllerTest {
 

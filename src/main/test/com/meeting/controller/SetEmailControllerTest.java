@@ -19,8 +19,14 @@ import java.io.IOException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
-import static util.Constant.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static util.Constant.EMAIL;
+import static util.Constant.ERROR_ATTR_NAME;
+import static util.Constant.LAST_PAGE_URI_ATTRIBUTE_NAME;
+import static util.Constant.USER;
 import static util.Util.createUser;
 
 class SetEmailControllerTest {

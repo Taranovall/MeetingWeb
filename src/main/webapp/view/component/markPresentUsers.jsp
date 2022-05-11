@@ -41,7 +41,7 @@
                             </c:when>
                             <c:otherwise>
                                 <p class="text-center mt-2">
-                                    <fmt:message key="meeting.no_participants"/>
+                                    <fmt:message key="meeting.withoutParticipants"/>
                                 </p>
                             </c:otherwise>
                         </c:choose>

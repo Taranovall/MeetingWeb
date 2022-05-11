@@ -13,8 +13,14 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-import static org.mockito.Mockito.*;
-import static util.Constant.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static util.Constant.LAST_PAGE_URI;
+import static util.Constant.LAST_PAGE_URI_ATTRIBUTE_NAME;
+import static util.Constant.MEETING;
+import static util.Constant.USER;
 import static util.Util.createMeeting;
 import static util.Util.createUser;
 

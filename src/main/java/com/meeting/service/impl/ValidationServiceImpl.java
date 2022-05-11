@@ -23,6 +23,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import static com.meeting.util.Constant.COUNT_OF_TOPICS;
+import static com.meeting.util.Constant.COUNT_OF_TOPICS_IS_NOT_VALID;
 import static com.meeting.util.Constant.COUNT_OF_TOPICS_IS_NULL;
 import static com.meeting.util.Constant.DATE_AND_TIME_NOT_VALID;
 import static com.meeting.util.Constant.DATE_NOT_VALID;
@@ -55,6 +56,15 @@ import static com.meeting.util.Constant.USER_NOT_EXIST;
 public class ValidationServiceImpl implements ValidationService {
 
     private static final Logger log = LogManager.getLogger(ValidationServiceImpl.class);
+    private static final String PASSWORD_LENGTH_REGEX = "^.{8,}$";
+    private static final String PASSWORD_CONTAINS_LETTERS_REGEX = "^(?=.*[a-zA-Zа-яА-я]).*$";
+    private static final String PASSWORD_CONTAINS_DIGITS_REGEX = "^(?=.*[0-9]).*$";
+    private static final String DATE_REGEX = "^\\d{4}-\\d{2}-\\d{2}$";
+    private static final String TIME_REGEX = "^\\d{2}:\\d{2}$";
+    private static final String MEETING_NAME_LENGTH_REGEX = "^.{1,32}$";
+    private static final String FIELD_CONTAINS_ONLY_DIGITS_REGEX = "^\\d+$";
+    private static final String TOPIC_LENGTH_REGEX = "^.{1,96}$";
+    private static final String EMAIL_REGEX = "^[A-Za-z0-9+_-]+@(.+)$";
 
     private UserService userService;
     private TopicService topicService;
@@ -131,18 +141,15 @@ public class ValidationServiceImpl implements ValidationService {
             request.setAttribute(MESSAGE, ErrorMessageUtil.getByLocale(request, PASSWORD_NOT_MATCH));
             return true;
         }
-        String regex = "^.{8,}$";
-        if (!password.matches(regex)) {
+        if (!password.matches(PASSWORD_LENGTH_REGEX)) {
             request.setAttribute(MESSAGE, ErrorMessageUtil.getByLocale(request, PASSWORD_LENGTH_NOT_VALID));
             return true;
         }
-        regex = "^(?=.*[a-zA-Zа-яА-я]).*$";
-        if (!password.matches(regex)) {
+        if (!password.matches(PASSWORD_CONTAINS_LETTERS_REGEX)) {
             request.setAttribute(MESSAGE, ErrorMessageUtil.getByLocale(request, PASSWORD_NOT_CONTAIN_ANY_LETTER));
             return true;
         }
-        regex = "^(?=.*[0-9]).*$";
-        if (!password.matches(regex)) {
+        if (!password.matches(PASSWORD_CONTAINS_DIGITS_REGEX)) {
             request.setAttribute(MESSAGE, ErrorMessageUtil.getByLocale(request, PASSWORD_NOT_CONTAIN_ANY_DIGIT));
             return true;
         }
@@ -152,13 +159,11 @@ public class ValidationServiceImpl implements ValidationService {
     @Override
     public boolean meetingMainInfoValidator(Meeting meeting, HttpServletRequest request) {
         String errorMessage = null;
-        String regex = "^\\d{4}-\\d{2}-\\d{2}$";
-        if (!meeting.getDate().matches(regex)) {
+        if (!meeting.getDate().matches(DATE_REGEX)) {
             errorMessage = ErrorMessageUtil.getByLocale(request, DATE_NOT_VALID);
         }
 
-        regex = "^\\d{2}:\\d{2}$";
-        boolean timeIsValidCheck = meeting.getTimeStart().matches(regex) && meeting.getTimeEnd().matches(regex);
+        boolean timeIsValidCheck = meeting.getTimeStart().matches(TIME_REGEX) && meeting.getTimeEnd().matches(TIME_REGEX);
         // return true if end time is greater than start time
         boolean correctMeetingDuration = meeting.getTimeStart().compareTo(meeting.getTimeEnd()) <= 0;
         if (!timeIsValidCheck || !correctMeetingDuration) {
@@ -173,8 +178,7 @@ public class ValidationServiceImpl implements ValidationService {
             errorMessage = ErrorMessageUtil.getByLocale(request, DATE_AND_TIME_NOT_VALID);
         }
 
-        regex = "^.{1,32}$";
-        if (!meeting.getName().matches(regex)) {
+        if (!meeting.getName().matches(MEETING_NAME_LENGTH_REGEX)) {
             errorMessage = ErrorMessageUtil.getByLocale(request, MEETING_NAME_IS_NOT_VALID);
         }
 
@@ -182,9 +186,8 @@ public class ValidationServiceImpl implements ValidationService {
         if (request.getRequestURI().equals("/moderator/create-meeting")) {
             String countOfTopics = request.getParameter(COUNT_OF_TOPICS);
             if (countOfTopics.length() > 0) {
-                regex = "^\\d+$";
-                if (!countOfTopics.matches(regex)) {
-                    errorMessage = ErrorMessageUtil.getByLocale(request, PASSWORD_LENGTH_NOT_VALID);
+                if (!countOfTopics.matches(FIELD_CONTAINS_ONLY_DIGITS_REGEX)) {
+                    errorMessage = ErrorMessageUtil.getByLocale(request, COUNT_OF_TOPICS_IS_NOT_VALID);
                 } else {
                     Integer countOfTopicsInt = Integer.parseInt(countOfTopics);
                     if (countOfTopicsInt > 10) {
@@ -231,8 +234,7 @@ public class ValidationServiceImpl implements ValidationService {
 
     @Override
     public boolean proposingTopicsValidator(String topicName, Long meetingId, HttpServletRequest req) throws DataBaseException {
-        String regex = "^.{1,96}$";
-        if (!topicName.matches(regex)) {
+        if (!topicName.matches(TOPIC_LENGTH_REGEX)) {
             req.getSession().setAttribute(ERROR, ErrorMessageUtil.getByLocale(req, TOPIC_IS_TOO_LONG));
             return false;
         }
@@ -254,8 +256,7 @@ public class ValidationServiceImpl implements ValidationService {
 
     @Override
     public boolean emailValidator(String email, HttpServletRequest req) {
-        String regex = "^[A-Za-z0-9+_-]+@(.+)$";
-        if (!email.matches(regex)) {
+        if (!email.matches(EMAIL_REGEX)) {
             req.getSession().setAttribute(ERROR, ErrorMessageUtil.getByLocale(req, INVALID_EMAIL));
             return false;
         }

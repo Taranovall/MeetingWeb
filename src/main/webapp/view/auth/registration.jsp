@@ -13,7 +13,7 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" ><fmt:message key="registration"/></h5>
+                    <h5 class="modal-title" ><fmt:message key="signUpMenu.registration"/></h5>
                 </div>
                 <div class="modal-body text-center" style="padding-bottom: 0">
                     <!-- ОБРАБОТКА ОШИБОК -->
@@ -22,11 +22,11 @@
                     <!-- /ОБРАБОТКА ОШИБОК -->
                     <input type="text" name="login" placeholder="<fmt:message key="profile.login"/>" class="form-control mb-2">
                     <input type="password" name="password" placeholder="<fmt:message key="password"/>" class="form-control mb-2">
-                    <input type="password" name="passwordConfirm" placeholder="<fmt:message key="repeat_password"/>" class="form-control mb-2">
-                    <button type="submit" class="btn btn-outline-dark mb-2"><fmt:message key="sign_up"/></button>
+                    <input type="password" name="passwordConfirm" placeholder="<fmt:message key="signUpMenu.repeatPassword"/>" class="form-control mb-2">
+                    <button type="submit" class="btn btn-outline-dark mb-2"><fmt:message key="signUpMenu.signUpButton"/></button>
                 </div>
                 <div class="modal-footer justify-content-center">
-                    <a class="btn" href="login"><u><fmt:message key="already_have_account"/></u></a>
+                    <a class="btn" href="login"><u><fmt:message key="signUpMenu.alreadyHaveAccount"/></u></a>
                 </div>
             </div>
         </div>

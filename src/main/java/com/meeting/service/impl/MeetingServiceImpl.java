@@ -1,5 +1,6 @@
 package com.meeting.service.impl;
 
+import com.meeting.connection.ConnectionPool;
 import com.meeting.dao.MeetingDao;
 import com.meeting.dao.SpeakerDao;
 import com.meeting.dao.TopicDao;
@@ -18,7 +19,6 @@ import com.meeting.service.MeetingService;
 import com.meeting.service.SpeakerService;
 import com.meeting.service.TopicService;
 import com.meeting.service.UserService;
-import com.meeting.connection.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -41,6 +41,23 @@ import java.util.stream.IntStream;
 import static com.meeting.connection.ConnectionPool.close;
 import static com.meeting.connection.ConnectionPool.getInstance;
 import static com.meeting.connection.ConnectionPool.rollback;
+import static com.meeting.util.Constant.CANNOT_ACCEPT_PROPOSED_TOPIC;
+import static com.meeting.util.Constant.CANNOT_CALCULATE_PERCENTAGE;
+import static com.meeting.util.Constant.CANNOT_CANCEL_PROPOSED_TOPICS;
+import static com.meeting.util.Constant.CANNOT_CREATE_MEETING;
+import static com.meeting.util.Constant.CANNOT_GET_ACCEPTED_TOPICS_BY_MEETING_ID;
+import static com.meeting.util.Constant.CANNOT_GET_ALL_MEETINGS;
+import static com.meeting.util.Constant.CANNOT_GET_MEETINGS_IN_WHICH_SPEAKER_IS_INVOLVED;
+import static com.meeting.util.Constant.CANNOT_GET_PARTICIPANTS_OF_THIS_MEETING_BY_HIS_ID;
+import static com.meeting.util.Constant.CANNOT_GET_PRESENT_USERS;
+import static com.meeting.util.Constant.CANNOT_GET_PROPOSED_TOPICS_BY_SPEAKER_FOR_MEETING_WITH_ID;
+import static com.meeting.util.Constant.CANNOT_GET_SENT_APPLICATIONS_BY_MEETING_ID;
+import static com.meeting.util.Constant.CANNOT_GET_SPEAKER_BY_MEETING_ID;
+import static com.meeting.util.Constant.CANNOT_GET_USER_BY_LOGIN;
+import static com.meeting.util.Constant.CANNOT_MARK_PRESENT_USERS;
+import static com.meeting.util.Constant.CANNOT_PROPOSE_TOPIC;
+import static com.meeting.util.Constant.CANNOT_UPDATE_INFORMATION;
+import static com.meeting.util.Constant.MEETING_WITH_THIS_ID_NOT_EXIST;
 
 public class MeetingServiceImpl implements MeetingService {
 
@@ -98,8 +115,8 @@ public class MeetingServiceImpl implements MeetingService {
             e.printStackTrace();
             rollback(c);
             image.delete();
-            log.error("Cannot create meeting: ", e);
-            throw new DataBaseException("Cannot create meeting", e);
+            log.error(CANNOT_CREATE_MEETING, e);
+            throw new DataBaseException(CANNOT_CREATE_MEETING, e);
         } finally {
             close(c);
         }
@@ -114,8 +131,8 @@ public class MeetingServiceImpl implements MeetingService {
             meeting = optionalMeeting.get();
             extractMeetingInformation(meeting);
         } catch (SQLException e) {
-            log.error("Meeting with ID = {} doesn't exist: ", id, e);
-            throw new DataBaseException("Meeting with ID " + id + " doesn't exist", e);
+            log.error(MEETING_WITH_THIS_ID_NOT_EXIST + id, e);
+            throw new DataBaseException(MEETING_WITH_THIS_ID_NOT_EXIST + id, e);
         }
         return meeting;
     }
@@ -131,9 +148,9 @@ public class MeetingServiceImpl implements MeetingService {
             meetingDao.proposeTopic(meetingId, userSessionId, topic.getId(), c);
             c.commit();
         } catch (SQLException e) {
-            log.error("Cannot propose topic: ", e);
+            log.error(CANNOT_PROPOSE_TOPIC, e);
             rollback(c);
-            throw new DataBaseException("Cannot propose topic", e);
+            throw new DataBaseException(CANNOT_PROPOSE_TOPIC, e);
         } finally {
             close(c);
         }
@@ -148,9 +165,9 @@ public class MeetingServiceImpl implements MeetingService {
             meetingDao.acceptProposedTopics(topicId, speakerId, meetingId, c);
             c.commit();
         } catch (SQLException e) {
-            log.error("Cannot accept proposed topic: ", e);
+            log.error(CANNOT_ACCEPT_PROPOSED_TOPIC, e);
             rollback(c);
-            throw new DataBaseException("Cannot accept proposed topic", e);
+            throw new DataBaseException(CANNOT_ACCEPT_PROPOSED_TOPIC, e);
         } finally {
             close(c);
         }
@@ -165,9 +182,9 @@ public class MeetingServiceImpl implements MeetingService {
             meetingDao.cancelProposedTopic(topicId, c);
             c.commit();
         } catch (SQLException e) {
-            log.error("Cannot cancel proposed topic", e);
+            log.error(CANNOT_CANCEL_PROPOSED_TOPICS, e);
             rollback(c);
-            throw new DataBaseException("Cannot cancel proposed topics", e);
+            throw new DataBaseException(CANNOT_CANCEL_PROPOSED_TOPICS, e);
         } finally {
             close(c);
         }
@@ -182,8 +199,8 @@ public class MeetingServiceImpl implements MeetingService {
             meetings = meetingDao.getAll(c);
             for (Meeting meeting : meetings) extractMeetingInformation(meeting);
         } catch (SQLException e) {
-            log.error("Cannot get all meetings", e);
-            throw new DataBaseException("Cannot get all meetings", e);
+            log.error(CANNOT_GET_ALL_MEETINGS, e);
+            throw new DataBaseException(CANNOT_GET_ALL_MEETINGS, e);
         }
         return meetings;
     }
@@ -202,7 +219,7 @@ public class MeetingServiceImpl implements MeetingService {
         } catch (SQLException e) {
             log.error("Cannot get meetings in which speaker with ID = {} is involved", speakerId, e);
             rollback(c);
-            throw new DataBaseException("Cannot get meetings in which speaker is involved", e);
+            throw new DataBaseException(CANNOT_GET_MEETINGS_IN_WHICH_SPEAKER_IS_INVOLVED, e);
         } finally {
             close(c);
         }
@@ -232,8 +249,8 @@ public class MeetingServiceImpl implements MeetingService {
                 topicSet.add(topic);
             }
         } catch (SQLException e) {
-            log.error("Cannot get accepted topics by meeting id {}", meetingId, e);
-            throw new DataBaseException("Cannot get accepted topics by meeting id " + meetingId, e);
+            log.error(CANNOT_GET_ACCEPTED_TOPICS_BY_MEETING_ID + meetingId, e);
+            throw new DataBaseException(CANNOT_GET_ACCEPTED_TOPICS_BY_MEETING_ID + meetingId, e);
         }
         return acceptedTopicsBySpeaker;
     }
@@ -255,8 +272,8 @@ public class MeetingServiceImpl implements MeetingService {
                 sentApplicationMap.put(topic, speakerSet);
             }
         } catch (SQLException e) {
-            log.error("Cannot get sent applications by meeting ID {}", meetingId, e);
-            throw new DataBaseException("Cannot get sent applications by meeting ID ", e);
+            log.error(CANNOT_GET_SENT_APPLICATIONS_BY_MEETING_ID + meetingId, e);
+            throw new DataBaseException(CANNOT_GET_SENT_APPLICATIONS_BY_MEETING_ID, e);
         }
         return sentApplicationMap;
     }
@@ -273,8 +290,8 @@ public class MeetingServiceImpl implements MeetingService {
                 proposedTopicsBySpeaker.put(topic, speaker);
             }
         } catch (SQLException e) {
-            log.error("Cannot get proposed topics by speaker for meeting with ID: {}", meetingId, e);
-            throw new DataBaseException("Cannot get proposed topics by speaker for meeting with ID: " + meetingId, e);
+            log.error(CANNOT_GET_PROPOSED_TOPICS_BY_SPEAKER_FOR_MEETING_WITH_ID + meetingId, e);
+            throw new DataBaseException(CANNOT_GET_PROPOSED_TOPICS_BY_SPEAKER_FOR_MEETING_WITH_ID + meetingId, e);
         }
         return proposedTopicsBySpeaker;
     }
@@ -310,9 +327,9 @@ public class MeetingServiceImpl implements MeetingService {
 
             c.commit();
         } catch (SQLException e) {
-            log.error("Cannot update information:", e);
+            log.error(CANNOT_UPDATE_INFORMATION, e);
             rollback(c);
-            throw new DataBaseException("Cannot update information", e);
+            throw new DataBaseException(CANNOT_UPDATE_INFORMATION, e);
         } finally {
             close(c);
         }
@@ -350,8 +367,8 @@ public class MeetingServiceImpl implements MeetingService {
                 participants.add(userService.getUserById(id));
             }
         } catch (SQLException e) {
-            log.error("Cannot get participants of this meeting with ID {} by his ID", meetingId, e);
-            throw new DataBaseException("Cannot get participants of this meeting with ID" + meetingId + " by his ID", e);
+            log.error(CANNOT_GET_PARTICIPANTS_OF_THIS_MEETING_BY_HIS_ID + meetingId, e);
+            throw new DataBaseException(CANNOT_GET_PARTICIPANTS_OF_THIS_MEETING_BY_HIS_ID, e);
         }
         return participants;
     }
@@ -364,9 +381,9 @@ public class MeetingServiceImpl implements MeetingService {
             meetingDao.markPresentUsers(presentUsers, meetingId, c);
             c.commit();
         } catch (SQLException e) {
-            log.error("Cannot mark present users", e);
+            log.error(CANNOT_MARK_PRESENT_USERS, e);
             rollback(c);
-            throw new DataBaseException("Cannot mark present users", e);
+            throw new DataBaseException(CANNOT_MARK_PRESENT_USERS, e);
         } finally {
             close(c);
         }
@@ -378,8 +395,8 @@ public class MeetingServiceImpl implements MeetingService {
         try (Connection c = ConnectionPool.getInstance().getConnection()) {
             presentUserIds.addAll(meetingDao.getPresentUserIds(meetingId, c));
         } catch (SQLException e) {
-            log.error("Cannot get present users", e);
-            throw new DataBaseException("Cannot get present users", e);
+            log.error(CANNOT_GET_PRESENT_USERS, e);
+            throw new DataBaseException(CANNOT_GET_PRESENT_USERS, e);
         }
         return presentUserIds;
     }
@@ -390,8 +407,8 @@ public class MeetingServiceImpl implements MeetingService {
         try (Connection c = ConnectionPool.getInstance().getConnection()) {
             res = meetingDao.getAttendancePercentageByMeetingId(meetingId, c);
         } catch (SQLException e) {
-            log.error("Cannot calculate percentage", e);
-            throw new DataBaseException("Cannot calculate percentage", e);
+            log.error(CANNOT_CALCULATE_PERCENTAGE, e);
+            throw new DataBaseException(CANNOT_CALCULATE_PERCENTAGE, e);
         }
         return res;
     }
@@ -433,8 +450,8 @@ public class MeetingServiceImpl implements MeetingService {
                 speakers.add(speakerService.getSpeakerById(id));
             }
         } catch (SQLException e) {
-            log.error("Cannot get speaker by meeting ID {}", meetingId, e);
-            throw new DataBaseException("Cannot get speaker by meeting ID " + meetingId, e);
+            log.error(CANNOT_GET_SPEAKER_BY_MEETING_ID + meetingId, e);
+            throw new DataBaseException(CANNOT_GET_SPEAKER_BY_MEETING_ID + meetingId, e);
         }
         return speakers;
     }
@@ -456,7 +473,7 @@ public class MeetingServiceImpl implements MeetingService {
                                 try {
                                     user = userService.getUserByLogin(speakers[i]);
                                 } catch (UserNotFoundException e) {
-                                    log.error("Cannot get user by login: {}", speakers[i], e);
+                                    log.error(CANNOT_GET_USER_BY_LOGIN + speakers[i], e);
                                 }
                                 return new Speaker(user.getId(), user.getLogin());
                             }

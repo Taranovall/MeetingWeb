@@ -18,11 +18,11 @@
                     data-target="#TopicProposing">
                     <%-- This way see button's content speaker --%>
                 <c:if test="${sessionScope.user.getRole().name() == 'SPEAKER'}">
-                    <fmt:message key="speaker.propose_topic"/>
+                    <fmt:message key="speaker.proposeTopic"/>
                 </c:if>
                     <%-- This way see button's content moderator --%>
                 <c:if test="${sessionScope.user.getRole().name() == 'MODERATOR'}">
-                    <fmt:message key="moderator.proposed_topics"/>
+                    <fmt:message key="moderator.proposedTopics"/>
                 </c:if>
             </button>
         </c:if>
@@ -30,7 +30,7 @@
         <c:if test="${sessionScope.user.getRole().name() == 'MODERATOR' && meeting.isStarted()}">
             <button type="button" class="btn btn-outline-dark mt-2" data-toggle="modal"
                     data-target="#markUsers">
-                <fmt:message key="moderator.mark_present_users"/>
+                <fmt:message key="moderator.markPresentUsers"/>
             </button>
         </c:if>
     </div>
@@ -105,7 +105,7 @@
                         </c:when>
                         <c:otherwise>
                             <p class="text-center mt-2">
-                                <fmt:message key="meeting.no_proposed_topics"/>
+                                <fmt:message key="meeting.noProposedTopics"/>
                             </p>
                         </c:otherwise>
                     </c:choose>

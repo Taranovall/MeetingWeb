@@ -12,7 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static util.Constant.LANGUAGE_ATTR_NAME;
 import static util.Constant.LAST_PAGE_URI_ATTRIBUTE_NAME;
 

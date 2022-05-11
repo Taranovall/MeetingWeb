@@ -137,7 +137,7 @@
                                         <c:when test="${sentApplicationList != null && sentApplicationList.indexOf(freeTopic.getId().toString()) != -1}">
                                             <form action="/speaker/meeting/remove-application" method="post">
                                                 <button name="application" class="become-speaker"
-                                                        value="${freeTopic.getId()}" type="submit"><fmt:message key="speaker.application_submitted"/>
+                                                        value="${freeTopic.getId()}" type="submit"><fmt:message key="speaker.applicationSubmitted"/>
                                                 </button>
                                             </form>
                                         </c:when>
@@ -195,7 +195,7 @@
                                                   class="accept-application row">
                                                 <select class="custom-select" id="inputGroupSelect"
                                                         name="speakerId">
-                                                    <option selected value="none" }><fmt:message key="moderator.choose_speaker"/>
+                                                    <option selected value="none" }><fmt:message key="moderator.chooseSpeaker"/>
                                                     </option>
                                                     <c:forEach items="${sentApplicationsBySpeaker}"
                                                                var="sentApplicationMap">
@@ -230,13 +230,13 @@
                                             </form>
                                         </c:when>
                                         <c:otherwise>
-                                            <span><fmt:message key="moderator.topic_without_application"/></span>
+                                            <span><fmt:message key="moderator.topicWithoutApplication"/></span>
                                         </c:otherwise>
                                     </c:choose>
                                 </c:if>
                                     <%------------------------ THIS WAY USER SEES ROWS WITHOUT SPEAKER ------------------------%>
                                 <c:if test="${sessionScope.user.getRole().name() == 'USER' || sessionScope.user.getRole() == null}">
-                                    <span><fmt:message key="user.topic_without_spaker"/></span>
+                                    <span><fmt:message key="user.topicWithoutSpeaker"/></span>
                                 </c:if>
                             </td>
                         </tr>

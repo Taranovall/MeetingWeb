@@ -1,11 +1,11 @@
 package com.meeting.service.impl;
 
+import com.meeting.connection.ConnectionPool;
 import com.meeting.dao.TopicDao;
 import com.meeting.dao.impl.TopicDaoImpl;
 import com.meeting.entitiy.Topic;
 import com.meeting.exception.DataBaseException;
 import com.meeting.service.TopicService;
-import com.meeting.connection.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,6 +14,10 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+
+import static com.meeting.util.Constant.CANNOT_GET_ALL_FREE_TOPICS_BY_MEETING_ID;
+import static com.meeting.util.Constant.CANNOT_GET_TOPIC_BY_HIS_ID;
+import static com.meeting.util.Constant.CANNOT_GET_TOPIC_BY_NAME;
 
 public class TopicServiceImpl implements TopicService {
 
@@ -31,7 +35,7 @@ public class TopicServiceImpl implements TopicService {
             return topicDao.isTopicExist(topicName, meetingId, c);
         } catch (SQLException e) {
             log.error("Cannot get topic by name: '{}'", topicName, e);
-            throw new DataBaseException("Cannot get topic by name: " + topicName, e);
+            throw new DataBaseException(CANNOT_GET_TOPIC_BY_NAME + topicName, e);
         }
     }
 
@@ -47,8 +51,8 @@ public class TopicServiceImpl implements TopicService {
                 throw new SQLException();
             }
         } catch (SQLException e) {
-            log.error("Cannot get topic by his ID: {}", id, e);
-            throw new DataBaseException("Cannot get topic by his ID: " + id, e);
+            log.error("Cannot get topic by his ID: " + id, e);
+            throw new DataBaseException(CANNOT_GET_TOPIC_BY_HIS_ID + id, e);
         }
         return topic;
     }
@@ -60,8 +64,8 @@ public class TopicServiceImpl implements TopicService {
             c.setAutoCommit(true);
             topics.addAll(topicDao.getAllFreeTopicsByMeetingId(meetingId, c));
         } catch (SQLException e) {
-            log.error("Cannot get all free topics by meeting ID: {}", meetingId, e);
-            throw new DataBaseException("Cannot get all free topics by meeting ID: " + meetingId, e);
+            log.error(CANNOT_GET_ALL_FREE_TOPICS_BY_MEETING_ID + meetingId, e);
+            throw new DataBaseException(CANNOT_GET_ALL_FREE_TOPICS_BY_MEETING_ID + meetingId, e);
         }
         return topics;
     }

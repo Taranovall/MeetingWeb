@@ -22,14 +22,14 @@ public class EmailSender {
     private static final Logger log = LogManager.getLogger(EmailSender.class);
 
     private Message message = null;
-    protected static String SMTP_SERVER = "smtp.gmail.com";
-    protected static String SMTP_PORT = "587";
-    protected static String SMTP_AUTH_USER = "meetingwebmailsender@gmail.com";
-    protected static String SMTP_AUTH_PWD = "g1872qwe3";
-    protected static String EMAIL_FROM = "MeetingWebSender@gmail.com";
-    protected static String MAIL_SMTP_SSL_PROTOCOLS = "TLSv1.2";
-    protected static boolean MAIL_SMTP_AUTH = true;
-    protected static boolean MAIL_SMTP_STARTTLS_ENABLE = true;
+    protected static final String SMTP_SERVER = "smtp.gmail.com";
+    protected static final String SMTP_PORT = "587";
+    protected static final String SMTP_AUTH_USER = "meetingwebmailsender@gmail.com";
+    protected static final String SMTP_AUTH_PWD = "g1872qwe3";
+    protected static final String EMAIL_FROM = "MeetingWebSender@gmail.com";
+    protected static final String MAIL_SMTP_SSL_PROTOCOLS = "TLSv1.2";
+    protected static final boolean MAIL_SMTP_AUTH = true;
+    protected static final boolean MAIL_SMTP_STARTTLS_ENABLE = true;
 
     public EmailSender(final String[] emailTo, final String topic) throws EmailException {
         try {

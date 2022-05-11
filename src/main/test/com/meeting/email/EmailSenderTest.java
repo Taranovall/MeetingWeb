@@ -36,20 +36,6 @@ class EmailSenderTest {
     }
 
     @Test
-    void shouldThrowMessagingExceptionWithMessage_CannotInitializeConstructor() {
-        EmailSender.MAIL_SMTP_SSL_PROTOCOLS = null;
-
-        EmailException thrown = assertThrows(EmailException.class, () -> new EmailSender(EMAIL_TO, TOPIC_NAME));
-
-        EmailSender.MAIL_SMTP_SSL_PROTOCOLS = "TLSv1.2";
-
-        String expected = "Cannot initialize constructor";
-        String actual = thrown.getMessage();
-
-        assertEquals(expected, actual);
-    }
-
-    @Test
     void shouldSendMessageAndReturnTrue() throws EmailException {
         EmailSender emailSender = new EmailSender(EMAIL_TO, TOPIC_NAME);
         boolean result = emailSender.sendMessage("TestMsg");

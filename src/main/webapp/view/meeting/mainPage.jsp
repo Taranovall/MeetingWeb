@@ -19,7 +19,7 @@
 <div id="meetingList">
     <c:if test="${query != null}">
         <div class="alert alert-info text-center mt-2 mb-0" role="alert">
-            <fmt:message key="query.show_all_results"/>: ${query}
+            <fmt:message key="navbar.query.allResults"/>: ${query}
         </div>
     </c:if>
     <c:if test="${error != null}">
@@ -80,13 +80,13 @@
 <c:if test="${maxPageCount > 1}">
     <ul class="pagination justify-content-center">
         <c:if test="${pageNumber > 1}">
-            <li class="page-item"><a class="page-link" href="?page=${pageNumber - 1}"><fmt:message key="pagination.previous_page"/></a></li>
+            <li class="page-item"><a class="page-link" href="?page=${pageNumber - 1}"><fmt:message key="pagination.previousPage"/></a></li>
         </c:if>
         <c:forEach begin="1" end="${maxPageCount}" var="i">
             <li class="page-item"><a class="page-link" href="?page=${i}">${i}</a></li>
         </c:forEach>
         <c:if test="${pageNumber < maxPageCount}">
-            <li class="page-item"><a class="page-link" href="?page=${pageNumber + 1}"><fmt:message key="pagination.next_page"/></a></li>
+            <li class="page-item"><a class="page-link" href="?page=${pageNumber + 1}"><fmt:message key="pagination.nextPage"/></a></li>
         </c:if>
     </ul>
 </c:if>

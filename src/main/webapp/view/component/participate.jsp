@@ -21,13 +21,13 @@
                 </c:when>
                 <c:otherwise>
                     <form action="stop-participating" method="post">
-                        <button type="submit" name="userId" value="${sessionScope.user.getId()}" class="btn btn-outline-dark mt-2"><fmt:message key="user.stop_participating"/></button>
+                        <button type="submit" name="userId" value="${sessionScope.user.getId()}" class="btn btn-outline-dark mt-2"><fmt:message key="user.stopParticipating"/></button>
                     </form>
                 </c:otherwise>
             </c:choose>
         </c:if>
         <c:if test="${sessionScope.user.getRole() == null}">
-            <button disabled class="btn btn-outline-dark mt-2"><fmt:message key="not_authorized"/></button>
+            <button disabled class="btn btn-outline-dark mt-2"><fmt:message key="meeting.signInToParticipate"/></button>
         </c:if>
     </div>
 </c:if>

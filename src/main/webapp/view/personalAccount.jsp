@@ -22,7 +22,7 @@
                 <ul class="info list-group">
                     <li class="list-group-item"><small><fmt:message key="profile.login"/>: ${requestScope.user.getLogin()}</small>
                     </li>
-                    <li class="list-group-item"><small><fmt:message key="profile.user_id"/>: ${requestScope.user.getId()}</small>
+                    <li class="list-group-item"><small><fmt:message key="profile.userId"/>: ${requestScope.user.getId()}</small>
                     </li>
                     <li class="list-group-item"><small><fmt:message key="profile.role"/>: ${requestScope.user.getRole().toString()}</small>
                     </li>

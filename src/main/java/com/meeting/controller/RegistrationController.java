@@ -18,7 +18,7 @@ import java.io.IOException;
 
 import static com.meeting.util.Constant.PATH_TO_REGISTRATION_JSP;
 
-@WebServlet(name = "registration", urlPatterns = "/registration")
+@WebServlet(name = "signUpMenu.registration", urlPatterns = "/registration")
 public class RegistrationController extends HttpServlet {
 
     private static final Logger log = LogManager.getLogger(RegistrationController.class);

@@ -38,9 +38,9 @@
                         <span>${sessionScope.user.getLogin()} </span>
                     </a>
                     <div class="dropdown-menu">
-                        <a class="dropdown-item" href="/account/${sessionScope.user.getId()}"><fmt:message key="profile"/></a>
+                        <a class="dropdown-item" href="/account/${sessionScope.user.getId()}"><fmt:message key="profile.profileButton"/></a>
                         <c:if test="${sessionScope.user.getRole().name() == 'MODERATOR'}">
-                            <a class="dropdown-item" href="/moderator/create-meeting"><fmt:message key="moderator.create_meeting"/></a>
+                            <a class="dropdown-item" href="/moderator/create-meeting"><fmt:message key="moderator.createMeeting"/></a>
                         </c:if>
                         <a class="dropdown-item" href="/logout"><fmt:message key="logout"/></a>
                     </div>
@@ -48,7 +48,7 @@
             </c:if>
             <c:if test="${sessionScope.user == null}">
                 <li class="nav-item">
-                    <a class="nav-button btn btn-outline-dark" href="/login"><fmt:message key="navbar_jsp.sign_in"/></a>
+                    <a class="nav-button btn btn-outline-dark" href="/login"><fmt:message key="signInMenu.signInButton"/></a>
                 </li>
             </c:if>
         </ul>
@@ -56,7 +56,7 @@
         <c:if test="${requestScope['javax.servlet.forward.request_uri'] == '/'}">
             <%-- SEARCH FORM --%>
             <form class="form-inline my-2 my-lg-0 navbar-query-form" method="post" action="search-meeting">
-                <input name="query" class="form-control mr-sm-2" type="search" placeholder="<fmt:message key="input_query"/>"
+                <input name="query" class="form-control mr-sm-2" type="search" placeholder="<fmt:message key="navbar.query.inputQuery"/>"
                        aria-label="Search">
                 <c:if test="${queryIsNotValid != null}">
                     <div title="${queryIsNotValid}">
@@ -66,44 +66,44 @@
                         </svg>
                     </div>
                 </c:if>
-                <button class="btn btn btn-outline-dark my-2 my-sm-0" type="submit"><fmt:message key="search_query"/></button>
+                <button class="btn btn btn-outline-dark my-2 my-sm-0" type="submit"><fmt:message key="navbar.search"/></button>
             </form>
             <%-- /SEARCH FORM --%>
 
             <%-- SORT FORM --%>
             <form class="form-inline my-2 my-lg-0 navbar-soring-form" method="post" action="sort-meeting">
                 <select class="custom-select" name="sortMethod" onchange='if(this.value != 0) { this.form.submit(); }'>
-                    <option value="" selected disabled hidden><fmt:message key="choose_sorting_method"/></option>
+                    <option value="" selected disabled hidden><fmt:message key="navbar.sort.choose"/></option>
                     <c:choose>
                         <c:when test="${sortMethod == 'name'}">
-                            <option value="name"><fmt:message key="choose_sorting_method.by_name"/> <fmt:message key="choose_sorting_method.reverse_order"/></option>
+                            <option value="name"><fmt:message key="navbar.sort.by_name"/> <fmt:message key="navbar.sort.reverseOrder"/></option>
                         </c:when>
                         <c:otherwise>
-                            <option value="name"><fmt:message key="choose_sorting_method.by_name"/></option>
+                            <option value="name"><fmt:message key="navbar.sort.by_name"/></option>
                         </c:otherwise>
                     </c:choose>
                     <c:choose>
                         <c:when test="${sortMethod == 'date'}">
-                            <option value="date"><fmt:message key="choose_sorting_method.by_date"/> <fmt:message key="choose_sorting_method.reverse_order"/></option>
+                            <option value="date"><fmt:message key="navbar.sort.by_date"/> <fmt:message key="navbar.sort.reverseOrder"/></option>
                         </c:when>
                         <c:otherwise>
-                            <option value="date"><fmt:message key="choose_sorting_method.by_date"/></option>
+                            <option value="date"><fmt:message key="navbar.sort.by_date"/></option>
                         </c:otherwise>
                     </c:choose>
                     <c:choose>
                         <c:when test="${sortMethod == 'participants'}">
-                            <option value="participants"><fmt:message key="choose_sorting_method.by_number_of_participants"/> <fmt:message key="choose_sorting_method.reverse_order"/></option>
+                            <option value="participants"><fmt:message key="navbar.sort.byNumberOfParticipants"/> <fmt:message key="navbar.sort.reverseOrder"/></option>
                         </c:when>
                         <c:otherwise>
-                            <option value="participants"><fmt:message key="choose_sorting_method.by_number_of_participants"/></option>
+                            <option value="participants"><fmt:message key="navbar.sort.byNumberOfParticipants"/></option>
                         </c:otherwise>
                     </c:choose>
                     <c:choose>
                         <c:when test="${sortMethod == 'topics'}">
-                            <option value="topics"><fmt:message key="choose_sorting_method.by_number_of_topics"/> <fmt:message key="choose_sorting_method.reverse_order"/></option>
+                            <option value="topics"><fmt:message key="navbar.sort.byNumberOfTopics"/> <fmt:message key="navbar.sort.reverseOrder"/></option>
                         </c:when>
                         <c:otherwise>
-                            <option value="topics"><fmt:message key="choose_sorting_method.by_number_of_topics"/></option>
+                            <option value="topics"><fmt:message key="navbar.sort.byNumberOfTopics"/></option>
                         </c:otherwise>
                     </c:choose>
                 </select>
@@ -116,7 +116,7 @@
                     ${option}
                 </c:if>
                 <c:if test="${option == null}">
-                    <fmt:message key="show"/>
+                    <fmt:message key="navbar.show"/>
                 </c:if>
             </button>
             <div class="modal fade" id="chooseWhichMeetingToShow" data-backdrop="static" data-keyboard="false" tabindex="-1"
@@ -128,25 +128,25 @@
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="radioButton" value="all" id="defaultCheck1">
                                     <label class="form-check-label" for="defaultCheck1">
-                                        <fmt:message key="show.all_meetings"/>
+                                        <fmt:message key="navbar.show.allMeetings"/>
                                     </label>
                                 </div>
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="radioButton" value="goingOnNow" id="defaultCheck2">
                                     <label class="form-check-label" for="defaultCheck2">
-                                        <fmt:message key="show.now_meetings"/>
+                                        <fmt:message key="navbar.show.ongoingMeetings"/>
                                     </label>
                                 </div>
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="radioButton" value="passed" id="defaultCheck3">
                                     <label class="form-check-label" for="defaultCheck3">
-                                        <fmt:message key="show.past_meetings"/>
+                                        <fmt:message key="navbar.show.pastMeetings"/>
                                     </label>
                                 </div>
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="radioButton" value="notStarted" id="defaultCheck4">
                                     <label class="form-check-label" for="defaultCheck4">
-                                        <fmt:message key="show.future_meetings"/>
+                                        <fmt:message key="navbar.show.futureMeetings"/>
 
                                     </label>
                                 </div>
@@ -164,7 +164,7 @@
         <%-- CHANGE LOCALE --%>
         <form class="form-inline ml-2 my-2 my-lg-0" id="locale" name="locale" onchange="submit()" method="post" action="/change-locale">
             <select class="custom-select locale" name="locale">
-                <option value="" selected disabled hidden><fmt:message key="navbar_jsp.current_language"/></option>
+                <option value="" selected disabled hidden><fmt:message key="navbar.currentLanguage"/></option>
                 <c:forEach items="${applicationScope.locales}" var="locale">
                     <c:if test="${locale.key != sessionScope.language}">
                     <option value="${locale.key}">${locale.value}</option>

@@ -7,6 +7,7 @@ import com.meeting.entitiy.User;
 import com.meeting.exception.DataBaseException;
 import com.meeting.exception.UserNotFoundException;
 import com.meeting.connection.ConnectionPool;
+import com.meeting.util.Constant;
 import com.meeting.util.SQLQuery;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -211,7 +212,9 @@ class UserServiceImplTest {
                 userService.participate(7L, 133L)
         );
 
-        assertEquals("User cannot participate", thrown.getMessage());
+        String expected = Constant.USER_CANNOT_PARTICIPATE_ID + "7";
+
+        assertEquals(expected, thrown.getMessage());
     }
 
     @Test
@@ -229,7 +232,8 @@ class UserServiceImplTest {
                 userService.stopParticipating(10L, 20L)
         );
 
-        assertEquals("User cannot stop participating", thrown.getMessage());
+        String expected = Constant.USER_CANNOT_STOP_PARTICIPATING_ID + "10";
+        assertEquals(expected, thrown.getMessage());
     }
 
     @Test
